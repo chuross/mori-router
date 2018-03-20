@@ -6,10 +6,10 @@ import javax.lang.model.util.Elements
 
 class ProcessorContext(
         val filer: Filer,
-        val elements: Elements
+        val elementUtils: Elements
 ) {
 
     fun getPackageName(element: Element): String {
-        return elements.getPackageOf(element).qualifiedName.toString()
+        return elementUtils.getPackageOf(element).qualifiedName.toString()
     }
 }
