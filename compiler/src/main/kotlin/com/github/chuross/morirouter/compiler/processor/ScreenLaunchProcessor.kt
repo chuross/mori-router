@@ -31,9 +31,11 @@ object ScreenLaunchProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
+                .addField(containerIdField())
                 .addFields(paramFields(element))
                 .addMethod(constructorMethod(element))
-                .addMethods(optionalParameterMethods(element))
+                .addMethods(optionalParameterMethods(context, element))
+                .addMethod(launchMethod(element))
                 .build()
 
         JavaFile.builder(context.getPackageName(element), routerTypeSpec)
@@ -43,6 +45,12 @@ object ScreenLaunchProcessor {
 
     private fun fragmentManagerField(): FieldSpec {
         return FieldSpec.builder(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
+                .addModifiers(Modifier.PRIVATE)
+                .build()
+    }
+
+    private fun containerIdField(): FieldSpec {
+        return FieldSpec.builder(TypeName.INT, "containerId")
                 .addModifiers(Modifier.PRIVATE)
                 .build()
     }
@@ -64,7 +72,9 @@ object ScreenLaunchProcessor {
 
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addParameter(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
+            builder.addParameter(TypeName.INT, "containerId")
             builder.addStatement("this.fm = fm")
+            builder.addStatement("this.containerId = containerId")
             requiredRouterParamElements.forEach {
                 val routerParamAnnotation = it.getAnnotation(RouterParam::class.java)
                 val name = routerParamAnnotation.name.takeIf { it.isNotBlank() }
@@ -75,7 +85,7 @@ object ScreenLaunchProcessor {
         }.build()
     }
 
-    private fun optionalParameterMethods(element: Element): Iterable<MethodSpec> {
+    private fun optionalParameterMethods(context: ProcessorContext, element: Element): Iterable<MethodSpec> {
         return element.enclosedElements
                 .filter { it.getAnnotation(RouterParam::class.java) != null }
                 .filter { !it.getAnnotation(RouterParam::class.java).required }
@@ -84,7 +94,18 @@ object ScreenLaunchProcessor {
                     MethodSpec.methodBuilder(RouterUtils.getRouterParamName(it))
                             .addModifiers(Modifier.PUBLIC)
                             .addStatement("this.$name = $name")
+                            .addStatement("return this")
+                            .returns(ClassName.bestGuess(getGeneratedTypeName(context, element)))
                             .build()
                 }
+    }
+
+    private fun launchMethod(element: Element): MethodSpec {
+        val fragmentClassName = ClassName.get(element.asType())
+        return MethodSpec.methodBuilder("launch")
+                .addStatement("$fragmentClassName fragment = new $fragmentClassName()")
+                .addStatement("fm.beginTransaction().replace(containerId, fragment).addToBackStack(null).commit()")
+                .addStatement("fm.executePendingTransactions()")
+                .build()
     }
 }
