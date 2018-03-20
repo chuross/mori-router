@@ -115,12 +115,18 @@ object ScreenLaunchProcessor {
 
     private fun launchMethod(element: Element): MethodSpec {
         val fragmentClassName = ClassName.get(element.asType())
-        return MethodSpec.methodBuilder("launch").also {
-            it.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
-            it.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
-            it.addStatement("fragment.setArguments(arguments)")
-            it.addStatement("fm.beginTransaction().replace(containerId, fragment).addToBackStack(null).commit()")
-            it.addStatement("fm.executePendingTransactions()")
+        val routerParamElements = element.enclosedElements
+                .filter { it.getAnnotation(RouterParam::class.java) != null }
+        return MethodSpec.methodBuilder("launch").also { builder ->
+            builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
+            builder.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
+            routerParamElements.forEach {
+                val name = RouterUtils.getRouterParamName(it)
+                builder.addStatement("arguments.putSerializable(ARGUMENT_KEY_${name.toUpperCase()}, $name)")
+            }
+            builder.addStatement("fragment.setArguments(arguments)")
+            builder.addStatement("fm.beginTransaction().replace(containerId, fragment).addToBackStack(null).commit()")
+            builder.addStatement("fm.executePendingTransactions()")
         }.build()
 
     }
