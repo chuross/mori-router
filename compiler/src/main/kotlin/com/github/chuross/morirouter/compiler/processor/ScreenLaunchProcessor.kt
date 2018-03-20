@@ -126,7 +126,10 @@ object ScreenLaunchProcessor {
                 builder.addStatement("arguments.putSerializable(ARGUMENT_KEY_${name.toUpperCase()}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
-            builder.addStatement("fm.beginTransaction().replace(containerId, fragment).addToBackStack(null).commit()")
+            builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")
+            builder.addStatement("transaction.replace(containerId, fragment)")
+            builder.addStatement("if (fm.getBackStackEntryCount() > 0) transaction.addToBackStack(null)")
+            builder.addStatement("transaction.commit()")
             builder.addStatement("fm.executePendingTransactions()")
         }.build()
 
