@@ -56,15 +56,15 @@ object RouterProcessor {
         return elements.map {
             val routerPathAnnotation = it.getAnnotation(RouterPath::class.java)
             val routerParamElements = it.enclosedElements.filter { it.getAnnotation(RouterParam::class.java) != null }
+            val requiredRouterParamElements = routerParamElements.filter { it.getAnnotation(RouterParam::class.java).required }
 
             MethodSpec.methodBuilder(routerPathAnnotation.name).also { builder ->
                 builder.addModifiers(Modifier.PUBLIC)
-                routerParamElements
-                        .filter { it.getAnnotation(RouterParam::class.java).required }
-                        .forEach {
-                            val annotation = it.getAnnotation(RouterParam::class.java)
-                            builder.addParameter(TypeName.get(it.asType()), annotation.name.takeIf { it.isNotBlank() } ?: it.simpleName.toString())
-                        }
+                requiredRouterParamElements.forEach {
+                    val annotation = it.getAnnotation(RouterParam::class.java)
+                    val name = annotation.name.takeIf { it.isNotBlank() } ?: it.simpleName.toString()
+                    builder.addParameter(TypeName.get(it.asType()), name)
+                }
             }.build()
         }
     }
