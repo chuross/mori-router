@@ -4,16 +4,15 @@ import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
+import com.github.chuross.morirouter.compiler.util.RouterUtils
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
-import java.lang.reflect.Type
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
-import javax.lang.model.type.TypeMirror
 
 object RouterProcessor {
 
@@ -34,7 +33,7 @@ object RouterProcessor {
     }
 
     private fun fragmentManagerField(): FieldSpec {
-        return FieldSpec.builder(Class.forName(PackageNames.supportFragmentManager), "fm")
+        return FieldSpec.builder(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
                 .addModifiers(Modifier.PRIVATE)
                 .build()
     }
@@ -48,7 +47,7 @@ object RouterProcessor {
     private fun constructorMethod(): MethodSpec {
         return MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(Class.forName(PackageNames.supportFragmentManager), "fm")
+                .addParameter(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
                 .addParameter(Int::class.java, "containerId")
                 .addStatement("this.fm = fm")
                 .addStatement("this.containerId = containerId")
@@ -65,14 +64,11 @@ object RouterProcessor {
 
             MethodSpec.methodBuilder(routerPathAnnotation.name).also { builder ->
                 builder.addModifiers(Modifier.PUBLIC)
-                val requiredRouterParamNames = requiredRouterParamElements.map {
-                    val annotation = it.getAnnotation(RouterParam::class.java)
-                    annotation.name.takeIf { it.isNotBlank() } ?: it.simpleName.toString()
+                requiredRouterParamElements.forEach {
+                    builder.addParameter(TypeName.get(it.asType()), RouterUtils.getRouterParamName(it))
                 }
-                requiredRouterParamElements.forEachIndexed { index, element ->
-                    builder.addParameter(TypeName.get(element.asType()), requiredRouterParamNames[index])
-                }
-                builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(context, it)}(${requiredRouterParamNames.joinToString(", ")})")
+                val arguments = listOf("fm").plus(requiredRouterParamElements.map { RouterUtils.getRouterParamName(it) }).joinToString(", ")
+                builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(context, it)}($arguments)")
                 builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(context, it)))
             }.build()
         }
