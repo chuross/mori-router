@@ -65,12 +65,14 @@ object RouterProcessor {
 
             MethodSpec.methodBuilder(routerPathAnnotation.name).also { builder ->
                 builder.addModifiers(Modifier.PUBLIC)
-                requiredRouterParamElements.forEach {
+                val requiredRouterParamNames = requiredRouterParamElements.map {
                     val annotation = it.getAnnotation(RouterParam::class.java)
-                    val name = annotation.name.takeIf { it.isNotBlank() } ?: it.simpleName.toString()
-                    builder.addParameter(TypeName.get(it.asType()), name)
+                    annotation.name.takeIf { it.isNotBlank() } ?: it.simpleName.toString()
                 }
-                builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(context, it)}()")
+                requiredRouterParamElements.forEachIndexed { index, element ->
+                    builder.addParameter(TypeName.get(element.asType()), requiredRouterParamNames[index])
+                }
+                builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(context, it)}(${requiredRouterParamNames.joinToString(", ")})")
                 builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(context, it)))
             }.build()
         }
