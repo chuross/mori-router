@@ -3,7 +3,8 @@
 buildscript {
     ext.versions = [
             kotlin: '1.2.21',
-
+            javapoet: '1.10.0',
+            autoService: '1.0-rc4'
     ]
 
     repositories {
