@@ -1,0 +1,14 @@
+apply plugin: 'kotlin'
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/myKotlin'
+    main.java.srcDirs += 'src/main/myJava'
+}
+
+dependencies {
+    implementation project(':annotation')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
