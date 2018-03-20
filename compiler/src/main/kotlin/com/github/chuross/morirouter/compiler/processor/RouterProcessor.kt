@@ -1,10 +1,13 @@
 package com.github.chuross.morirouter.compiler.processor
 
+import com.github.chuross.morirouter.annotation.RouterParam
+import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
@@ -18,6 +21,7 @@ object RouterProcessor {
                 .addField(fragmentManagerField())
                 .addField(containerIdField())
                 .addMethod(constructorMethod())
+                .addMethods(screenLaunchMethods(context, elements))
                 .addMethod(popMethod())
                 .build()
 
@@ -46,6 +50,23 @@ object RouterProcessor {
                 .addStatement("this.fm = fm")
                 .addStatement("this.containerId = containerId")
                 .build()
+    }
+
+    private fun screenLaunchMethods(context: ProcessorContext, elements: Set<Element>): Iterable<MethodSpec> {
+        return elements.map {
+            val routerPathAnnotation = it.getAnnotation(RouterPath::class.java)
+            val routerParamElements = it.enclosedElements.filter { it.getAnnotation(RouterParam::class.java) != null }
+
+            MethodSpec.methodBuilder(routerPathAnnotation.name).also { builder ->
+                builder.addModifiers(Modifier.PUBLIC)
+                routerParamElements
+                        .filter { it.getAnnotation(RouterParam::class.java).required }
+                        .forEach {
+                            val annotation = it.getAnnotation(RouterParam::class.java)
+                            builder.addParameter(TypeName.get(it.asType()), annotation.name.takeIf { it.isNotBlank() } ?: it.simpleName.toString())
+                        }
+            }.build()
+        }
     }
 
     private fun popMethod(): MethodSpec {

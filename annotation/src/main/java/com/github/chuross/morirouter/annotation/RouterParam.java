@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 public @interface RouterParam {
 
-    String name();
+    String name() default "";
 
     boolean required() default false;
 }
