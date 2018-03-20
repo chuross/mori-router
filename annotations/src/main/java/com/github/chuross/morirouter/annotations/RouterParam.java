@@ -5,5 +5,5 @@ public @interface RouterParam {
 
     String name();
 
-    boolean required();
+    boolean required() default true;
 }
