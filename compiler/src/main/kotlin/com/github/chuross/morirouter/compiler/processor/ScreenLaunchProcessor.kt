@@ -30,6 +30,7 @@ object ScreenLaunchProcessor {
         val routerTypeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
+                .addFields(bundleKeyStaticFields(element))
                 .addField(fragmentManagerField())
                 .addField(containerIdField())
                 .addFields(paramFields(element))
@@ -41,6 +42,18 @@ object ScreenLaunchProcessor {
         JavaFile.builder(context.getPackageName(element), routerTypeSpec)
                 .build()
                 .writeTo(context.filer)
+    }
+
+    private fun bundleKeyStaticFields(element: Element): Iterable<FieldSpec> {
+        return element.enclosedElements
+                .filter { it.getAnnotation(RouterParam::class.java) != null }
+                .map {
+                    val name = RouterUtils.getRouterParamName(it)
+                    FieldSpec.builder(TypeName.get(it.asType()), "ARGUMENT_KEY_${name.toUpperCase()}")
+                            .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
+                            .initializer("\"argument_key_$name\"")
+                            .build()
+                }
     }
 
     private fun fragmentManagerField(): FieldSpec {
@@ -102,10 +115,13 @@ object ScreenLaunchProcessor {
 
     private fun launchMethod(element: Element): MethodSpec {
         val fragmentClassName = ClassName.get(element.asType())
-        return MethodSpec.methodBuilder("launch")
-                .addStatement("$fragmentClassName fragment = new $fragmentClassName()")
-                .addStatement("fm.beginTransaction().replace(containerId, fragment).addToBackStack(null).commit()")
-                .addStatement("fm.executePendingTransactions()")
-                .build()
+        return MethodSpec.methodBuilder("launch").also {
+            it.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
+            it.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
+            it.addStatement("fragment.setArguments(arguments)")
+            it.addStatement("fm.beginTransaction().replace(containerId, fragment).addToBackStack(null).commit()")
+            it.addStatement("fm.executePendingTransactions()")
+        }.build()
+
     }
 }
