@@ -9,8 +9,10 @@ import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
+import java.lang.reflect.Type
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
+import javax.lang.model.type.TypeMirror
 
 object RouterProcessor {
 
@@ -54,6 +56,8 @@ object RouterProcessor {
 
     private fun screenLaunchMethods(context: ProcessorContext, elements: Set<Element>): Iterable<MethodSpec> {
         return elements.map {
+            ScreenLaunchProcessor.process(context, it)
+
             val routerPathAnnotation = it.getAnnotation(RouterPath::class.java)
             val routerParamElements = it.enclosedElements.filter { it.getAnnotation(RouterParam::class.java) != null }
             val requiredRouterParamElements = routerParamElements.filter { it.getAnnotation(RouterParam::class.java).required }
@@ -65,6 +69,7 @@ object RouterProcessor {
                     val name = annotation.name.takeIf { it.isNotBlank() } ?: it.simpleName.toString()
                     builder.addParameter(TypeName.get(it.asType()), name)
                 }
+                builder.addStatement("new ${ScreenLaunchProcessor.getGeneratedTypeName(context, it)}()")
             }.build()
         }
     }

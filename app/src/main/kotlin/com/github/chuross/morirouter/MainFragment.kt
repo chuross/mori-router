@@ -10,9 +10,12 @@ import com.github.chuross.morirouter.annotation.RouterParam
 )
 class MainFragment : Fragment() {
 
-    @RouterParam(required = true)
+    @RouterParam
     lateinit var param1: String
 
-    @RouterParam(required = true)
+    @RouterParam(name = "ieei")
     lateinit var param2: String
+
+    @RouterParam(required = false)
+    lateinit var param3: String
 }
