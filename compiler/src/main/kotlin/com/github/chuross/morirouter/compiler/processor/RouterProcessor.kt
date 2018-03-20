@@ -4,6 +4,7 @@ import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
+import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
@@ -69,7 +70,8 @@ object RouterProcessor {
                     val name = annotation.name.takeIf { it.isNotBlank() } ?: it.simpleName.toString()
                     builder.addParameter(TypeName.get(it.asType()), name)
                 }
-                builder.addStatement("new ${ScreenLaunchProcessor.getGeneratedTypeName(context, it)}()")
+                builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(context, it)}()")
+                builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(context, it)))
             }.build()
         }
     }

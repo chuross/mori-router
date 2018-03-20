@@ -19,10 +19,6 @@ object ScreenLaunchProcessor {
         return "${routerPathAnnotation.name.capitalize()}ScreenLauncher"
     }
 
-    fun getGeneratedClassName(context: ProcessorContext, element: Element): String {
-        return "${context.getPackageName(element)}.${getGeneratedTypeName(context, element)}"
-    }
-
     fun process(context: ProcessorContext, element: Element) {
         val routerTypeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
