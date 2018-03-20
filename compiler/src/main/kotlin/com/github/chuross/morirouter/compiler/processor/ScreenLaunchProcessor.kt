@@ -49,7 +49,7 @@ object ScreenLaunchProcessor {
                 .filter { it.getAnnotation(RouterParam::class.java) != null }
                 .map {
                     val name = RouterUtils.getRouterParamName(it)
-                    FieldSpec.builder(TypeName.get(it.asType()), "ARGUMENT_KEY_${name.toUpperCase()}")
+                    FieldSpec.builder(String::class.java, "ARGUMENT_KEY_${name.toUpperCase()}")
                             .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                             .initializer("\"argument_key_$name\"")
                             .build()
@@ -106,6 +106,7 @@ object ScreenLaunchProcessor {
                     val name = RouterUtils.getRouterParamName(it)
                     MethodSpec.methodBuilder(RouterUtils.getRouterParamName(it))
                             .addModifiers(Modifier.PUBLIC)
+                            .addParameter(TypeName.get(it.asType()), name)
                             .addStatement("this.$name = $name")
                             .addStatement("return this")
                             .returns(ClassName.bestGuess(getGeneratedTypeName(context, element)))

@@ -17,5 +17,5 @@ class MainFragment : Fragment() {
     lateinit var param2: String
 
     @RouterParam(required = false)
-    lateinit var param3: String
+    lateinit var param3: ArrayList<String>
 }
