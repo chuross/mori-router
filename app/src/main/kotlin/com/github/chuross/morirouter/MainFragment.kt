@@ -12,4 +12,7 @@ class MainFragment : Fragment() {
 
     @RouterParam(required = true)
     lateinit var param1: String
+
+    @RouterParam(required = true)
+    lateinit var param2: String
 }
