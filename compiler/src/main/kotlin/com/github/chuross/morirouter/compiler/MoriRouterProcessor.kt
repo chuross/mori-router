@@ -3,10 +3,8 @@ package com.github.chuross.morirouter.compiler
 import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterPathParam
+import com.github.chuross.morirouter.compiler.processor.RouterProcessor
 import com.google.auto.service.AutoService
-import com.squareup.javapoet.FieldSpec
-import com.squareup.javapoet.JavaFile
-import com.squareup.javapoet.TypeSpec
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Filer
 import javax.annotation.processing.Messager
@@ -15,8 +13,6 @@ import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.Element
-import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
 import javax.tools.Diagnostic
@@ -52,7 +48,7 @@ class MoriRouterProcessor : AbstractProcessor() {
             val elements = roundEnv.getElementsAnnotatedWith(RouterPath::class.java)
             if (elements.isEmpty()) return true
 
-            processRouter(context, elements)
+            RouterProcessor.process(context, elements)
 
             true
         } catch (e: Throwable) {
@@ -61,21 +57,4 @@ class MoriRouterProcessor : AbstractProcessor() {
         }
     }
 
-    private fun processRouter(context: ProcessorContext, elements: Set<Element>) {
-        val routerTypeSpec = TypeSpec.classBuilder("MoriRouter")
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addJavadoc("This class is auto generated.")
-                .addField(fragmentManagerField())
-                .build()
-
-        JavaFile.builder(context.getPackageName(elements.first()), routerTypeSpec)
-                .build()
-                .writeTo(context.filer)
-    }
-
-    private fun fragmentManagerField(): FieldSpec {
-        return FieldSpec.builder(Class.forName(PackageNames.supportFragmentManager), "fm")
-                .addModifiers(Modifier.PRIVATE)
-                .build()
-    }
 }
