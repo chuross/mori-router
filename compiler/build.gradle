@@ -7,7 +7,7 @@ sourceSets {
 
 dependencies {
     implementation project(':annotation')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
 }
 
 sourceCompatibility = "1.7"
