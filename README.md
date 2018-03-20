@@ -8,9 +8,9 @@ This library for single activity application.(multi fragments)
 - DeepLink support
 - Shared element support
 
-## Goal
+## Goal(expected)
 ```
-val router = MoriRouter(fm, R.id.container)
+val router = MoriRouter(fragmentManager, R.id.container)
 
 router.pop()
 
