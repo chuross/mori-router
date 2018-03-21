@@ -74,6 +74,7 @@ class MainScreenFragment : Fragment() {
 /** ex)
  * val router = MoriRouter(fragmentManager, R.id.container)
  * router.main("fuga", "piyo").foo(listOf()).launch()
+ *
  * `fuga` and `piyo` are required param.
  * foo is optional param.
  */
