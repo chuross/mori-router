@@ -5,6 +5,7 @@ import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.util.RouterUtils
+import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
@@ -53,6 +54,7 @@ object BindingProcessor {
 
     private fun bindStaticMethod(element: Element): MethodSpec {
         return MethodSpec.methodBuilder("bind").also { builder ->
+            builder.addAnnotation(AnnotationSpec.builder(SuppressWarnings::class.java).addMember("value", "\"unchecked\"").build())
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
             builder.addParameter(TypeName.get(element.asType()), "fragment")
             builder.addStatement("${PackageNames.bundle} bundle = fragment.getArguments()")

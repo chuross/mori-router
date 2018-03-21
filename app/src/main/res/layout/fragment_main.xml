@@ -6,8 +6,10 @@
     android:background="@android:color/holo_blue_dark">
 
     <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:text="main screen"
         android:textColor="@android:color/white"/>
 
@@ -16,6 +18,8 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/text"
         android:text="next screen"/>
 
 </RelativeLayout>

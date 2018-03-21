@@ -112,7 +112,7 @@ object ScreenLaunchProcessor {
             builder.addStatement("fragment.setArguments(arguments)")
             builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")
             builder.addStatement("transaction.replace(containerId, fragment)")
-            builder.addStatement("if (fm.getBackStackEntryCount() > 0) transaction.addToBackStack(null)")
+            builder.addStatement("if (fm.findFragmentById(containerId) != null) transaction.addToBackStack(null)")
             builder.addStatement("transaction.commit()")
             builder.addStatement("fm.executePendingTransactions()")
         }.build()
