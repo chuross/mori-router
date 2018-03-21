@@ -34,6 +34,7 @@ object BindingProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addFields(bundleKeyStaticFields(element))
+                .addMethod(constructorMethod())
                 .addMethod(bindStaticMethod(element))
                 .build()
 
@@ -51,6 +52,12 @@ object BindingProcessor {
                             .initializer("\"argument_key_$name\"")
                             .build()
                 }
+    }
+
+    private fun constructorMethod(): MethodSpec {
+        return MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PRIVATE)
+                .build()
     }
 
     private fun bindStaticMethod(element: Element): MethodSpec {
