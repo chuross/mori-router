@@ -70,7 +70,7 @@ class MainScreenFragment : Fragment() {
 ```
 
 ## Generated code
-```kotlin
+```java
 public final class MoriRouter {
   private FragmentManager fm;
 
