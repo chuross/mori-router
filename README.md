@@ -14,12 +14,12 @@ val router = MoriRouter(fragmentManager, R.id.container)
 
 router.pop()
 
-router.hoge().start()
-router.hoge(fuga).start()
-router.hoge(fuga).piyo(foo).start()
+router.hoge().launch()
+router.hoge(fuga).launch()
+router.hoge(fuga).piyo(foo).launch()
 
 // SharedElement support
-router.hoge().shareFooImage(imageView).start()
+router.hoge().shareFooImage(imageView).launch()
 
 router.dispatch(Uri.parse("example://foo/1"))
 
