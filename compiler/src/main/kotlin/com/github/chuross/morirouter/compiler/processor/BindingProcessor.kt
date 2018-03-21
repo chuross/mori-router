@@ -58,7 +58,9 @@ object BindingProcessor {
             builder.addStatement("${PackageNames.bundle} bundle = fragment.getArguments()")
             RouterUtils.getRouterParamElements(element).forEach {
                 val name = RouterUtils.getRouterParamName(it)
-                builder.addStatement("fragment.${it.simpleName} = (${it.asType()}) bundle.getSerializable(${RouterUtils.getArgumentKeyName(name)})")
+                val valueName = "${name}Value"
+                builder.addStatement("${PackageNames.serializable} $valueName = bundle.getSerializable(${RouterUtils.getArgumentKeyName(name)})")
+                builder.addStatement("fragment.${it.simpleName} = $valueName != null ? (${it.asType()}) $valueName : null")
             }
         }.build()
     }

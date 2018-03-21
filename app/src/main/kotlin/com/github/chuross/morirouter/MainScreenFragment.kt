@@ -1,5 +1,6 @@
 package com.github.chuross.morirouter
 
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterParam
@@ -18,4 +19,9 @@ class MainScreenFragment : Fragment() {
 
     @RouterParam(required = false)
     lateinit var param3: ArrayList<String>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MainScreenBinder.bind(this)
+    }
 }
