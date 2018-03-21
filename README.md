@@ -73,10 +73,10 @@ class MainScreenFragment : Fragment() {
 ```java
 /** ex)
  * val router = MoriRouter(fragmentManager, R.id.container)
- * router.main("fuga", "piyo").foo(listOf()).launch()
+ * router.main("fuga", "piyo").param3(listOf()).launch()
  *
  * `fuga` and `piyo` are required param.
- * foo is optional param.
+ * param3 is optional param.
  */
 public final class MoriRouter {
   private FragmentManager fm;
