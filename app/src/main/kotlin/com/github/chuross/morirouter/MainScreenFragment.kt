@@ -22,7 +22,7 @@ class MainScreenFragment : Fragment() {
     lateinit var param2: String
 
     @RouterParam(required = false)
-    lateinit var param3: ArrayList<String>
+    var param3: ArrayList<String> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

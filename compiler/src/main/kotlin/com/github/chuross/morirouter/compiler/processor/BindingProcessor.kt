@@ -12,6 +12,7 @@ import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
+import javax.lang.model.element.ElementKind
 import javax.lang.model.element.Modifier
 import javax.tools.Diagnostic
 
@@ -59,11 +60,23 @@ object BindingProcessor {
             builder.addParameter(TypeName.get(element.asType()), "fragment")
             builder.addStatement("${PackageNames.bundle} bundle = fragment.getArguments()")
             RouterUtils.getRouterParamElements(element).forEach {
-                val name = RouterUtils.getRouterParamName(it)
-                val valueName = "${name}Value"
-                builder.addStatement("${PackageNames.serializable} $valueName = bundle.getSerializable(${RouterUtils.getArgumentKeyName(name)})")
-                builder.addStatement("fragment.${it.simpleName} = $valueName != null ? (${it.asType()}) $valueName : null")
+                val setterMethodName = "set${it.simpleName.toString().capitalize()}"
+                val setterMethod = element.enclosedElements.find {
+                    it.kind == ElementKind.METHOD
+                            && it.simpleName.toString() == setterMethodName
+                }
+
+                val routerParamName = RouterUtils.getRouterParamName(it)
+                val valueName = "${routerParamName}Value"
+                builder.addStatement("${PackageNames.serializable} $valueName = bundle.getSerializable(${RouterUtils.getArgumentKeyName(routerParamName)})")
+
+                builder.addStatement(if (setterMethod == null) {
+                    "fragment.${it.simpleName} = $valueName != null ? (${it.asType()}) $valueName : null"
+                } else {
+                    "fragment.$setterMethodName($valueName != null ? (${it.asType()}) $valueName : null)"
+                })
             }
         }.build()
     }
+
 }
