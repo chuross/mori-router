@@ -43,3 +43,50 @@ class HogeFragment
     @RouterPathParam(name = "id")
     var fooId: String? = null
 ```
+
+## Current
+### Screen Definition
+```kotlin
+@RouterPath(
+        name = "main",
+        uri = "morirouter://main"
+)
+class MainScreenFragment : Fragment() {
+
+    @RouterParam
+    lateinit var param1: String
+
+    @RouterParam(name = "ieei")
+    lateinit var param2: String
+
+    @RouterParam(required = false)
+    var param3: ArrayList<String> = arrayListOf()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MainScreenBinder.bind(this)
+    }
+}
+```
+
+## Generated code
+```kotlin
+public final class MoriRouter {
+  private FragmentManager fm;
+
+  private int containerId;
+
+  public MoriRouter(FragmentManager fm, int containerId) {
+    this.fm = fm;
+    this.containerId = containerId;
+  }
+
+  public MainScreenLauncher main(String param1, String ieei) {
+    return new MainScreenLauncher(fm, containerId, param1, ieei);
+  }
+
+  public void pop() {
+    fm.popBackStackImmediate();
+  }
+}
+```
