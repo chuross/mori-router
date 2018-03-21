@@ -71,9 +71,9 @@ object BindingProcessor {
                 builder.addStatement("${PackageNames.serializable} $valueName = bundle.getSerializable(${RouterUtils.getArgumentKeyName(routerParamName)})")
 
                 builder.addStatement(if (setterMethod == null) {
-                    "fragment.${it.simpleName} = $valueName != null ? (${it.asType()}) $valueName : null"
+                    "if ($valueName != null) fragment.${it.simpleName} = (${it.asType()}) $valueName"
                 } else {
-                    "fragment.$setterMethodName($valueName != null ? (${it.asType()}) $valueName : null)"
+                    "if ($valueName != null) fragment.$setterMethodName((${it.asType()}) $valueName)"
                 })
             }
         }.build()
