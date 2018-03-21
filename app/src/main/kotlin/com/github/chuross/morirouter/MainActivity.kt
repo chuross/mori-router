@@ -5,11 +5,14 @@ import android.os.Bundle
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var router: MoriRouter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val router = MoriRouter(supportFragmentManager, R.id.container)
-//        router.second().launch()
+        router = MoriRouter(supportFragmentManager, R.id.container)
+        router.main("requiredValue1", "requiredValue2").launch()
     }
+
 }
