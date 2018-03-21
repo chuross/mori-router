@@ -49,8 +49,8 @@ object ScreenLaunchProcessor {
                 .filter { it.getAnnotation(RouterParam::class.java) != null }
                 .map {
                     val name = RouterUtils.getRouterParamName(it)
-                    FieldSpec.builder(String::class.java, "ARGUMENT_KEY_${name.toUpperCase()}")
-                            .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
+                    FieldSpec.builder(String::class.java, RouterUtils.getArgumentKeyName(name))
+                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                             .initializer("\"argument_key_$name\"")
                             .build()
                 }
@@ -123,7 +123,7 @@ object ScreenLaunchProcessor {
             builder.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
             routerParamElements.forEach {
                 val name = RouterUtils.getRouterParamName(it)
-                builder.addStatement("arguments.putSerializable(ARGUMENT_KEY_${name.toUpperCase()}, $name)")
+                builder.addStatement("arguments.putSerializable(${RouterUtils.getArgumentKeyName(name)}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
             builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")
