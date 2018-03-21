@@ -66,6 +66,8 @@ object BindingProcessor {
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
             builder.addParameter(TypeName.get(element.asType()), "fragment")
             builder.addStatement("${PackageNames.bundle} bundle = fragment.getArguments()")
+            builder.addStatement("if (bundle == null) return")
+
             RouterUtils.getRouterParamElements(element).forEach {
                 val setterMethodName = "set${it.simpleName.toString().capitalize()}"
                 val setterMethod = element.enclosedElements.find {
