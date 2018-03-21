@@ -16,7 +16,7 @@ import javax.lang.model.element.Modifier
 object RouterProcessor {
 
     fun process(context: ProcessorContext, elements: Set<Element>) {
-        val routerTypeSpec = TypeSpec.classBuilder("MoriRouter")
+        val typeSpec = TypeSpec.classBuilder("MoriRouter")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
@@ -26,7 +26,7 @@ object RouterProcessor {
                 .addMethod(popMethod())
                 .build()
 
-        JavaFile.builder(context.getPackageName(elements.first()), routerTypeSpec)
+        JavaFile.builder(context.getPackageName(elements.first()), typeSpec)
                 .build()
                 .writeTo(context.filer)
     }

@@ -27,7 +27,7 @@ object ScreenLaunchProcessor {
     }
 
     fun process(context: ProcessorContext, element: Element) {
-        val routerTypeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
+        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
@@ -38,7 +38,7 @@ object ScreenLaunchProcessor {
                 .addMethod(launchMethod(context, element))
                 .build()
 
-        JavaFile.builder(context.getPackageName(element), routerTypeSpec)
+        JavaFile.builder(context.getPackageName(element), typeSpec)
                 .build()
                 .writeTo(context.filer)
     }

@@ -30,7 +30,7 @@ object BindingProcessor {
     fun process(context: ProcessorContext, element: Element) {
         if (element.enclosedElements.find { it.getAnnotation(RouterParam::class.java) != null } == null) return
 
-        val routerTypeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
+        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addFields(bundleKeyStaticFields(element))
@@ -38,7 +38,7 @@ object BindingProcessor {
                 .addMethod(bindStaticMethod(element))
                 .build()
 
-        JavaFile.builder(context.getPackageName(element), routerTypeSpec)
+        JavaFile.builder(context.getPackageName(element), typeSpec)
                 .build()
                 .writeTo(context.filer)
     }
