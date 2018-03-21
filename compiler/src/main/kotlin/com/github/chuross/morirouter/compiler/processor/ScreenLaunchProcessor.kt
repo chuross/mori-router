@@ -14,7 +14,6 @@ import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
-import javax.tools.Diagnostic
 
 object ScreenLaunchProcessor {
 
@@ -50,7 +49,7 @@ object ScreenLaunchProcessor {
         val pathParamElement = element.enclosedElements.find { it.getAnnotation(RouterPathParam::class.java) != null }
 
         if (requiredParamElement != null && pathParamElement != null) {
-            throw IllegalStateException("Required RouterParam can use only no RouterPathParam")
+            throw IllegalStateException("required RouterParam can use only no RouterPathParam")
         }
     }
 
