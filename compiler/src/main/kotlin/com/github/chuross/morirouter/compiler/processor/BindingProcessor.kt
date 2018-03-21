@@ -52,10 +52,14 @@ object BindingProcessor {
     }
 
     private fun bindStaticMethod(element: Element): MethodSpec {
-        return MethodSpec.methodBuilder("bind").also {
-            it.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-            it.addParameter(TypeName.get(element.asType()), "fragment")
-            it.addStatement("${PackageNames.bundle} bundle = fragment.getArguments()")
+        return MethodSpec.methodBuilder("bind").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+            builder.addParameter(TypeName.get(element.asType()), "fragment")
+            builder.addStatement("${PackageNames.bundle} bundle = fragment.getArguments()")
+            RouterUtils.getRouterParamElements(element).forEach {
+                val name = RouterUtils.getRouterParamName(it)
+                builder.addStatement("fragment.${it.simpleName} = (${it.asType()}) bundle.getSerializable(${RouterUtils.getArgumentKeyName(name)})")
+            }
         }.build()
     }
 }

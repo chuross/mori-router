@@ -5,6 +5,8 @@ import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterPathParam
 import com.github.chuross.morirouter.compiler.processor.RouterProcessor
 import com.google.auto.service.AutoService
+import java.io.PrintWriter
+import java.io.StringWriter
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Filer
 import javax.annotation.processing.Messager
@@ -52,7 +54,10 @@ class MoriRouterProcessor : AbstractProcessor() {
 
             true
         } catch (e: Throwable) {
-            messager.printMessage(Diagnostic.Kind.ERROR, "MoriRouter:generate:failed:$e")
+            val stacktrace = StringWriter().also {
+                PrintWriter(it).also { e.printStackTrace(it) }.flush()
+            }.toString()
+            messager.printMessage(Diagnostic.Kind.ERROR, "MoriRouter:generate:failed:$stacktrace")
             false
         }
     }
