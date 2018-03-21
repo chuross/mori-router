@@ -8,7 +8,7 @@ import com.github.chuross.morirouter.annotation.RouterParam
         name = "main",
         uri = "morirouter://main"
 )
-class MainFragment : Fragment() {
+class MainScreenFragment : Fragment() {
 
     @RouterParam
     lateinit var param1: String

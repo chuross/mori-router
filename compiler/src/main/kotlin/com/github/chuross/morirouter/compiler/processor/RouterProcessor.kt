@@ -60,8 +60,8 @@ object RouterProcessor {
             BindingProcessor.process(context, it)
 
             val routerPathAnnotation = it.getAnnotation(RouterPath::class.java)
-            val routerParamElements = it.enclosedElements.filter { it.getAnnotation(RouterParam::class.java) != null }
-            val requiredRouterParamElements = routerParamElements.filter { it.getAnnotation(RouterParam::class.java).required }
+            val routerParamElements = RouterUtils.getRouterParamElements(it)
+            val requiredRouterParamElements = routerParamElements.filter { RouterUtils.isRequiredRouterParam(it) }
 
             MethodSpec.methodBuilder(routerPathAnnotation.name).also { builder ->
                 builder.addModifiers(Modifier.PUBLIC)

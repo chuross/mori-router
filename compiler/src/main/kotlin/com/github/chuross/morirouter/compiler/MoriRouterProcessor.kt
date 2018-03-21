@@ -18,7 +18,7 @@ import javax.lang.model.util.Elements
 import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 class MoriRouterProcessor : AbstractProcessor() {
 
     lateinit var filer: Filer

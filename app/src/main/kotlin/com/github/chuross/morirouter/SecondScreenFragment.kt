@@ -7,5 +7,5 @@ import com.github.chuross.morirouter.annotation.RouterPath
         name = "second",
         uri = "morirouter://second/{id}"
 )
-class SecondFragment : Fragment() {
+class SecondScreenFragment : Fragment() {
 }

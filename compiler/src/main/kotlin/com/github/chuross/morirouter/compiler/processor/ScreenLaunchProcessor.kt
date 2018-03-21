@@ -30,30 +30,17 @@ object ScreenLaunchProcessor {
         val routerTypeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
-                .addFields(bundleKeyStaticFields(element))
                 .addField(fragmentManagerField())
                 .addField(containerIdField())
                 .addFields(paramFields(element))
                 .addMethod(constructorMethod(element))
                 .addMethods(optionalParameterMethods(context, element))
-                .addMethod(launchMethod(element))
+                .addMethod(launchMethod(context, element))
                 .build()
 
         JavaFile.builder(context.getPackageName(element), routerTypeSpec)
                 .build()
                 .writeTo(context.filer)
-    }
-
-    private fun bundleKeyStaticFields(element: Element): Iterable<FieldSpec> {
-        return element.enclosedElements
-                .filter { it.getAnnotation(RouterParam::class.java) != null }
-                .map {
-                    val name = RouterUtils.getRouterParamName(it)
-                    FieldSpec.builder(String::class.java, RouterUtils.getArgumentKeyName(name))
-                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                            .initializer("\"argument_key_$name\"")
-                            .build()
-                }
     }
 
     private fun fragmentManagerField(): FieldSpec {
@@ -79,9 +66,8 @@ object ScreenLaunchProcessor {
     }
 
     private fun constructorMethod(element: Element): MethodSpec {
-        val requiredRouterParamElements = element.enclosedElements
-                .filter { it.getAnnotation(RouterParam::class.java) != null }
-                .filter { it.getAnnotation(RouterParam::class.java).required }
+        val requiredRouterParamElements = RouterUtils.getRouterParamElements(element)
+                .filter { RouterUtils.isRequiredRouterParam(it) }
 
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addParameter(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
@@ -89,9 +75,7 @@ object ScreenLaunchProcessor {
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.containerId = containerId")
             requiredRouterParamElements.forEach {
-                val routerParamAnnotation = it.getAnnotation(RouterParam::class.java)
-                val name = routerParamAnnotation.name.takeIf { it.isNotBlank() }
-                        ?: it.simpleName.toString()
+                val name = RouterUtils.getRouterParamName(it)
                 builder.addParameter(TypeName.get(it.asType()), name)
                 builder.addStatement("this.$name = $name")
             }
@@ -99,9 +83,8 @@ object ScreenLaunchProcessor {
     }
 
     private fun optionalParameterMethods(context: ProcessorContext, element: Element): Iterable<MethodSpec> {
-        return element.enclosedElements
-                .filter { it.getAnnotation(RouterParam::class.java) != null }
-                .filter { !it.getAnnotation(RouterParam::class.java).required }
+        return RouterUtils.getRouterParamElements(element)
+                .filter { !RouterUtils.isRequiredRouterParam(it) }
                 .map {
                     val name = RouterUtils.getRouterParamName(it)
                     MethodSpec.methodBuilder(RouterUtils.getRouterParamName(it))
@@ -114,16 +97,17 @@ object ScreenLaunchProcessor {
                 }
     }
 
-    private fun launchMethod(element: Element): MethodSpec {
+    private fun launchMethod(context: ProcessorContext, element: Element): MethodSpec {
         val fragmentClassName = ClassName.get(element.asType())
-        val routerParamElements = element.enclosedElements
-                .filter { it.getAnnotation(RouterParam::class.java) != null }
+        val routerParamElements = RouterUtils.getRouterParamElements(element)
+        val binderTypeName = BindingProcessor.getGeneratedTypeName(context, element)
+
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
             builder.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
             routerParamElements.forEach {
                 val name = RouterUtils.getRouterParamName(it)
-                builder.addStatement("arguments.putSerializable(${RouterUtils.getArgumentKeyName(name)}, $name)")
+                builder.addStatement("arguments.putSerializable($binderTypeName.${RouterUtils.getArgumentKeyName(name)}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
             builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")
