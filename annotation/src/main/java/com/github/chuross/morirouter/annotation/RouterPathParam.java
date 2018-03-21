@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 public @interface RouterPathParam {
 
-    String name();
+    String name() default "";
 }

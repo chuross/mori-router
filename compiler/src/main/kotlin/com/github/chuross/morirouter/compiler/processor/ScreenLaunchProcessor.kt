@@ -2,6 +2,7 @@ package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
+import com.github.chuross.morirouter.annotation.RouterPathParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.util.RouterUtils
@@ -17,30 +18,40 @@ import javax.tools.Diagnostic
 
 object ScreenLaunchProcessor {
 
-    fun getGeneratedTypeName(context: ProcessorContext, element: Element): String {
+    fun getGeneratedTypeName(element: Element): String {
         val routerPathAnnotation = element.getAnnotation(RouterPath::class.java)
         if (routerPathAnnotation.name.isBlank()) {
-            context.messager.printMessage(Diagnostic.Kind.ERROR, "RouterPath name must be not empty")
-            return ""
+            throw IllegalStateException("RouterPath name must be not empty")
         }
         return "${routerPathAnnotation.name.capitalize()}ScreenLauncher"
     }
 
     fun process(context: ProcessorContext, element: Element) {
-        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
+        validate(element)
+
+        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
                 .addField(containerIdField())
                 .addFields(paramFields(element))
                 .addMethod(constructorMethod(element))
-                .addMethods(optionalParameterMethods(context, element))
-                .addMethod(launchMethod(context, element))
+                .addMethods(optionalParameterMethods(element))
+                .addMethod(launchMethod(element))
                 .build()
 
         JavaFile.builder(context.getPackageName(element), typeSpec)
                 .build()
                 .writeTo(context.filer)
+    }
+
+    private fun validate(element: Element) {
+        val requiredParamElement = element.enclosedElements.find { it.getAnnotation(RouterParam::class.java)?.required ?: false }
+        val pathParamElement = element.enclosedElements.find { it.getAnnotation(RouterPathParam::class.java) != null }
+
+        if (requiredParamElement != null && pathParamElement != null) {
+            throw IllegalStateException("Required RouterParam can use only no RouterPathParam")
+        }
     }
 
     private fun fragmentManagerField(): FieldSpec {
@@ -82,7 +93,7 @@ object ScreenLaunchProcessor {
         }.build()
     }
 
-    private fun optionalParameterMethods(context: ProcessorContext, element: Element): Iterable<MethodSpec> {
+    private fun optionalParameterMethods(element: Element): Iterable<MethodSpec> {
         return RouterUtils.getRouterParamElements(element)
                 .filter { !RouterUtils.isRequiredRouterParam(it) }
                 .map {
@@ -92,15 +103,15 @@ object ScreenLaunchProcessor {
                             .addParameter(TypeName.get(it.asType()), name)
                             .addStatement("this.$name = $name")
                             .addStatement("return this")
-                            .returns(ClassName.bestGuess(getGeneratedTypeName(context, element)))
+                            .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
                             .build()
                 }
     }
 
-    private fun launchMethod(context: ProcessorContext, element: Element): MethodSpec {
+    private fun launchMethod(element: Element): MethodSpec {
         val fragmentClassName = ClassName.get(element.asType())
         val routerParamElements = RouterUtils.getRouterParamElements(element)
-        val binderTypeName = BindingProcessor.getGeneratedTypeName(context, element)
+        val binderTypeName = BindingProcessor.getGeneratedTypeName(element)
 
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")

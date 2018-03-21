@@ -45,7 +45,7 @@ class MoriRouterProcessor : AbstractProcessor() {
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment): Boolean {
         return try {
-            val context = ProcessorContext(filer, elementUtils, messager)
+            val context = ProcessorContext(filer, elementUtils)
 
             val elements = roundEnv.getElementsAnnotatedWith(RouterPath::class.java)
             if (elements.isEmpty()) return true

@@ -68,8 +68,8 @@ object RouterProcessor {
                     builder.addParameter(TypeName.get(it.asType()), RouterUtils.getRouterParamName(it))
                 }
                 val arguments = listOf("fm", "containerId").plus(requiredRouterParamElements.map { RouterUtils.getRouterParamName(it) }).joinToString(", ")
-                builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(context, it)}($arguments)")
-                builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(context, it)))
+                builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(it)}($arguments)")
+                builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(it)))
             }.build()
         }
     }

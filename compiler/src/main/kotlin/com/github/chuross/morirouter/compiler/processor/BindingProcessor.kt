@@ -14,15 +14,13 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.Modifier
-import javax.tools.Diagnostic
 
 object BindingProcessor {
 
-    fun getGeneratedTypeName(context: ProcessorContext, element: Element): String {
+    fun getGeneratedTypeName(element: Element): String {
         val routerPathAnnotation = element.getAnnotation(RouterPath::class.java)
         if (routerPathAnnotation.name.isBlank()) {
-            context.messager.printMessage(Diagnostic.Kind.ERROR, "RouterPath name must be not empty")
-            return ""
+            throw IllegalStateException("RouterPath name must be not empty")
         }
         return "${routerPathAnnotation.name.capitalize()}ScreenBinder"
     }
@@ -30,7 +28,7 @@ object BindingProcessor {
     fun process(context: ProcessorContext, element: Element) {
         if (element.enclosedElements.find { it.getAnnotation(RouterParam::class.java) != null } == null) return
 
-        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(context, element))
+        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addFields(bundleKeyStaticFields(element))
