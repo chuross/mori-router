@@ -45,7 +45,7 @@ class HogeFragment
 ```
 
 ## Current
-### Screen Definition
+### definition
 ```kotlin
 @RouterPath(
         name = "main",
