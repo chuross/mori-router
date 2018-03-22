@@ -29,7 +29,7 @@ object ScreenLaunchProcessor {
         validate(element)
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
                 .addField(containerIdField())

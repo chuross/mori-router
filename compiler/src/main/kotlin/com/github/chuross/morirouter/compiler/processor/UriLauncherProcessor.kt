@@ -7,6 +7,7 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import java.util.regex.Pattern
 import javax.lang.model.element.Element
@@ -33,6 +34,7 @@ object UriLauncherProcessor {
                 .addField(uriRegexStaticField(element))
                 .addField(routerField())
                 .addMethod(constructorMethod())
+                .addMethod(isAvailableMethod())
                 .build()
 
         JavaFile.builder(context.getPackageName(element), typeSpec)
@@ -63,6 +65,14 @@ object UriLauncherProcessor {
         return MethodSpec.constructorBuilder()
                 .addParameter(ClassName.bestGuess("MoriRouter"), "router")
                 .addStatement("this.router = router")
+                .build()
+    }
+
+    private fun isAvailableMethod(): MethodSpec {
+        return MethodSpec.methodBuilder("isAvailable")
+                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .addStatement("return $URI_REGEX_FIELD_NAME.matcher(uri.toString()).matches()")
+                .returns(TypeName.BOOLEAN)
                 .build()
     }
 }
