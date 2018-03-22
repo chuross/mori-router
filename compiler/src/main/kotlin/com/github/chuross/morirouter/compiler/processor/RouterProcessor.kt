@@ -56,6 +56,7 @@ object RouterProcessor {
     private fun screenLaunchMethods(context: ProcessorContext, elements: Set<Element>): Iterable<MethodSpec> {
         return elements.map {
             ScreenLaunchProcessor.process(context, it)
+            UriLauncherProcessor.process(context, it)
             BindingProcessor.process(context, it)
 
             val routerPathAnnotation = it.getAnnotation(RouterPath::class.java)

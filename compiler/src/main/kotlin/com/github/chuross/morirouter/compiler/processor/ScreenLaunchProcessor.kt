@@ -49,7 +49,7 @@ object ScreenLaunchProcessor {
         val pathParamElement = element.enclosedElements.find { it.getAnnotation(RouterPathParam::class.java) != null }
 
         if (requiredParamElement != null && pathParamElement != null) {
-            throw IllegalStateException("RouterParam 'required' can use only no RouterPathParam")
+            throw IllegalStateException("RouterParam 'required' can use no RouterPathParam only")
         }
     }
 
