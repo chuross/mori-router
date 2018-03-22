@@ -6,6 +6,7 @@ import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import java.util.regex.Pattern
 import javax.lang.model.element.Element
@@ -31,6 +32,7 @@ object UriLauncherProcessor {
                 .addJavadoc("This class is auto generated.")
                 .addField(uriRegexStaticField(element))
                 .addField(routerField())
+                .addMethod(constructorMethod())
                 .build()
 
         JavaFile.builder(context.getPackageName(element), typeSpec)
@@ -54,6 +56,13 @@ object UriLauncherProcessor {
     private fun routerField(): FieldSpec {
         return FieldSpec.builder(ClassName.bestGuess("MoriRouter"), "router")
                 .addModifiers(Modifier.PRIVATE)
+                .build()
+    }
+
+    private fun constructorMethod(): MethodSpec {
+        return MethodSpec.constructorBuilder()
+                .addParameter(ClassName.bestGuess("MoriRouter"), "router")
+                .addStatement("this.router = router")
                 .build()
     }
 }

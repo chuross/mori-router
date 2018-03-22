@@ -8,6 +8,7 @@ object PackageNames {
 
     // android
     val bundle: String = "android.os.Bundle"
+    val uri: String = "android.net.Uri"
     val supportFragmentManager: String = "android.support.v4.app.FragmentManager"
     val supportFragmentTransaction: String = "android.support.v4.app.FragmentTransaction"
 }
