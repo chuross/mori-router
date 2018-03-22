@@ -35,6 +35,7 @@ object UriLauncherProcessor {
                 .addField(routerField())
                 .addMethod(constructorMethod())
                 .addMethod(isAvailableMethod())
+                .addMethod(launchMethod(element))
                 .build()
 
         JavaFile.builder(context.getPackageName(element), typeSpec)
@@ -73,6 +74,12 @@ object UriLauncherProcessor {
                 .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
                 .addStatement("return $URI_REGEX_FIELD_NAME.matcher(uri.toString()).matches()")
                 .returns(TypeName.BOOLEAN)
+                .build()
+    }
+
+    private fun launchMethod(element: Element): MethodSpec {
+        return MethodSpec.methodBuilder("launch")
+                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
                 .build()
     }
 }

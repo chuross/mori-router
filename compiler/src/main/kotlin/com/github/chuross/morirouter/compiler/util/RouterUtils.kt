@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.compiler.util
 
 import com.github.chuross.morirouter.annotation.RouterParam
+import com.github.chuross.morirouter.annotation.RouterPathParam
 import javax.lang.model.element.Element
 
 object RouterUtils {
