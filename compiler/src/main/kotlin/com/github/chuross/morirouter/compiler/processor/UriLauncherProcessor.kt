@@ -48,7 +48,10 @@ object UriLauncherProcessor {
         val patternStr = format
                 .replace("/", """\\/""")
                 .replace("""\{[a-zA-Z0-9_\-]+\}""".toRegex(), """([^\\\\/]+)""")
-                .plus("""\\/?$$""")
+                .let {
+                    val suffix = if (it.endsWith("/")) "?$$" else """\\/?$$"""
+                    it.plus(suffix)
+                }
 
         return FieldSpec.builder(Pattern::class.java, URI_REGEX_FIELD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
