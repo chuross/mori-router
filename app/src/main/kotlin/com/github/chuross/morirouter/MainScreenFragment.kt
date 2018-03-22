@@ -10,8 +10,7 @@ import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterParam
 
 @RouterPath(
-        name = "main",
-        uri = "morirouter://main"
+        name = "main"
 )
 class MainScreenFragment : Fragment() {
 

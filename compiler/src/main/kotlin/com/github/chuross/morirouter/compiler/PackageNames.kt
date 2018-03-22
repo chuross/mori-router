@@ -4,6 +4,7 @@ object PackageNames {
 
     // standard
     val serializable = "java.io.Serializable"
+    val pattern = "java.util.regex.Pattern"
 
     // android
     val bundle: String = "android.os.Bundle"
