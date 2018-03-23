@@ -21,11 +21,13 @@ object RouterProcessor {
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
                 .addField(containerIdField())
+                .addField(dispatcherField())
                 .addMethod(constructorMethod())
                 .addMethods(screenLaunchMethods(context, elements).also {
                     // ScreenLauncherを一通り作った後に作る
                     UriDispatcherProcessor.process(context, elements)
                 })
+                .addMethod(dispatchMethod())
                 .addMethod(popMethod())
                 .build()
 
@@ -46,6 +48,13 @@ object RouterProcessor {
                 .build()
     }
 
+    private fun dispatcherField(): FieldSpec {
+        return FieldSpec.builder(ClassName.bestGuess(UriDispatcherProcessor.TYPE_NAME), "dispatcher")
+                .addModifiers(Modifier.PRIVATE)
+                .build()
+
+    }
+
     private fun constructorMethod(): MethodSpec {
         return MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
@@ -53,6 +62,7 @@ object RouterProcessor {
                 .addParameter(Int::class.java, "containerId")
                 .addStatement("this.fm = fm")
                 .addStatement("this.containerId = containerId")
+                .addStatement("dispatcher = new ${UriDispatcherProcessor.TYPE_NAME}(this)")
                 .build()
     }
 
@@ -76,6 +86,14 @@ object RouterProcessor {
                 builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(it)))
             }.build()
         }
+    }
+
+    private fun dispatchMethod(): MethodSpec {
+        return MethodSpec.methodBuilder("dispatch")
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .addStatement("dispatcher.dispatch(uri)")
+                .build()
     }
 
     private fun popMethod(): MethodSpec {
