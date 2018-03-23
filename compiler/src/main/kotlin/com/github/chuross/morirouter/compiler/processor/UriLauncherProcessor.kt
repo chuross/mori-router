@@ -3,6 +3,7 @@ package com.github.chuross.morirouter.compiler.processor
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
+import com.squareup.javapoet.ArrayTypeName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -16,6 +17,8 @@ import javax.lang.model.element.Modifier
 object UriLauncherProcessor {
 
     private const val URI_REGEX_FIELD_NAME = "URI_REGEX"
+    private const val PATH_PARAMETER_NAMES = "PATH_PARAMETER_NAMES"
+    private val PATH_PARAMETER_REGEX = """\{([a-zA-Z0-9_\-]+)\}""".toRegex()
 
     fun getGeneratedTypeName(element: Element): String {
         val routerPathAnnotation = element.getAnnotation(RouterPath::class.java)
@@ -32,6 +35,7 @@ object UriLauncherProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(uriRegexStaticField(element))
+                .addField(pathParameterNamesStaticField(element))
                 .addField(routerField())
                 .addMethod(constructorMethod())
                 .addMethod(isAvailableMethod())
@@ -45,9 +49,9 @@ object UriLauncherProcessor {
 
     private fun uriRegexStaticField(element: Element): FieldSpec {
         val format = element.getAnnotation(RouterPath::class.java)?.uri!!
-        val patternStr = format
+        val patternStr = "^" + format
                 .replace("/", """\\/""")
-                .replace("""\{[a-zA-Z0-9_\-]+\}""".toRegex(), """([^\\\\/]+)""")
+                .replace(PATH_PARAMETER_REGEX, """([^\\\\/]+)""")
                 .let {
                     val suffix = if (it.endsWith("/")) "?$$" else """\\/?$$"""
                     it.plus(suffix)
@@ -57,6 +61,23 @@ object UriLauncherProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .initializer("${PackageNames.pattern}.compile(\"$patternStr\")")
                 .build()
+    }
+
+    private fun pathParameterNamesStaticField(element: Element): FieldSpec {
+        val format = element.getAnnotation(RouterPath::class.java)?.uri!!
+        val pathParameterNames = PATH_PARAMETER_REGEX
+                .find(format)
+                ?.groupValues
+                ?.takeIf { it.size > 1 }
+                ?.let {
+                    it.subList(1, it.size)
+                }
+
+        return FieldSpec.builder(ArrayTypeName.of(String::class.java), PATH_PARAMETER_NAMES)
+                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                .initializer("new String[] { ${pathParameterNames?.joinToString(", ") { "\"$it\"" }} }")
+                .build()
+
     }
 
     private fun routerField(): FieldSpec {
