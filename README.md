@@ -76,9 +76,9 @@ class MainScreenFragment : Fragment() {
 val router = MoriRouter(supportFragmentManager, R.id.container) //This class is auto generated class.
 
 router
-  .main("required1", 1000) // main(String param1, Integer ieei)
-  .param3(listOf("fuga")) // optional value
-  .launch() // launch main screen
+    .main("required1", 1000) // main(String param1, Integer ieei)
+    .param3(listOf("fuga")) // optional value
+    .launch() // launch main screen
 ```
 
 3. If use deepLink support, `uri` parameter add to `@RouterPath`, and add definition `@RouterUriParam` parameters in your screen fragment.
