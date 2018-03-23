@@ -3,7 +3,10 @@ package com.github.chuross.morirouter.compiler.processor
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
-import com.github.chuross.morirouter.compiler.util.RouterUtils
+import com.github.chuross.morirouter.compiler.extension.isRequiredRouterParam
+import com.github.chuross.morirouter.compiler.extension.paramName
+import com.github.chuross.morirouter.compiler.extension.pathName
+import com.github.chuross.morirouter.compiler.extension.routerParamElements
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -72,16 +75,14 @@ object RouterProcessor {
             UriLauncherProcessor.process(context, it)
             BindingProcessor.process(context, it)
 
-            val routerPathAnnotation = it.getAnnotation(RouterPath::class.java)
-            val routerParamElements = RouterUtils.getRouterParamElements(it)
-            val requiredRouterParamElements = routerParamElements.filter { RouterUtils.isRequiredRouterParam(it) }
+            val requiredRouterParamElements = it.routerParamElements.filter { it.isRequiredRouterParam }
 
-            MethodSpec.methodBuilder(routerPathAnnotation.name).also { builder ->
+            MethodSpec.methodBuilder(it.pathName).also { builder ->
                 builder.addModifiers(Modifier.PUBLIC)
                 requiredRouterParamElements.forEach {
-                    builder.addParameter(TypeName.get(it.asType()), RouterUtils.getRouterParamName(it))
+                    builder.addParameter(TypeName.get(it.asType()), it.paramName)
                 }
-                val arguments = listOf("fm", "containerId").plus(requiredRouterParamElements.map { RouterUtils.getRouterParamName(it) }).joinToString(", ")
+                val arguments = listOf("fm", "containerId").plus(requiredRouterParamElements.map { it.paramName }).joinToString(", ")
                 builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(it)}($arguments)")
                 builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(it)))
             }.build()

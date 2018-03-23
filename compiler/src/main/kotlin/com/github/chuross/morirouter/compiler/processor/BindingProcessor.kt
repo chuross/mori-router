@@ -5,7 +5,10 @@ import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
-import com.github.chuross.morirouter.compiler.util.RouterUtils
+import com.github.chuross.morirouter.compiler.extension.argumentKeyName
+import com.github.chuross.morirouter.compiler.extension.paramElements
+import com.github.chuross.morirouter.compiler.extension.paramName
+import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -27,11 +30,7 @@ object BindingProcessor {
     }
 
     fun process(context: ProcessorContext, element: Element) {
-        if (element.enclosedElements.find {
-                    it.getAnnotation(RouterParam::class.java) != null
-                    || it.getAnnotation(RouterUriParam::class.java) != null
-                } == null
-        ) return
+        if (element.paramElements.isEmpty()) return
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -47,25 +46,12 @@ object BindingProcessor {
     }
 
     private fun bundleKeyStaticFields(element: Element): Iterable<FieldSpec> {
-        val routerParamFields = RouterUtils.getRouterParamElements(element)
-                .map {
-                    val name = RouterUtils.getRouterParamName(it)
-                    FieldSpec.builder(String::class.java, RouterUtils.getArgumentKeyName(name))
-                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                            .initializer("\"argument_key_$name\"")
-                            .build()
-                }
-
-        val routerPathParamFields = RouterUtils.getRouterPathParamElements(element)
-                .map {
-                    val name = RouterUtils.getRouterPathParamName(it)
-                    FieldSpec.builder(String::class.java, RouterUtils.getArgumentKeyName(name))
-                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                            .initializer("\"argument_key_$name\"")
-                            .build()
-                }
-
-        return routerParamFields.plus(routerPathParamFields)
+        return element.paramElements.map {
+            FieldSpec.builder(String::class.java, it.argumentKeyName)
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                    .initializer("\"argument_key_${it.paramName}\"")
+                    .build()
+        }
     }
 
     private fun constructorMethod(): MethodSpec {
@@ -82,16 +68,15 @@ object BindingProcessor {
             builder.addStatement("${PackageNames.bundle} bundle = fragment.getArguments()")
             builder.addStatement("if (bundle == null) return")
 
-            RouterUtils.getRouterParamElements(element).plus(RouterUtils.getRouterPathParamElements(element)).forEach {
+            element.paramElements.forEach {
                 val setterMethodName = "set${it.simpleName.toString().capitalize()}"
                 val setterMethod = element.enclosedElements.find {
                     it.kind == ElementKind.METHOD
                             && it.simpleName.toString() == setterMethodName
                 }
 
-                val routerParamName = if (it.getAnnotation(RouterParam::class.java) != null) RouterUtils.getRouterParamName(it) else RouterUtils.getRouterPathParamName(it)
-                val valueName = "${routerParamName}Value"
-                builder.addStatement("${PackageNames.serializable} $valueName = bundle.getSerializable(${RouterUtils.getArgumentKeyName(routerParamName)})")
+                val valueName = "${it.paramName.routerCapitalizedName()}Value"
+                builder.addStatement("${PackageNames.serializable} $valueName = bundle.getSerializable(${it.argumentKeyName})")
 
                 builder.addStatement(if (setterMethod == null) {
                     "if ($valueName != null) fragment.${it.simpleName} = (${it.asType()}) $valueName"

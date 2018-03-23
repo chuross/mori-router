@@ -5,8 +5,14 @@ import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
+import com.github.chuross.morirouter.compiler.extension.argumentKeyName
+import com.github.chuross.morirouter.compiler.extension.isRequiredRouterParam
+import com.github.chuross.morirouter.compiler.extension.paramElements
+import com.github.chuross.morirouter.compiler.extension.paramName
+import com.github.chuross.morirouter.compiler.extension.pathName
 import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
-import com.github.chuross.morirouter.compiler.util.RouterUtils
+import com.github.chuross.morirouter.compiler.extension.routerParamElements
+import com.github.chuross.morirouter.compiler.extension.routerUriParamElements
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -19,11 +25,10 @@ import javax.lang.model.element.Modifier
 object ScreenLaunchProcessor {
 
     fun getGeneratedTypeName(element: Element): String {
-        val routerPathAnnotation = element.getAnnotation(RouterPath::class.java)
-        if (routerPathAnnotation.name.isBlank()) {
+        if (element.pathName.isNullOrBlank()) {
             throw IllegalStateException("RouterPath name must be not empty")
         }
-        return "${routerPathAnnotation.name.capitalize()}ScreenLauncher"
+        return "${element.pathName?.capitalize()}ScreenLauncher"
     }
 
     fun process(context: ProcessorContext, element: Element) {
@@ -37,7 +42,6 @@ object ScreenLaunchProcessor {
                 .addFields(paramFields(element))
                 .addMethod(constructorMethod(element))
                 .addMethods(optionalParameterMethods(element))
-                .addMethods(pathParameterMethods(element))
                 .addMethod(launchMethod(element))
                 .build()
 
@@ -47,10 +51,8 @@ object ScreenLaunchProcessor {
     }
 
     private fun validate(element: Element) {
-        val requiredParamElement = element.enclosedElements.find {
-            it.getAnnotation(RouterParam::class.java)?.required ?: false
-        }
-        val pathParamElement = element.enclosedElements.find { it.getAnnotation(RouterUriParam::class.java) != null }
+        val requiredParamElement = element.routerParamElements.find { it.isRequiredRouterParam }
+        val pathParamElement = element.routerUriParamElements.firstOrNull()
 
         if (requiredParamElement != null && pathParamElement != null) {
             throw IllegalStateException("RouterParam 'required' can use no RouterUriParam only")
@@ -70,26 +72,15 @@ object ScreenLaunchProcessor {
     }
 
     private fun paramFields(element: Element): Iterable<FieldSpec> {
-        val routerParamFields = RouterUtils.getRouterParamElements(element)
-                .map {
-                    FieldSpec.builder(TypeName.get(it.asType()), RouterUtils.getRouterParamName(it).routerCapitalizedName())
-                            .addModifiers(Modifier.PRIVATE)
-                            .build()
-                }
-
-        val routerPathParamFields = RouterUtils.getRouterPathParamElements(element)
-                .map {
-                    FieldSpec.builder(TypeName.get(it.asType()), RouterUtils.getRouterPathParamName(it).routerCapitalizedName())
-                            .addModifiers(Modifier.PRIVATE)
-                            .build()
-                }
-
-        return routerParamFields.plus(routerPathParamFields)
+        return element.paramElements.map {
+            FieldSpec.builder(TypeName.get(it.asType()), it.paramName.routerCapitalizedName())
+                    .addModifiers(Modifier.PRIVATE)
+                    .build()
+        }
     }
 
     private fun constructorMethod(element: Element): MethodSpec {
-        val requiredRouterParamElements = RouterUtils.getRouterParamElements(element)
-                .filter { RouterUtils.isRequiredRouterParam(it) }
+        val requiredRouterParamElements = element.routerParamElements.filter { it.isRequiredRouterParam }
 
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addParameter(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
@@ -97,7 +88,7 @@ object ScreenLaunchProcessor {
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.containerId = containerId")
             requiredRouterParamElements.forEach {
-                val name = RouterUtils.getRouterParamName(it)
+                val name = it.paramName
                 builder.addParameter(TypeName.get(it.asType()), name)
                 builder.addStatement("this.$name = $name")
             }
@@ -105,24 +96,10 @@ object ScreenLaunchProcessor {
     }
 
     private fun optionalParameterMethods(element: Element): Iterable<MethodSpec> {
-        return RouterUtils.getRouterParamElements(element)
-                .filter { !RouterUtils.isRequiredRouterParam(it) }
+        return element.paramElements
+                .filter { !it.isRequiredRouterParam }
                 .map {
-                    val name = RouterUtils.getRouterParamName(it).routerCapitalizedName()
-                    MethodSpec.methodBuilder(name)
-                            .addModifiers(Modifier.PUBLIC)
-                            .addParameter(TypeName.get(it.asType()), name)
-                            .addStatement("this.$name = $name")
-                            .addStatement("return this")
-                            .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
-                            .build()
-                }
-    }
-
-    private fun pathParameterMethods(element: Element): Iterable<MethodSpec> {
-        return RouterUtils.getRouterPathParamElements(element)
-                .map {
-                    val name = RouterUtils.getRouterPathParamName(it).routerCapitalizedName()
+                    val name = it.paramName.routerCapitalizedName()
                     MethodSpec.methodBuilder(name)
                             .addModifiers(Modifier.PUBLIC)
                             .addParameter(TypeName.get(it.asType()), name)
@@ -135,16 +112,16 @@ object ScreenLaunchProcessor {
 
     private fun launchMethod(element: Element): MethodSpec {
         val fragmentClassName = ClassName.get(element.asType())
-        val routerParamElements = RouterUtils.getRouterParamElements(element)
-        val routerPathParamElements = RouterUtils.getRouterPathParamElements(element)
+        val routerParamElements = element.routerParamElements
+        val routerPathParamElements = element.routerUriParamElements
         val binderTypeName = BindingProcessor.getGeneratedTypeName(element)
 
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
             builder.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
             routerParamElements.plus(routerPathParamElements).forEach {
-                val name = if (it.getAnnotation(RouterParam::class.java) != null) RouterUtils.getRouterParamName(it) else RouterUtils.getRouterPathParamName(it)
-                builder.addStatement("arguments.putSerializable($binderTypeName.${RouterUtils.getArgumentKeyName(name)}, ${name.routerCapitalizedName()})")
+                val name = it.paramName
+                builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, ${name.routerCapitalizedName()})")
             }
             builder.addStatement("fragment.setArguments(arguments)")
             builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")
