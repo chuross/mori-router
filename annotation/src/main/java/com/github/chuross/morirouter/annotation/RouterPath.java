@@ -15,7 +15,7 @@ public @interface RouterPath {
 
     String name();
 
-    String uri() default "";
+    String[] uris() default {};
 
     String[] transitionNames() default {};
 

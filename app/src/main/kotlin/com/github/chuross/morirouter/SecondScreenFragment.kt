@@ -12,7 +12,10 @@ import com.github.chuross.morirouter.annotation.RouterUriParam
 
 @RouterPath(
         name = "second",
-        uri = "morirouter://second/{second_id}/contents/{content_id}"
+        uris = [
+            "morirouter://second/{second_id}/contents/{content_id}",
+            "https://www.hoge.com/second/{second_id}/contents/{content_id}"
+        ]
 )
 class SecondScreenFragment : Fragment() {
 

@@ -6,6 +6,8 @@ import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.pathName
 import com.github.chuross.morirouter.compiler.extension.normalize
+import com.github.chuross.morirouter.compiler.extension.pathUris
+import com.squareup.javapoet.ArrayTypeName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -19,7 +21,8 @@ import javax.lang.model.element.Modifier
 object UriLauncherProcessor {
 
     const val INTERFACE_CLASS_NAME = "UriLauncher"
-    private const val URI_REGEX_FIELD_NAME = "URI_REGEX"
+    private const val URI_PARAM_NAMES_FIELD_NAME = "URI_PARAM_NAMES"
+    private const val URI_REGEX_FIELD_NAME = "URI_PATTERN"
     private val PATH_PARAMETER_REGEX = """\{([a-zA-Z0-9_\-]+)\}""".toRegex()
 
     fun getGeneratedTypeName(element: Element): String {
@@ -60,7 +63,7 @@ object UriLauncherProcessor {
 
 
     fun process(context: ProcessorContext, element: Element) {
-        if (element.getAnnotation(RouterPath::class.java).uri.isBlank()) return
+        if (element.getAnnotation(RouterPath::class.java).uris.isEmpty()) return
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addSuperinterface(ClassName.bestGuess(INTERFACE_CLASS_NAME))
@@ -79,18 +82,19 @@ object UriLauncherProcessor {
     }
 
     private fun uriRegexStaticField(element: Element): FieldSpec {
-        val format = element.getAnnotation(RouterPath::class.java)?.uri!!
-        val patternStr = "^" + format
-                .replace("/", """\\/""")
-                .replace(PATH_PARAMETER_REGEX, """([^\\\\/]+)""")
-                .let {
-                    val suffix = if (it.endsWith("/")) "?$$" else """\\/?$$"""
-                    it.plus(suffix)
-                }
+        val formats = element.getAnnotation(RouterPath::class.java)?.uris!!
+        val patternStrings = formats.map {
+            "^" + it.replace("/", """\\/""")
+                    .replace(PATH_PARAMETER_REGEX, """([^\\\\/]+)""")
+                    .let {
+                        val suffix = if (it.endsWith("/")) "?$$" else """\\/?$$"""
+                        it.plus(suffix)
+                    }
+        }
 
-        return FieldSpec.builder(Pattern::class.java, URI_REGEX_FIELD_NAME)
+        return FieldSpec.builder(ArrayTypeName.of(Pattern::class.java), URI_REGEX_FIELD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .initializer("${PackageNames.pattern}.compile(\"$patternStr\")")
+                .initializer("new ${PackageNames.pattern}[] { ${patternStrings.map { "${PackageNames.pattern}.compile(\"$it\")" }.joinToString(", ")} }")
                 .build()
     }
 
@@ -112,47 +116,56 @@ object UriLauncherProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override::class.java)
                 .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
-                .addStatement("return $URI_REGEX_FIELD_NAME.matcher(uri.toString()).matches()")
+                .beginControlFlow("for (${PackageNames.pattern} pattern : $URI_REGEX_FIELD_NAME)")
+                .beginControlFlow("if (pattern.matcher(uri.toString()).matches())")
+                .addStatement("return true")
+                .endControlFlow()
+                .endControlFlow()
+                .addStatement("return false")
                 .returns(TypeName.BOOLEAN)
                 .build()
     }
 
     private fun launchMethod(element: Element): MethodSpec {
-        val routerPathAnnotation = element.getAnnotation(RouterPath::class.java)!!
-        val routerPathName = routerPathAnnotation.name
-        val format = routerPathAnnotation.uri
-
-        val pathParameterNames = PATH_PARAMETER_REGEX
-                .findAll(format)
-                .map { it.groupValues }
-                .filter { it.size > 1 }
-                .map { it.subList(1, it.size) }
-                .flatten()
+        val routerPathName = element.pathName
+        val routerPathUris = element.pathUris
+        val uriParamNames = routerPathUris?.map {
+            PATH_PARAMETER_REGEX
+                    .findAll(it)
+                    .map { it.groupValues }
+                    .filter { it.size > 1 }
+                    .map { it.subList(1, it.size) }
+                    .flatten()
+        }
 
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
             builder.addAnnotation(Override::class.java)
             builder.addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
-            builder.addStatement("${PackageNames.matcher} matcher = $URI_REGEX_FIELD_NAME.matcher(uri.toString())")
-            builder.addStatement("if (!matcher.matches()) throw new ${PackageNames.illegalState}(\"invalid uri format\")")
-            builder.addStatement("${ScreenLaunchProcessor.getGeneratedTypeName(element)} launcher = router.$routerPathName()")
-            pathParameterNames.forEachIndexed { index, name ->
-                val uriParamElement = element.enclosedElements
-                        .find {
-                            val annotation = it.getAnnotation(RouterUriParam::class.java)
-                            annotation?.name == name || it.simpleName.toString() == name.normalize()
-                        } ?: throw IllegalStateException("Target RouterUriParam element not found: ${element.simpleName}#$name")
+            uriParamNames?.mapIndexed { index, uriParamNames ->
+                builder.addStatement("${PackageNames.matcher} matcher$index = $URI_REGEX_FIELD_NAME[$index].matcher(uri.toString())")
+                builder.beginControlFlow("if (matcher$index.matches())")
+                builder.addStatement("${ScreenLaunchProcessor.getGeneratedTypeName(element)} launcher = router.$routerPathName()")
+                uriParamNames.forEachIndexed { nameIndex, name ->
+                    val uriParamElement = element.enclosedElements
+                            .find {
+                                val annotation = it.getAnnotation(RouterUriParam::class.java)
+                                annotation?.name == name || it.simpleName.toString() == name.normalize()
+                            }
+                            ?: throw IllegalStateException("Target RouterUriParam element not found: ${element.simpleName}#$name")
 
-                val uriParamElementClass = Class.forName(uriParamElement.asType().toString())
+                    val uriParamElementClass = Class.forName(uriParamElement.asType().toString())
 
-                val value = when(uriParamElementClass) {
-                    Integer::class.java -> "Integer.valueOf(matcher.group(${index.inc()}))"
-                    Long::class.java -> "Long.valueOf(matcher.group(${index.inc()}))"
-                    else -> "matcher.group(${index.inc()})"
+                    val value = when (uriParamElementClass) {
+                        Integer::class.java -> "Integer.valueOf(matcher$index.group(${nameIndex.inc()}))"
+                        Long::class.java -> "Long.valueOf(matcher$index.group(${nameIndex.inc()}))"
+                        else -> "matcher$index.group(${nameIndex.inc()})"
+                    }
+                    builder.addStatement("launcher.${name.normalize()}($value)")
                 }
-                builder.addStatement("launcher.${name.normalize()}($value)")
+                builder.addStatement("launcher.launch()")
+                builder.endControlFlow()
             }
-            builder.addStatement("launcher.launch()")
         }.build()
     }
 }
