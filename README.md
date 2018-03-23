@@ -63,7 +63,7 @@ class MainScreenFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MainScreenBinder.bind(this)
+        MainScreenBinder.bind(this) // MainScreenBinder is auto generated class.
     }
 
     ....
@@ -79,4 +79,29 @@ router
   .main("required1", 1000) // main(String param1, Integer ieei)
   .param3(listOf("fuga")) // optional value
   .launch() // launch main screen
+```
+
+3. If use deepLink support, `uri` parameter add to `@RouterPath`, and add definition `@RouterUriParam` parameters in your screen fragment.
+
+```kotlin
+@RouterPath(name = "second", uri = "example://hoge/{hoge_id}/{fuga}")
+class SecondScreenFragment : Fragment() {
+
+    @RouterUriParam(name = "hoge_id")
+    var hogeId: Int
+
+    @RouterUriParam
+    var fuga: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        SecondScreenBinder.bind(this) // SecondScreenBinder is auto generated class.
+    }
+}
+```
+
+4. `MoriRouter` has `dispatch` method. Then call dispatch with Uri.
+
+```kotlin
+router.dispatch(Uri.parse("example://hoge/123/test")) // launch SecondScreenFragment (hogeId = 123, fuga=test)
 ```
