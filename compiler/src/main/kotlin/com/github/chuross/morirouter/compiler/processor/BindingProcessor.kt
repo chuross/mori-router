@@ -6,7 +6,7 @@ import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.paramElements
 import com.github.chuross.morirouter.compiler.extension.paramName
-import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
+import com.github.chuross.morirouter.compiler.extension.normalize
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -73,7 +73,7 @@ object BindingProcessor {
                             && it.simpleName.toString() == setterMethodName
                 }
 
-                val valueName = "${it.paramName.routerCapitalizedName()}Value"
+                val valueName = "${it.paramName.normalize()}Value"
                 builder.addStatement("${PackageNames.serializable} $valueName = bundle.getSerializable(${it.argumentKeyName})")
 
                 builder.addStatement(if (setterMethod == null) {

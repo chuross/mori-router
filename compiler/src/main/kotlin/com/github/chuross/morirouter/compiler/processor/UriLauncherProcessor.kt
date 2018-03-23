@@ -5,7 +5,7 @@ import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.pathName
-import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
+import com.github.chuross.morirouter.compiler.extension.normalize
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -144,7 +144,7 @@ object UriLauncherProcessor {
                         }
                         ?: throw IllegalStateException("Target RouterUriParam element not found: ${element.simpleName}#$name")
 
-                builder.addStatement("launcher.${name.routerCapitalizedName()}(matcher.group(${index.inc()}))")
+                builder.addStatement("launcher.${name.normalize()}(matcher.group(${index.inc()}))")
             }
             builder.addStatement("launcher.launch()")
         }.build()

@@ -7,7 +7,7 @@ import com.github.chuross.morirouter.compiler.extension.isRequiredRouterParam
 import com.github.chuross.morirouter.compiler.extension.paramElements
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
-import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
+import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.routerParamElements
 import com.github.chuross.morirouter.compiler.extension.routerUriParamElements
 import com.squareup.javapoet.ClassName
@@ -70,7 +70,7 @@ object ScreenLaunchProcessor {
 
     private fun paramFields(element: Element): Iterable<FieldSpec> {
         return element.paramElements.map {
-            FieldSpec.builder(TypeName.get(it.asType()), it.paramName.routerCapitalizedName())
+            FieldSpec.builder(TypeName.get(it.asType()), it.paramName.normalize())
                     .addModifiers(Modifier.PRIVATE)
                     .build()
         }
@@ -96,7 +96,7 @@ object ScreenLaunchProcessor {
         return element.paramElements
                 .filter { !it.isRequiredRouterParam }
                 .map {
-                    val name = it.paramName.routerCapitalizedName()
+                    val name = it.paramName.normalize()
                     MethodSpec.methodBuilder(name)
                             .addModifiers(Modifier.PUBLIC)
                             .addParameter(TypeName.get(it.asType()), name)
@@ -118,7 +118,7 @@ object ScreenLaunchProcessor {
             builder.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
             routerParamElements.plus(routerPathParamElements).forEach {
                 val name = it.paramName
-                builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, ${name.routerCapitalizedName()})")
+                builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, ${name.normalize()})")
             }
             builder.addStatement("fragment.setArguments(arguments)")
             builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")
