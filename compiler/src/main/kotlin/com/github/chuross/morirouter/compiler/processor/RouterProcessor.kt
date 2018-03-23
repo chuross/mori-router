@@ -22,7 +22,10 @@ object RouterProcessor {
                 .addField(fragmentManagerField())
                 .addField(containerIdField())
                 .addMethod(constructorMethod())
-                .addMethods(screenLaunchMethods(context, elements))
+                .addMethods(screenLaunchMethods(context, elements).also {
+                    // ScreenLauncherを一通り作った後に作る
+                    UriDispatcherProcessor.process(context, elements)
+                })
                 .addMethod(popMethod())
                 .build()
 

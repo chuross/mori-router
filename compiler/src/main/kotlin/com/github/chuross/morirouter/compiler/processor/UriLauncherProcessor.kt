@@ -5,7 +5,6 @@ import com.github.chuross.morirouter.annotation.RouterPathParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
-import com.squareup.javapoet.ArrayTypeName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -18,8 +17,8 @@ import javax.lang.model.element.Modifier
 
 object UriLauncherProcessor {
 
+    const val INTERFACE_CLASS_NAME = "UriLauncher"
     private const val URI_REGEX_FIELD_NAME = "URI_REGEX"
-    private const val PATH_PARAMETER_NAMES = "PATH_PARAMETER_NAMES"
     private val PATH_PARAMETER_REGEX = """\{([a-zA-Z0-9_\-]+)\}""".toRegex()
 
     fun getGeneratedTypeName(element: Element): String {
@@ -30,10 +29,41 @@ object UriLauncherProcessor {
         return "${routerPathAnnotation.name.capitalize()}UriLauncher"
     }
 
+    fun processInterface(context: ProcessorContext, elements: Set<Element>) {
+        if (elements.isEmpty()) return
+
+        val typeSpec = TypeSpec.interfaceBuilder(INTERFACE_CLASS_NAME)
+                .addJavadoc("This class is auto generated.")
+                .addMethod(isAvailableInterfaceMethod())
+                .addMethod(launchInterfaceMethod())
+                .build()
+
+        JavaFile.builder(context.getPackageName(elements.first()), typeSpec)
+                .build()
+                .writeTo(context.filer)
+    }
+
+    private fun isAvailableInterfaceMethod(): MethodSpec {
+        return MethodSpec.methodBuilder("isAvailable")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .returns(TypeName.BOOLEAN)
+                .build()
+    }
+
+    private fun launchInterfaceMethod(): MethodSpec {
+        return MethodSpec.methodBuilder("launch")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .build()
+    }
+
+
     fun process(context: ProcessorContext, element: Element) {
         if (element.getAnnotation(RouterPath::class.java).uri.isBlank()) return
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
+                .addSuperinterface(ClassName.bestGuess(INTERFACE_CLASS_NAME))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(uriRegexStaticField(element))
@@ -79,6 +109,8 @@ object UriLauncherProcessor {
 
     private fun isAvailableMethod(): MethodSpec {
         return MethodSpec.methodBuilder("isAvailable")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override::class.java)
                 .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
                 .addStatement("return $URI_REGEX_FIELD_NAME.matcher(uri.toString()).matches()")
                 .returns(TypeName.BOOLEAN)
@@ -98,6 +130,8 @@ object UriLauncherProcessor {
                 .flatten()
 
         return MethodSpec.methodBuilder("launch").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC)
+            builder.addAnnotation(Override::class.java)
             builder.addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
             builder.addStatement("${PackageNames.matcher} matcher = $URI_REGEX_FIELD_NAME.matcher(uri.toString())")
             builder.addStatement("if (!matcher.matches()) throw new ${PackageNames.illegalState}(\"invalid uri format\")")

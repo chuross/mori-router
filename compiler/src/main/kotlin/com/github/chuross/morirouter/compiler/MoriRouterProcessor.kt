@@ -4,6 +4,7 @@ import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterPathParam
 import com.github.chuross.morirouter.compiler.processor.RouterProcessor
+import com.github.chuross.morirouter.compiler.processor.UriLauncherProcessor
 import com.google.auto.service.AutoService
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -50,6 +51,7 @@ class MoriRouterProcessor : AbstractProcessor() {
             val elements = roundEnv.getElementsAnnotatedWith(RouterPath::class.java)
             if (elements.isEmpty()) return true
 
+            UriLauncherProcessor.processInterface(context, elements)
             RouterProcessor.process(context, elements)
 
             true
