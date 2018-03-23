@@ -45,6 +45,7 @@ class HogeFragment
 ```
 
 ## Usage
+### Basic
 
 1. Add annotations in your screen fragment.
 
@@ -81,7 +82,8 @@ router
     .launch() // launch main screen
 ```
 
-3. If use deepLink support, `uri` parameter add to `@RouterPath`, and add definition `@RouterUriParam` parameters in your screen fragment.
+### DeepLink support
+1. If use deepLink support, `uri` parameter add to `@RouterPath`, and add definition `@RouterUriParam` parameters in your screen fragment.
 
 ```kotlin
 @RouterPath(name = "second", uri = "example://hoge/{hoge_id}/{fuga}")
@@ -100,7 +102,7 @@ class SecondScreenFragment : Fragment() {
 }
 ```
 
-4. `MoriRouter` has `dispatch` method. Then call dispatch with Uri.
+2. `MoriRouter` has `dispatch` method. Then call dispatch with Uri.
 
 ```kotlin
 router.dispatch(Uri.parse("example://hoge/123/test")) // launch SecondScreenFragment (hogeId = 123, fuga=test)
