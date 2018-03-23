@@ -4,6 +4,7 @@ import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
+import com.github.chuross.morirouter.compiler.extension.pathName
 import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
@@ -22,11 +23,10 @@ object UriLauncherProcessor {
     private val PATH_PARAMETER_REGEX = """\{([a-zA-Z0-9_\-]+)\}""".toRegex()
 
     fun getGeneratedTypeName(element: Element): String {
-        val routerPathAnnotation = element.getAnnotation(RouterPath::class.java)
-        if (routerPathAnnotation.name.isBlank()) {
+        if (element.pathName.isNullOrBlank()) {
             throw IllegalStateException("RouterPath name must be not empty")
         }
-        return "${routerPathAnnotation.name.capitalize()}UriLauncher"
+        return "${element.pathName?.capitalize()}UriLauncher"
     }
 
     fun processInterface(context: ProcessorContext, elements: Set<Element>) {
