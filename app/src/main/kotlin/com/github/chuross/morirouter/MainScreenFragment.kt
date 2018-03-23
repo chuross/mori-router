@@ -1,5 +1,6 @@
 package com.github.chuross.morirouter
 
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -36,8 +37,7 @@ class MainScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view?.findViewById<Button>(R.id.button)?.setOnClickListener {
-            (activity as? MainActivity)?.router?.second()?.launch()
-//             (activity as? MainActivity)?.router?.dispatch(Uri.parse("morirouter://second/1"))
+             (activity as? MainActivity)?.router?.dispatch(Uri.parse("morirouter://second/2/contents/123"))
         }
     }
 

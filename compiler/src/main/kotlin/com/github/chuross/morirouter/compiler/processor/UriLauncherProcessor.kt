@@ -137,14 +137,20 @@ object UriLauncherProcessor {
             builder.addStatement("if (!matcher.matches()) throw new ${PackageNames.illegalState}(\"invalid uri format\")")
             builder.addStatement("${ScreenLaunchProcessor.getGeneratedTypeName(element)} launcher = router.$routerPathName()")
             pathParameterNames.forEachIndexed { index, name ->
-                element.enclosedElements
+                val uriParamElement = element.enclosedElements
                         .find {
                             val annotation = it.getAnnotation(RouterUriParam::class.java)
-                            annotation?.name == name || it.simpleName.toString() == name
-                        }
-                        ?: throw IllegalStateException("Target RouterUriParam element not found: ${element.simpleName}#$name")
+                            annotation?.name == name || it.simpleName.toString() == name.normalize()
+                        } ?: throw IllegalStateException("Target RouterUriParam element not found: ${element.simpleName}#$name")
 
-                builder.addStatement("launcher.${name.normalize()}(matcher.group(${index.inc()}))")
+                val uriParamElementClass = Class.forName(uriParamElement.asType().toString())
+
+                val value = when(uriParamElementClass) {
+                    Integer::class.java -> "Integer.valueOf(matcher.group(${index.inc()}))"
+                    Long::class.java -> "Long.valueOf(matcher.group(${index.inc()}))"
+                    else -> "matcher.group(${index.inc()})"
+                }
+                builder.addStatement("launcher.${name.normalize()}($value)")
             }
             builder.addStatement("launcher.launch()")
         }.build()

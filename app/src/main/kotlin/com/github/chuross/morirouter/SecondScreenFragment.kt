@@ -6,17 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterUriParam
 
 @RouterPath(
         name = "second",
-        uri = "morirouter://second/{second_screen_id}"
+        uri = "morirouter://second/{second_id}/contents/{content_id}"
 )
 class SecondScreenFragment : Fragment() {
 
-    @RouterUriParam(name = "second_screen_id")
+    @RouterUriParam(name = "second_id")
     var id: String? = null
+
+    @RouterUriParam
+    var contentId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +33,8 @@ class SecondScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view?.findViewById<TextView>(R.id.text)?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
 
         view?.findViewById<Button>(R.id.button)?.setOnClickListener {
             (activity as? MainActivity)?.router?.pop()
