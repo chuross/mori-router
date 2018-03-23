@@ -5,6 +5,7 @@ import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterPathParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
+import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
 import com.github.chuross.morirouter.compiler.util.RouterUtils
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
@@ -71,14 +72,14 @@ object ScreenLaunchProcessor {
     private fun paramFields(element: Element): Iterable<FieldSpec> {
         val routerParamFields = RouterUtils.getRouterParamElements(element)
                 .map {
-                    FieldSpec.builder(TypeName.get(it.asType()), RouterUtils.getRouterParamName(it))
+                    FieldSpec.builder(TypeName.get(it.asType()), RouterUtils.getRouterParamName(it).routerCapitalizedName())
                             .addModifiers(Modifier.PRIVATE)
                             .build()
                 }
 
         val routerPathParamFields = RouterUtils.getRouterPathParamElements(element)
                 .map {
-                    FieldSpec.builder(TypeName.get(it.asType()), RouterUtils.getRouterPathParamName(it))
+                    FieldSpec.builder(TypeName.get(it.asType()), RouterUtils.getRouterPathParamName(it).routerCapitalizedName())
                             .addModifiers(Modifier.PRIVATE)
                             .build()
                 }
@@ -107,7 +108,7 @@ object ScreenLaunchProcessor {
         return RouterUtils.getRouterParamElements(element)
                 .filter { !RouterUtils.isRequiredRouterParam(it) }
                 .map {
-                    val name = RouterUtils.getRouterParamName(it)
+                    val name = RouterUtils.getRouterParamName(it).routerCapitalizedName()
                     MethodSpec.methodBuilder(name)
                             .addModifiers(Modifier.PUBLIC)
                             .addParameter(TypeName.get(it.asType()), name)
@@ -121,7 +122,7 @@ object ScreenLaunchProcessor {
     private fun pathParameterMethods(element: Element): Iterable<MethodSpec> {
         return RouterUtils.getRouterPathParamElements(element)
                 .map {
-                    val name = RouterUtils.getRouterPathParamName(it)
+                    val name = RouterUtils.getRouterPathParamName(it).routerCapitalizedName()
                     MethodSpec.methodBuilder(name)
                             .addModifiers(Modifier.PUBLIC)
                             .addParameter(TypeName.get(it.asType()), name)

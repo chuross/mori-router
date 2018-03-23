@@ -11,11 +11,11 @@ import com.github.chuross.morirouter.annotation.RouterPathParam
 
 @RouterPath(
         name = "second",
-        uri = "morirouter://second/{id}"
+        uri = "morirouter://second/{second_screen_id}"
 )
 class SecondScreenFragment : Fragment() {
 
-    @RouterPathParam
+    @RouterPathParam(name = "second_screen_id")
     var id: String? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
