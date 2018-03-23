@@ -1,8 +1,6 @@
 package com.github.chuross.morirouter.compiler.processor
 
-import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
-import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
