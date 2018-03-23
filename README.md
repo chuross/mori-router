@@ -44,20 +44,19 @@ class HogeFragment
     var fooId: String? = null
 ```
 
-## Current
-### definition
+## Usage
+
+1. Add annotations in your screen fragment.
+
 ```kotlin
-@RouterPath(
-        name = "main",
-        uri = "morirouter://main"
-)
+@RouterPath(name = "main")
 class MainScreenFragment : Fragment() {
 
     @RouterParam
     lateinit var param1: String
 
     @RouterParam(name = "ieei")
-    lateinit var param2: String
+    lateinit var param2: Int
 
     @RouterParam(required = false)
     var param3: ArrayList<String> = arrayListOf()
@@ -66,34 +65,18 @@ class MainScreenFragment : Fragment() {
         super.onCreate(savedInstanceState)
         MainScreenBinder.bind(this)
     }
+
+    ....
 }
 ```
 
-## Generated code
-```java
-/** ex)
- * val router = MoriRouter(fragmentManager, R.id.container)
- * router.main("fuga", "piyo").param3(listOf()).launch()
- *
- * `fuga` and `piyo` are required param.
- * param3 is optional param.
- */
-public final class MoriRouter {
-  private FragmentManager fm;
+2. Execute build command, Then `MoriRouter` class is auto generated.
 
-  private int containerId;
+```kotlin
+val router = MoriRouter(supportFragmentManager, R.id.container) //This class is auto generated class.
 
-  public MoriRouter(FragmentManager fm, int containerId) {
-    this.fm = fm;
-    this.containerId = containerId;
-  }
-
-  public MainScreenLauncher main(String param1, String ieei) {
-    return new MainScreenLauncher(fm, containerId, param1, ieei);
-  }
-
-  public void pop() {
-    fm.popBackStackImmediate();
-  }
-}
+router
+  .main("required1", 1000) // main(String param1, Integer ieei)
+  .param3(listOf("fuga")) // optional value
+  .launch() // launch main screen
 ```
