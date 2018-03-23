@@ -66,16 +66,16 @@ object UriLauncherProcessor {
     private fun pathParameterNamesStaticField(element: Element): FieldSpec {
         val format = element.getAnnotation(RouterPath::class.java)?.uri!!
         val pathParameterNames = PATH_PARAMETER_REGEX
-                .find(format)
-                ?.groupValues
-                ?.takeIf { it.size > 1 }
-                ?.let {
-                    it.subList(1, it.size)
-                }
+                .findAll(format)
+                .map { it.groupValues }
+                .filter { it.size > 1 }
+                .map { it.subList(1, it.size) }
+                .map { it.joinToString(", ") { "\"$it\"" } }
+                .joinToString(", ")
 
         return FieldSpec.builder(ArrayTypeName.of(String::class.java), PATH_PARAMETER_NAMES)
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .initializer("new String[] { ${pathParameterNames?.joinToString(", ") { "\"$it\"" }} }")
+                .initializer("new String[] { $pathParameterNames }")
                 .build()
 
     }
