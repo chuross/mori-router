@@ -8,7 +8,7 @@ This library for single activity application.(multi fragments)
 - DeepLink support
 - Shared element support
 
-## Goal(expected)
+## Goal
 ```
 val router = MoriRouter(fragmentManager, R.id.container)
 
@@ -94,6 +94,10 @@ class SecondScreenFragment : Fragment() {
 
     @RouterUriParam
     var fuga: String
+
+    // If use `@RouterUriParam`, Don't use `required = true`.
+    @RouterParam(required = false)
+    var piyo: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
