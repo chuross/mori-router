@@ -36,6 +36,7 @@ object ScreenLaunchProcessor {
                 .addFields(paramFields(element))
                 .addMethod(constructorMethod(element))
                 .addMethods(optionalParameterMethods(element))
+                .addMethods(pathParameterMethods(element))
                 .addMethod(launchMethod(element))
                 .build()
 
@@ -45,7 +46,9 @@ object ScreenLaunchProcessor {
     }
 
     private fun validate(element: Element) {
-        val requiredParamElement = element.enclosedElements.find { it.getAnnotation(RouterParam::class.java)?.required ?: false }
+        val requiredParamElement = element.enclosedElements.find {
+            it.getAnnotation(RouterParam::class.java)?.required ?: false
+        }
         val pathParamElement = element.enclosedElements.find { it.getAnnotation(RouterPathParam::class.java) != null }
 
         if (requiredParamElement != null && pathParamElement != null) {
@@ -66,13 +69,21 @@ object ScreenLaunchProcessor {
     }
 
     private fun paramFields(element: Element): Iterable<FieldSpec> {
-        return element.enclosedElements
-                .filter { it.getAnnotation(RouterParam::class.java) != null }
+        val routerParamFields = RouterUtils.getRouterParamElements(element)
                 .map {
                     FieldSpec.builder(TypeName.get(it.asType()), RouterUtils.getRouterParamName(it))
                             .addModifiers(Modifier.PRIVATE)
                             .build()
                 }
+
+        val routerPathParamFields = RouterUtils.getRouterPathParamElements(element)
+                .map {
+                    FieldSpec.builder(TypeName.get(it.asType()), RouterUtils.getRouterPathParamName(it))
+                            .addModifiers(Modifier.PRIVATE)
+                            .build()
+                }
+
+        return routerParamFields.plus(routerPathParamFields)
     }
 
     private fun constructorMethod(element: Element): MethodSpec {
@@ -97,7 +108,21 @@ object ScreenLaunchProcessor {
                 .filter { !RouterUtils.isRequiredRouterParam(it) }
                 .map {
                     val name = RouterUtils.getRouterParamName(it)
-                    MethodSpec.methodBuilder(RouterUtils.getRouterParamName(it))
+                    MethodSpec.methodBuilder(name)
+                            .addModifiers(Modifier.PUBLIC)
+                            .addParameter(TypeName.get(it.asType()), name)
+                            .addStatement("this.$name = $name")
+                            .addStatement("return this")
+                            .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
+                            .build()
+                }
+    }
+
+    private fun pathParameterMethods(element: Element): Iterable<MethodSpec> {
+        return RouterUtils.getRouterPathParamElements(element)
+                .map {
+                    val name = RouterUtils.getRouterPathParamName(it)
+                    MethodSpec.methodBuilder(name)
                             .addModifiers(Modifier.PUBLIC)
                             .addParameter(TypeName.get(it.asType()), name)
                             .addStatement("this.$name = $name")

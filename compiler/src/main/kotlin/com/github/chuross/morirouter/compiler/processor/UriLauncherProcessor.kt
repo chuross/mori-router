@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.annotation.RouterPath
+import com.github.chuross.morirouter.annotation.RouterPathParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.squareup.javapoet.ArrayTypeName
@@ -102,8 +103,33 @@ object UriLauncherProcessor {
     }
 
     private fun launchMethod(element: Element): MethodSpec {
-        return MethodSpec.methodBuilder("launch")
-                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
-                .build()
+        val routerPathAnnotation = element.getAnnotation(RouterPath::class.java)!!
+        val routerPathName = routerPathAnnotation.name
+        val format = routerPathAnnotation.uri
+
+        val pathParameterNames = PATH_PARAMETER_REGEX
+                .findAll(format)
+                .map { it.groupValues }
+                .filter { it.size > 1 }
+                .map { it.subList(1, it.size) }
+                .flatten()
+
+        return MethodSpec.methodBuilder("launch").also { builder ->
+            builder.addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+            builder.addStatement("${PackageNames.matcher} matcher = $URI_REGEX_FIELD_NAME.matcher(uri.toString())")
+            builder.addStatement("if (!matcher.matches()) throw new ${PackageNames.illegalState}(\"invalid uri format\")")
+            builder.addStatement("${ScreenLaunchProcessor.getGeneratedTypeName(element)} launcher = router.$routerPathName()")
+            pathParameterNames.forEachIndexed { index, name ->
+                element.enclosedElements
+                        .find {
+                            val annotation = it.getAnnotation(RouterPathParam::class.java)
+                            annotation?.name == name || it.simpleName.toString() == name
+                        }
+                        ?: throw IllegalStateException("Target RouterPathParam element not found: ${element.simpleName}#$name")
+
+                builder.addStatement("launcher.$name(matcher.group(${index.inc()}))")
+            }
+            builder.addStatement("launcher.launch()")
+        }.build()
     }
 }
