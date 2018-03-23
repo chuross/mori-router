@@ -46,7 +46,7 @@ object BindingProcessor {
         return element.paramElements.map {
             FieldSpec.builder(String::class.java, it.argumentKeyName)
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                    .initializer("\"argument_key_${it.paramName}\"")
+                    .initializer("\"argument_key_${it.paramName.toLowerCase()}\"")
                     .build()
         }
     }

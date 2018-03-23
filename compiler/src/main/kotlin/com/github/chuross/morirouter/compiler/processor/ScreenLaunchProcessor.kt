@@ -85,7 +85,7 @@ object ScreenLaunchProcessor {
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.containerId = containerId")
             requiredRouterParamElements.forEach {
-                val name = it.paramName
+                val name = it.paramName.normalize()
                 builder.addParameter(TypeName.get(it.asType()), name)
                 builder.addStatement("this.$name = $name")
             }
@@ -117,8 +117,8 @@ object ScreenLaunchProcessor {
             builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
             builder.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
             routerParamElements.plus(routerPathParamElements).forEach {
-                val name = it.paramName
-                builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, ${name.normalize()})")
+                val name = it.paramName.normalize()
+                builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
             builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")

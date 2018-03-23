@@ -3,6 +3,7 @@ package com.github.chuross.morirouter.compiler.processor
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.isRequiredRouterParam
+import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
 import com.github.chuross.morirouter.compiler.extension.routerParamElements
@@ -78,12 +79,12 @@ object RouterProcessor {
 
             val requiredRouterParamElements = it.routerParamElements.filter { it.isRequiredRouterParam }
 
-            MethodSpec.methodBuilder(it.pathName).also { builder ->
+            MethodSpec.methodBuilder(it.pathName?.normalize()).also { builder ->
                 builder.addModifiers(Modifier.PUBLIC)
                 requiredRouterParamElements.forEach {
-                    builder.addParameter(TypeName.get(it.asType()), it.paramName)
+                    builder.addParameter(TypeName.get(it.asType()), it.paramName.normalize())
                 }
-                val arguments = listOf("fm", "containerId").plus(requiredRouterParamElements.map { it.paramName }).joinToString(", ")
+                val arguments = listOf("fm", "containerId").plus(requiredRouterParamElements.map { it.paramName.normalize() }).joinToString(", ")
                 builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(it)}($arguments)")
                 builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(it)))
             }.build()
