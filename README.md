@@ -50,7 +50,13 @@ router
 1. If use deepLink support, `uri` parameter add to `@RouterPath`, and add definition `@RouterUriParam` parameters in your screen fragment.
 
 ```kotlin
-@RouterPath(name = "second", uri = "example://hoge/{hoge_id}/{fuga}")
+@RouterPath(
+  name = "second",
+  uris = [
+    "example://hoge/{hoge_id}/{fuga}",
+    "https://example.com/hoge/{hoge_id}/{fuga}" //also can use multiple uri
+  ]
+)
 class SecondScreenFragment : Fragment() {
 
     @RouterUriParam(name = "hoge_id")
@@ -74,4 +80,5 @@ class SecondScreenFragment : Fragment() {
 
 ```kotlin
 router.dispatch(Uri.parse("example://hoge/123/test")) // launch SecondScreenFragment (hogeId = 123, fuga=test)
+router.dispatch(Uri.parse("https://example.com/hoge/123/test"))
 ```
