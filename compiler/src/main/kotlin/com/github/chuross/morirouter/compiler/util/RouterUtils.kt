@@ -1,7 +1,7 @@
 package com.github.chuross.morirouter.compiler.util
 
 import com.github.chuross.morirouter.annotation.RouterParam
-import com.github.chuross.morirouter.annotation.RouterPathParam
+import com.github.chuross.morirouter.annotation.RouterUriParam
 import javax.lang.model.element.Element
 
 object RouterUtils {
@@ -12,7 +12,7 @@ object RouterUtils {
     }
 
     fun getRouterPathParamName(element: Element): String {
-        val annotation = element.getAnnotation(RouterPathParam::class.java) ?: throw IllegalArgumentException("Element has no RouterParam")
+        val annotation = element.getAnnotation(RouterUriParam::class.java) ?: throw IllegalArgumentException("Element has no RouterParam")
         return annotation.name.takeIf { it.isNotBlank() } ?: element.simpleName.toString()
     }
 
@@ -25,7 +25,7 @@ object RouterUtils {
     }
 
     fun getRouterPathParamElements(element: Element): List<Element> {
-        return element.enclosedElements.filter { it.getAnnotation(RouterPathParam::class.java) != null }
+        return element.enclosedElements.filter { it.getAnnotation(RouterUriParam::class.java) != null }
     }
 
     fun isRequiredRouterParam(element: Element): Boolean {

@@ -2,7 +2,7 @@ package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
-import com.github.chuross.morirouter.annotation.RouterPathParam
+import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
@@ -50,10 +50,10 @@ object ScreenLaunchProcessor {
         val requiredParamElement = element.enclosedElements.find {
             it.getAnnotation(RouterParam::class.java)?.required ?: false
         }
-        val pathParamElement = element.enclosedElements.find { it.getAnnotation(RouterPathParam::class.java) != null }
+        val pathParamElement = element.enclosedElements.find { it.getAnnotation(RouterUriParam::class.java) != null }
 
         if (requiredParamElement != null && pathParamElement != null) {
-            throw IllegalStateException("RouterParam 'required' can use no RouterPathParam only")
+            throw IllegalStateException("RouterParam 'required' can use no RouterUriParam only")
         }
     }
 

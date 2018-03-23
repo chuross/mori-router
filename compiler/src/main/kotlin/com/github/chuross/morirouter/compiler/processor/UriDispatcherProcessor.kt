@@ -1,6 +1,6 @@
 package com.github.chuross.morirouter.compiler.processor
 
-import com.github.chuross.morirouter.annotation.RouterPathParam
+import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.squareup.javapoet.ArrayTypeName
@@ -62,7 +62,7 @@ object UriDispatcherProcessor {
     private fun filterRouterPathParamExists(elements: Set<Element>): List<Element> {
         return elements.filter {
             it.enclosedElements.find {
-                it.getAnnotation(RouterPathParam::class.java) != null
+                it.getAnnotation(RouterUriParam::class.java) != null
             } != null
         }
     }

@@ -1,7 +1,7 @@
 package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.annotation.RouterPath
-import com.github.chuross.morirouter.annotation.RouterPathParam
+import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.routerCapitalizedName
@@ -139,10 +139,10 @@ object UriLauncherProcessor {
             pathParameterNames.forEachIndexed { index, name ->
                 element.enclosedElements
                         .find {
-                            val annotation = it.getAnnotation(RouterPathParam::class.java)
+                            val annotation = it.getAnnotation(RouterUriParam::class.java)
                             annotation?.name == name || it.simpleName.toString() == name
                         }
-                        ?: throw IllegalStateException("Target RouterPathParam element not found: ${element.simpleName}#$name")
+                        ?: throw IllegalStateException("Target RouterUriParam element not found: ${element.simpleName}#$name")
 
                 builder.addStatement("launcher.${name.routerCapitalizedName()}(matcher.group(${index.inc()}))")
             }

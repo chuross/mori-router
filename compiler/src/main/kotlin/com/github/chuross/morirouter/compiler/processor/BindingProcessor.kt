@@ -2,7 +2,7 @@ package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
-import com.github.chuross.morirouter.annotation.RouterPathParam
+import com.github.chuross.morirouter.annotation.RouterUriParam
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.util.RouterUtils
@@ -29,7 +29,7 @@ object BindingProcessor {
     fun process(context: ProcessorContext, element: Element) {
         if (element.enclosedElements.find {
                     it.getAnnotation(RouterParam::class.java) != null
-                    || it.getAnnotation(RouterPathParam::class.java) != null
+                    || it.getAnnotation(RouterUriParam::class.java) != null
                 } == null
         ) return
 
