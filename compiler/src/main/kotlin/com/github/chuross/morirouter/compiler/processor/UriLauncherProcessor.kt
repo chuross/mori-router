@@ -37,7 +37,6 @@ object UriLauncherProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(uriRegexStaticField(element))
-                .addField(pathParameterNamesStaticField(element))
                 .addField(routerField())
                 .addMethod(constructorMethod())
                 .addMethod(isAvailableMethod())
@@ -63,23 +62,6 @@ object UriLauncherProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .initializer("${PackageNames.pattern}.compile(\"$patternStr\")")
                 .build()
-    }
-
-    private fun pathParameterNamesStaticField(element: Element): FieldSpec {
-        val format = element.getAnnotation(RouterPath::class.java)?.uri!!
-        val pathParameterNames = PATH_PARAMETER_REGEX
-                .findAll(format)
-                .map { it.groupValues }
-                .filter { it.size > 1 }
-                .map { it.subList(1, it.size) }
-                .map { it.joinToString(", ") { "\"$it\"" } }
-                .joinToString(", ")
-
-        return FieldSpec.builder(ArrayTypeName.of(String::class.java), PATH_PARAMETER_NAMES)
-                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .initializer("new String[] { $pathParameterNames }")
-                .build()
-
     }
 
     private fun routerField(): FieldSpec {
