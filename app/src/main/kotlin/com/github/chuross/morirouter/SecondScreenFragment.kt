@@ -18,6 +18,11 @@ class SecondScreenFragment : Fragment() {
     @RouterPathParam(name = "second_screen_id")
     var id: String? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        SecondScreenBinder.bind(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(context).inflate(R.layout.fragment_second, container, false)
     }

@@ -136,14 +136,15 @@ object ScreenLaunchProcessor {
     private fun launchMethod(element: Element): MethodSpec {
         val fragmentClassName = ClassName.get(element.asType())
         val routerParamElements = RouterUtils.getRouterParamElements(element)
+        val routerPathParamElements = RouterUtils.getRouterPathParamElements(element)
         val binderTypeName = BindingProcessor.getGeneratedTypeName(element)
 
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
             builder.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
-            routerParamElements.forEach {
-                val name = RouterUtils.getRouterParamName(it)
-                builder.addStatement("arguments.putSerializable($binderTypeName.${RouterUtils.getArgumentKeyName(name)}, $name)")
+            routerParamElements.plus(routerPathParamElements).forEach {
+                val name = if (it.getAnnotation(RouterParam::class.java) != null) RouterUtils.getRouterParamName(it) else RouterUtils.getRouterPathParamName(it)
+                builder.addStatement("arguments.putSerializable($binderTypeName.${RouterUtils.getArgumentKeyName(name)}, ${name.routerCapitalizedName()})")
             }
             builder.addStatement("fragment.setArguments(arguments)")
             builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")
