@@ -1,12 +1,12 @@
 package com.github.chuross.morirouter.compiler.processor
 
-import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.paramElements
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.normalize
+import com.github.chuross.morirouter.compiler.extension.pathName
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -20,11 +20,10 @@ import javax.lang.model.element.Modifier
 object BindingProcessor {
 
     fun getGeneratedTypeName(element: Element): String {
-        val routerPathAnnotation = element.getAnnotation(RouterPath::class.java)
-        if (routerPathAnnotation.name.isBlank()) {
+        if (element.pathName.isNullOrBlank()) {
             throw IllegalStateException("RouterPath name must be not empty")
         }
-        return "${routerPathAnnotation.name.capitalize()}ScreenBinder"
+        return "${element.pathName?.normalize()?.capitalize()}ScreenBinder"
     }
 
     fun process(context: ProcessorContext, element: Element) {

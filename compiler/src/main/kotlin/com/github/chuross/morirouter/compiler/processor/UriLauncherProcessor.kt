@@ -26,7 +26,7 @@ object UriLauncherProcessor {
         if (element.pathName.isNullOrBlank()) {
             throw IllegalStateException("RouterPath name must be not empty")
         }
-        return "${element.pathName?.capitalize()}UriLauncher"
+        return "${element.pathName?.normalize()?.capitalize()}UriLauncher"
     }
 
     fun processInterface(context: ProcessorContext, elements: Set<Element>) {
@@ -95,14 +95,14 @@ object UriLauncherProcessor {
     }
 
     private fun routerField(): FieldSpec {
-        return FieldSpec.builder(ClassName.bestGuess("MoriRouter"), "router")
+        return FieldSpec.builder(ClassName.bestGuess(RouterProcessor.TYPE_NAME), "router")
                 .addModifiers(Modifier.PRIVATE)
                 .build()
     }
 
     private fun constructorMethod(): MethodSpec {
         return MethodSpec.constructorBuilder()
-                .addParameter(ClassName.bestGuess("MoriRouter"), "router")
+                .addParameter(ClassName.bestGuess(RouterProcessor.TYPE_NAME), "router")
                 .addStatement("this.router = router")
                 .build()
     }

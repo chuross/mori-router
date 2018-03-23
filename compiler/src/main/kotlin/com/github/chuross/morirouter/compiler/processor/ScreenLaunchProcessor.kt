@@ -25,7 +25,7 @@ object ScreenLaunchProcessor {
         if (element.pathName.isNullOrBlank()) {
             throw IllegalStateException("RouterPath name must be not empty")
         }
-        return "${element.pathName?.capitalize()}ScreenLauncher"
+        return "${element.pathName?.normalize()?.capitalize()}ScreenLauncher"
     }
 
     fun process(context: ProcessorContext, element: Element) {

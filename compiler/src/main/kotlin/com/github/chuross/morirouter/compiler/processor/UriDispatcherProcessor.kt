@@ -46,7 +46,7 @@ object UriDispatcherProcessor {
         val initializeStatement = uriLauncherNames.map { "new $it(router)" }.joinToString(", ")
 
         return MethodSpec.constructorBuilder()
-                .addParameter(ClassName.bestGuess("MoriRouter"), "router")
+                .addParameter(ClassName.bestGuess(RouterProcessor.TYPE_NAME), "router")
                 .addStatement("this.launchers = new ${UriLauncherProcessor.INTERFACE_CLASS_NAME}[] { $initializeStatement }")
                 .build()
     }

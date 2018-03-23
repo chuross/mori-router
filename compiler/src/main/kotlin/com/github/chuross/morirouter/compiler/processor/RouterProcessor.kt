@@ -17,8 +17,10 @@ import javax.lang.model.element.Modifier
 
 object RouterProcessor {
 
+    const val TYPE_NAME:String = "MoriRouter"
+
     fun process(context: ProcessorContext, elements: Set<Element>) {
-        val typeSpec = TypeSpec.classBuilder("MoriRouter")
+        val typeSpec = TypeSpec.classBuilder(TYPE_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
