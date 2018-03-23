@@ -7,6 +7,7 @@ import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
 import com.github.chuross.morirouter.compiler.extension.routerParamElements
+import com.github.chuross.morirouter.compiler.extension.routerUriParamElements
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -18,16 +19,18 @@ import javax.lang.model.element.Modifier
 
 object RouterProcessor {
 
-    const val TYPE_NAME:String = "MoriRouter"
+    const val TYPE_NAME: String = "MoriRouter"
 
     fun process(context: ProcessorContext, elements: Set<Element>) {
+        if (elements.isEmpty()) return
+
         val typeSpec = TypeSpec.classBuilder(TYPE_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
                 .addField(containerIdField())
                 .addField(dispatcherField())
-                .addMethod(constructorMethod())
+                .addMethod(constructorMethod(elements))
                 .addMethods(screenLaunchMethods(context, elements).also {
                     // ScreenLauncherを一通り作った後に作る
                     UriDispatcherProcessor.process(context, elements)
@@ -60,15 +63,17 @@ object RouterProcessor {
 
     }
 
-    private fun constructorMethod(): MethodSpec {
-        return MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
-                .addParameter(Int::class.java, "containerId")
-                .addStatement("this.fm = fm")
-                .addStatement("this.containerId = containerId")
-                .addStatement("dispatcher = new ${UriDispatcherProcessor.TYPE_NAME}(this)")
-                .build()
+    private fun constructorMethod(elements: Set<Element>): MethodSpec {
+        return MethodSpec.constructorBuilder().also { builder ->
+            builder.addModifiers(Modifier.PUBLIC)
+            builder.addParameter(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
+            builder.addParameter(Int::class.java, "containerId")
+            builder.addStatement("this.fm = fm")
+            builder.addStatement("this.containerId = containerId")
+            if (elements.any { it.routerUriParamElements.isNotEmpty() }) {
+                builder.addStatement("dispatcher = new ${UriDispatcherProcessor.TYPE_NAME}(this)")
+            }
+        }.build()
     }
 
     private fun screenLaunchMethods(context: ProcessorContext, elements: Set<Element>): Iterable<MethodSpec> {

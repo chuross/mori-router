@@ -40,7 +40,7 @@ object UriDispatcherProcessor {
 
     private fun constructorMethod(elements: Set<Element>): MethodSpec {
         val uriLauncherNames = elements
-                .filter { it.enclosedElements.find { it.isRouterUriParam } != null }
+                .filter { it.enclosedElements.any { it.isRouterUriParam } }
                 .map { UriLauncherProcessor.getGeneratedTypeName(it) }
 
         val initializeStatement = uriLauncherNames.map { "new $it(router)" }.joinToString(", ")
