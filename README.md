@@ -80,5 +80,5 @@ class SecondScreenFragment : Fragment() {
 
 ```kotlin
 router.dispatch(Uri.parse("example://hoge/123/test")) // launch SecondScreenFragment (hogeId = 123, fuga=test)
-router.dispatch(Uri.parse("https://example.com/hoge/123/test"))
+router.dispatch(Uri.parse("https://example.com/hoge/123/test")) // launch SecondScreenFragment (hogeId = 123, fuga=test)
 ```
