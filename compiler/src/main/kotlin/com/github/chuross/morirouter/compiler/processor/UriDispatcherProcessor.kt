@@ -8,6 +8,7 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
@@ -54,11 +55,13 @@ object UriDispatcherProcessor {
     private fun dispatchMethod(): MethodSpec {
         return MethodSpec.methodBuilder("dispatch")
                 .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .returns(TypeName.BOOLEAN)
                 .beginControlFlow("for (${UriLauncherProcessor.INTERFACE_CLASS_NAME} launcher : launchers)")
                 .addStatement("if (!launcher.isAvailable(uri)) continue")
                 .addStatement("launcher.launch(uri)")
-                .addStatement("return")
+                .addStatement("return true")
                 .endControlFlow()
+                .addStatement("return false")
                 .build()
     }
 

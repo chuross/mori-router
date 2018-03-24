@@ -99,8 +99,9 @@ object RouterProcessor {
     private fun dispatchMethod(): MethodSpec {
         return MethodSpec.methodBuilder("dispatch")
                 .addModifiers(Modifier.PUBLIC)
+                .returns(TypeName.BOOLEAN)
                 .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
-                .addStatement("dispatcher.dispatch(uri)")
+                .addStatement("return dispatcher.dispatch(uri)")
                 .build()
     }
 
