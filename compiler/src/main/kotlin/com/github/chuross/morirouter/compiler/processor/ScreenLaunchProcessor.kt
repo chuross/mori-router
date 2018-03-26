@@ -57,7 +57,7 @@ object ScreenLaunchProcessor {
     }
 
     private fun fragmentManagerField(): FieldSpec {
-        return FieldSpec.builder(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
+        return FieldSpec.builder(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
                 .addModifiers(Modifier.PRIVATE)
                 .build()
     }
@@ -80,7 +80,7 @@ object ScreenLaunchProcessor {
         val requiredRouterParamElements = element.routerParamElements.filter { it.isRequiredRouterParam }
 
         return MethodSpec.constructorBuilder().also { builder ->
-            builder.addParameter(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
+            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
             builder.addParameter(TypeName.INT, "containerId")
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.containerId = containerId")

@@ -45,7 +45,7 @@ object RouterProcessor {
     }
 
     private fun fragmentManagerField(): FieldSpec {
-        return FieldSpec.builder(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
+        return FieldSpec.builder(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
                 .addModifiers(Modifier.PRIVATE)
                 .build()
     }
@@ -66,7 +66,7 @@ object RouterProcessor {
     private fun constructorMethod(elements: Set<Element>): MethodSpec {
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
-            builder.addParameter(ClassName.bestGuess(PackageNames.supportFragmentManager), "fm")
+            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
             builder.addParameter(Int::class.java, "containerId")
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.containerId = containerId")
