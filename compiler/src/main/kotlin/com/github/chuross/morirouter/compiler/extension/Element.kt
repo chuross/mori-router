@@ -15,6 +15,8 @@ val Element.pathName: String? get() = getAnnotation(RouterPath::class.java)?.nam
 
 val Element.pathUris: Array<String>? get() = getAnnotation(RouterPath::class.java)?.uris
 
+val Element.transitionNames: Array<String>? get() = getAnnotation(RouterPath::class.java).transitionNames
+
 val Element.paramName: String get() {
     return routerParamName ?: routerUriParamName ?: throw IllegalStateException("This element has no RouterParam and RouterUriParam")
 }

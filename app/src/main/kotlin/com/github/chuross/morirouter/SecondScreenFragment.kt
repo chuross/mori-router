@@ -15,6 +15,9 @@ import com.github.chuross.morirouter.annotation.RouterUriParam
         uris = [
             "morirouter://second/{second_id}/contents/{content_id}",
             "https://www.hoge.com/second/{second_id}/contents/{content_id}"
+        ],
+        transitionNames = [
+            "icon_image"
         ]
 )
 class SecondScreenFragment : Fragment() {

@@ -10,6 +10,7 @@ import com.github.chuross.morirouter.compiler.extension.pathName
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.routerParamElements
 import com.github.chuross.morirouter.compiler.extension.routerUriParamElements
+import com.github.chuross.morirouter.compiler.extension.transitionNames
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -34,11 +35,14 @@ object ScreenLaunchProcessor {
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
+                .addFields(transitionNameStaticFields(element))
                 .addField(fragmentManagerField())
                 .addField(containerIdField())
                 .addFields(paramFields(element))
+                .addFields(transitionNameFields(element))
                 .addMethod(constructorMethod(element))
                 .addMethods(optionalParameterMethods(element))
+                .addMethods(transitionNameParameterMethod(element))
                 .addMethod(launchMethod(element))
                 .build()
 
@@ -54,6 +58,15 @@ object ScreenLaunchProcessor {
         if (requiredParamElement != null && pathParamElement != null) {
             throw IllegalStateException("RouterParam 'required' can use no RouterUriParam only")
         }
+    }
+
+    private fun transitionNameStaticFields(element: Element): Iterable<FieldSpec> {
+        return element.transitionNames?.map {
+            FieldSpec.builder(String::class.java, it.toUpperCase())
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                    .initializer("\"$it\"")
+                    .build()
+        } ?: listOf()
     }
 
     private fun fragmentManagerField(): FieldSpec {
@@ -74,6 +87,14 @@ object ScreenLaunchProcessor {
                     .addModifiers(Modifier.PRIVATE)
                     .build()
         }
+    }
+
+    private fun transitionNameFields(element: Element): Iterable<FieldSpec> {
+        return element.transitionNames?.map {
+            FieldSpec.builder(ClassName.bestGuess(PackageNames.VIEW), it.normalize())
+                    .addModifiers(Modifier.PRIVATE)
+                    .build()
+        } ?: listOf()
     }
 
     private fun constructorMethod(element: Element): MethodSpec {
@@ -107,6 +128,19 @@ object ScreenLaunchProcessor {
                 }
     }
 
+    private fun transitionNameParameterMethod(element: Element): Iterable<MethodSpec> {
+        return element.transitionNames?.map {
+            val name = it.normalize()
+            MethodSpec.methodBuilder(name)
+                    .addModifiers(Modifier.PUBLIC)
+                    .addParameter(ClassName.bestGuess(PackageNames.VIEW), name)
+                    .addStatement("this.$name = $name")
+                    .addStatement("return this")
+                    .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
+                    .build()
+        } ?: listOf()
+    }
+
     private fun launchMethod(element: Element): MethodSpec {
         val fragmentClassName = ClassName.get(element.asType())
         val routerParamElements = element.routerParamElements
@@ -122,6 +156,9 @@ object ScreenLaunchProcessor {
             }
             builder.addStatement("fragment.setArguments(arguments)")
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
+            element.transitionNames?.map {
+                builder.addStatement("transaction.addSharedElement(${it.normalize()}, ${it.toUpperCase()})")
+            }
             builder.addStatement("transaction.replace(containerId, fragment)")
             builder.addStatement("if (fm.findFragmentById(containerId) != null) transaction.addToBackStack(null)")
             builder.addStatement("transaction.commit()")
