@@ -115,7 +115,7 @@ object ScreenLaunchProcessor {
 
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
-            builder.addStatement("${PackageNames.bundle} arguments = new ${PackageNames.bundle}()")
+            builder.addStatement("${PackageNames.BUNDLE} arguments = new ${PackageNames.BUNDLE}()")
             routerParamElements.plus(routerPathParamElements).forEach {
                 val name = it.paramName.normalize()
                 builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")

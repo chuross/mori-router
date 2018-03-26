@@ -8,7 +8,7 @@ object PackageNames {
     const val MATCHER = "java.util.regex.Matcher"
 
     // android
-    const val bundle: String = "android.os.Bundle"
+    const val BUNDLE: String = "android.os.Bundle"
     const val uri: String = "android.net.Uri"
     const val supportFragmentManager: String = "android.support.v4.app.FragmentManager"
     const val supportFragmentTransaction: String = "android.support.v4.app.FragmentTransaction"

@@ -62,7 +62,7 @@ object BindingProcessor {
             builder.addAnnotation(AnnotationSpec.builder(SuppressWarnings::class.java).addMember("value", "\"unchecked\"").build())
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
             builder.addParameter(TypeName.get(element.asType()), "fragment")
-            builder.addStatement("${PackageNames.bundle} bundle = fragment.getArguments()")
+            builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
             builder.addStatement("if (bundle == null) return")
 
             element.paramElements.forEach {
