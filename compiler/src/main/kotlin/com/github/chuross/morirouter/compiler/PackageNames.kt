@@ -3,7 +3,7 @@ package com.github.chuross.morirouter.compiler
 object PackageNames {
 
     // standard
-    const val serializable = "java.io.Serializable"
+    const val SERIALIZABLE = "java.io.Serializable"
     const val pattern = "java.util.regex.Pattern"
     const val matcher = "java.util.regex.Matcher"
 

@@ -73,7 +73,7 @@ object BindingProcessor {
                 }
 
                 val valueName = "${it.paramName.normalize()}Value"
-                builder.addStatement("${PackageNames.serializable} $valueName = bundle.getSerializable(${it.argumentKeyName})")
+                builder.addStatement("${PackageNames.SERIALIZABLE} $valueName = bundle.getSerializable(${it.argumentKeyName})")
 
                 builder.addStatement(if (setterMethod == null) {
                     "if ($valueName != null) fragment.${it.simpleName} = (${it.asType()}) $valueName"
