@@ -94,7 +94,7 @@ object UriLauncherProcessor {
 
         return FieldSpec.builder(ArrayTypeName.of(Pattern::class.java), URI_REGEX_FIELD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .initializer("new ${PackageNames.pattern}[] { ${patternStrings.map { "${PackageNames.pattern}.compile(\"$it\")" }.joinToString(", ")} }")
+                .initializer("new ${PackageNames.PATTERN}[] { ${patternStrings.map { "${PackageNames.PATTERN}.compile(\"$it\")" }.joinToString(", ")} }")
                 .build()
     }
 
@@ -116,7 +116,7 @@ object UriLauncherProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override::class.java)
                 .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
-                .beginControlFlow("for (${PackageNames.pattern} pattern : $URI_REGEX_FIELD_NAME)")
+                .beginControlFlow("for (${PackageNames.PATTERN} pattern : $URI_REGEX_FIELD_NAME)")
                 .beginControlFlow("if (pattern.matcher(uri.toString()).matches())")
                 .addStatement("return true")
                 .endControlFlow()
