@@ -100,7 +100,7 @@ object RouterProcessor {
         return MethodSpec.methodBuilder("dispatch")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeName.BOOLEAN)
-                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
                 .addStatement("return dispatcher.dispatch(uri)")
                 .build()
     }

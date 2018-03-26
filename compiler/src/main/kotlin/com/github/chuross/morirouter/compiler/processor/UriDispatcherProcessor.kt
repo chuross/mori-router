@@ -54,7 +54,7 @@ object UriDispatcherProcessor {
 
     private fun dispatchMethod(): MethodSpec {
         return MethodSpec.methodBuilder("dispatch")
-                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
                 .returns(TypeName.BOOLEAN)
                 .beginControlFlow("for (${UriLauncherProcessor.INTERFACE_CLASS_NAME} launcher : launchers)")
                 .addStatement("if (!launcher.isAvailable(uri)) continue")

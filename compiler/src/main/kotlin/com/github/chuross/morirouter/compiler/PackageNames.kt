@@ -9,7 +9,7 @@ object PackageNames {
 
     // android
     const val BUNDLE: String = "android.os.Bundle"
-    const val uri: String = "android.net.Uri"
+    const val URI: String = "android.net.Uri"
     const val supportFragmentManager: String = "android.support.v4.app.FragmentManager"
     const val supportFragmentTransaction: String = "android.support.v4.app.FragmentTransaction"
 }

@@ -21,7 +21,6 @@ import javax.lang.model.element.Modifier
 object UriLauncherProcessor {
 
     const val INTERFACE_CLASS_NAME = "UriLauncher"
-    private const val URI_PARAM_NAMES_FIELD_NAME = "URI_PARAM_NAMES"
     private const val URI_REGEX_FIELD_NAME = "URI_PATTERN"
     private val PATH_PARAMETER_REGEX = """\{([a-zA-Z0-9_\-]+)\}""".toRegex()
 
@@ -49,7 +48,7 @@ object UriLauncherProcessor {
     private fun isAvailableInterfaceMethod(): MethodSpec {
         return MethodSpec.methodBuilder("isAvailable")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
                 .returns(TypeName.BOOLEAN)
                 .build()
     }
@@ -57,7 +56,7 @@ object UriLauncherProcessor {
     private fun launchInterfaceMethod(): MethodSpec {
         return MethodSpec.methodBuilder("launch")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
                 .build()
     }
 
@@ -115,7 +114,7 @@ object UriLauncherProcessor {
         return MethodSpec.methodBuilder("isAvailable")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override::class.java)
-                .addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+                .addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
                 .beginControlFlow("for (${PackageNames.PATTERN} pattern : $URI_REGEX_FIELD_NAME)")
                 .beginControlFlow("if (pattern.matcher(uri.toString()).matches())")
                 .addStatement("return true")
@@ -141,7 +140,7 @@ object UriLauncherProcessor {
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
             builder.addAnnotation(Override::class.java)
-            builder.addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
+            builder.addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
             uriParamNames?.mapIndexed { index, uriParamNames ->
                 val matcherVariableName = "matcher$index"
 
