@@ -15,9 +15,6 @@ import com.github.chuross.morirouter.annotation.RouterUriParam
         uris = [
             "morirouter://second/{second_id}/contents/{content_id}",
             "https://www.hoge.com/second/{second_id}/contents/{content_id}"
-        ],
-        transitionNames = [
-            "icon_image"
         ]
 )
 class SecondScreenFragment : Fragment() {
@@ -42,7 +39,11 @@ class SecondScreenFragment : Fragment() {
 
         view?.findViewById<TextView>(R.id.text)?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
 
-        view?.findViewById<Button>(R.id.button)?.setOnClickListener {
+        view?.findViewById<Button>(R.id.screen_button)?.setOnClickListener {
+            (activity as? MainActivity)?.router?.thirdOuie()?.iconImage(view.findViewById(R.id.app_icon_image))?.launch()
+        }
+
+        view?.findViewById<Button>(R.id.pop_button)?.setOnClickListener {
             (activity as? MainActivity)?.router?.pop()
         }
     }

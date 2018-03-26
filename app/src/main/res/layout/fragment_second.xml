@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:background="@android:color/holo_green_dark">
 
+    <ImageView
+        android:id="@+id/app_icon_image"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_above="@+id/text"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_launcher" />
+
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
@@ -14,12 +22,21 @@
         android:textColor="@android:color/white"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/screen_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/text"
+        android:text="third screen"/>
+
+    <Button
+        android:id="@+id/pop_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/screen_button"
         android:text="pop screen"/>
 
 </RelativeLayout>
