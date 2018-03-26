@@ -121,7 +121,7 @@ object ScreenLaunchProcessor {
                 builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
-            builder.addStatement("${PackageNames.supportFragmentTransaction} transaction = fm.beginTransaction()")
+            builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
             builder.addStatement("transaction.replace(containerId, fragment)")
             builder.addStatement("if (fm.findFragmentById(containerId) != null) transaction.addToBackStack(null)")
             builder.addStatement("transaction.commit()")

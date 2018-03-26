@@ -11,5 +11,5 @@ object PackageNames {
     const val BUNDLE: String = "android.os.Bundle"
     const val URI: String = "android.net.Uri"
     const val SUPPORT_FRAGMENT_MANAGER: String = "android.support.v4.app.FragmentManager"
-    const val supportFragmentTransaction: String = "android.support.v4.app.FragmentTransaction"
+    const val SUPPORT_FRAGMENT_TRANSACTION: String = "android.support.v4.app.FragmentTransaction"
 }
