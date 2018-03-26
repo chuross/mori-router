@@ -143,8 +143,10 @@ object UriLauncherProcessor {
             builder.addAnnotation(Override::class.java)
             builder.addParameter(ClassName.bestGuess(PackageNames.uri), "uri")
             uriParamNames?.mapIndexed { index, uriParamNames ->
-                builder.addStatement("${PackageNames.matcher} matcher$index = $URI_REGEX_FIELD_NAME[$index].matcher(uri.toString())")
-                builder.beginControlFlow("if (matcher$index.matches())")
+                val matcherVariableName = "matcher$index"
+
+                builder.addStatement("${PackageNames.MATCHER} $matcherVariableName = $URI_REGEX_FIELD_NAME[$index].matcher(uri.toString())")
+                builder.beginControlFlow("if ($matcherVariableName.matches())")
                 builder.addStatement("${ScreenLaunchProcessor.getGeneratedTypeName(element)} launcher = router.$routerPathName()")
                 uriParamNames.forEachIndexed { nameIndex, name ->
                     val uriParamElement = element.enclosedElements
@@ -157,9 +159,9 @@ object UriLauncherProcessor {
                     val uriParamElementClass = Class.forName(uriParamElement.asType().toString())
 
                     val value = when (uriParamElementClass) {
-                        Integer::class.java -> "Integer.valueOf(matcher$index.group(${nameIndex.inc()}))"
-                        Long::class.java -> "Long.valueOf(matcher$index.group(${nameIndex.inc()}))"
-                        else -> "matcher$index.group(${nameIndex.inc()})"
+                        Integer::class.java -> "Integer.valueOf($matcherVariableName.group(${nameIndex.inc()}))"
+                        Long::class.java -> "Long.valueOf($matcherVariableName.group(${nameIndex.inc()}))"
+                        else -> "$matcherVariableName.group(${nameIndex.inc()})"
                     }
                     builder.addStatement("launcher.${name.normalize()}($value)")
                 }

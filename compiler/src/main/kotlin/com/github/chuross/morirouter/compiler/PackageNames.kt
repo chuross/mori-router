@@ -5,7 +5,7 @@ object PackageNames {
     // standard
     const val SERIALIZABLE = "java.io.Serializable"
     const val PATTERN = "java.util.regex.Pattern"
-    const val matcher = "java.util.regex.Matcher"
+    const val MATCHER = "java.util.regex.Matcher"
 
     // android
     const val bundle: String = "android.os.Bundle"
