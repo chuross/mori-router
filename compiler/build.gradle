@@ -10,6 +10,7 @@ dependencies {
     implementation project(':core')
     implementation project(':annotation')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
     implementation "com.squareup:javapoet:${versions.javapoet}"
     implementation "com.google.auto.service:auto-service:${versions.autoService}"
     kapt "com.google.auto.service:auto-service:${versions.autoService}"

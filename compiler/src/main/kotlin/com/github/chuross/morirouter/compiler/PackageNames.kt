@@ -8,6 +8,7 @@ object PackageNames {
     const val MATCHER = "java.util.regex.Matcher"
 
     // android
+    const val BUILD: String = "android.os.Build"
     const val BUNDLE: String = "android.os.Bundle"
     const val URI: String = "android.net.Uri"
     const val VIEW: String = "android.view.View"

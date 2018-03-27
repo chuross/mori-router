@@ -13,7 +13,9 @@ import com.github.chuross.morirouter.annotation.RouterPath
         name = "third_ouie",
         transitionNames = [
             "icon_image"
-        ]
+        ],
+        enterTransitionFactory = ThirdScreenTransitionFactory::class,
+        exitTransitionFactory = ThirdScreenTransitionFactory::class
 )
 class ThirdScreenFragment : Fragment() {
 

@@ -1,7 +1,7 @@
 apply plugin: 'java-library'
 
 dependencies {
-    implementation project(':core')
+    api project(':core')
 }
 
 sourceCompatibility = "1.7"

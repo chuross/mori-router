@@ -3,6 +3,8 @@ package com.github.chuross.morirouter.compiler.processor
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
+import com.github.chuross.morirouter.compiler.extension.enterTransitionFactoryName
+import com.github.chuross.morirouter.compiler.extension.exitTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.isRequiredRouterParam
 import com.github.chuross.morirouter.compiler.extension.paramElements
 import com.github.chuross.morirouter.compiler.extension.paramName
@@ -155,6 +157,17 @@ object ScreenLaunchProcessor {
                 builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
+            builder.beginControlFlow("if (${PackageNames.BUILD}.VERSION.SDK_INT >= ${PackageNames.BUILD}.VERSION_CODES.LOLLIPOP)")
+            builder.addComment("Optional TransitionSet, if use TransitionFactory.")
+            element.enterTransitionFactoryName?.let {
+                builder.addStatement("Object enterTransitionSet = new $it().create()")
+                builder.addStatement("if (enterTransitionSet != null) fragment.setSharedElementEnterTransition(enterTransitionSet)")
+            }
+            element.exitTransitionFactoryName?.let {
+                builder.addStatement("Object exitTransitionSet = new $it().create()")
+                builder.addStatement("if (exitTransitionSet != null) fragment.setSharedElementReturnTransition(exitTransitionSet)")
+            }
+            builder.endControlFlow()
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
             element.transitionNames?.map {
                 val variableName = it.normalize()

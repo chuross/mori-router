@@ -4,6 +4,7 @@ import com.github.chuross.morirouter.annotation.RouterParam
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterUriParam
 import javax.lang.model.element.Element
+import javax.lang.model.type.MirroredTypeException
 
 val Element.isRouterParam: Boolean get() = getAnnotation(RouterParam::class.java) != null
 
@@ -14,6 +15,10 @@ val Element.isRouterUriParam: Boolean get() = getAnnotation(RouterUriParam::clas
 val Element.pathName: String? get() = getAnnotation(RouterPath::class.java)?.name
 
 val Element.pathUris: Array<String>? get() = getAnnotation(RouterPath::class.java)?.uris
+
+val Element.enterTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.enterTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
+
+val Element.exitTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.exitTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
 
 val Element.transitionNames: Array<String>? get() = getAnnotation(RouterPath::class.java).transitionNames
 
