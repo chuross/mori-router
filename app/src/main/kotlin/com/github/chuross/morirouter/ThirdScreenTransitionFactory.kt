@@ -8,14 +8,10 @@ import com.github.chuross.morirouter.core.TransitionFactory
 
 class ThirdScreenTransitionFactory : TransitionFactory {
 
-    override fun create(): Any = ThirdScreenTransitionSet()
-
-    private class ThirdScreenTransitionSet : TransitionSet() {
-        init {
-            ordering = ORDERING_TOGETHER
-            addTransition(ChangeBounds())
-            addTransition(ChangeTransform())
-            addTransition(ChangeImageTransform())
-        }
+    override fun create(): Any = TransitionSet().also {
+        it.ordering = TransitionSet.ORDERING_TOGETHER
+        it.addTransition(ChangeBounds())
+        it.addTransition(ChangeTransform())
+        it.addTransition(ChangeImageTransform())
     }
 }
