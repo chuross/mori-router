@@ -157,19 +157,17 @@ object ScreenLaunchProcessor {
                 builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
-            builder.beginControlFlow("if (${PackageNames.BUILD}.VERSION.SDK_INT >= ${PackageNames.BUILD}.VERSION_CODES.LOLLIPOP)")
             builder.addComment("Optional TransitionSet, if use TransitionFactory.")
-            element.enterTransitionFactoryName?.let {
+            element.enterTransitionFactoryName?.also {
                 builder.addStatement("Object enterTransitionSet = new $it().create()")
                 builder.addStatement("if (enterTransitionSet != null) fragment.setSharedElementEnterTransition(enterTransitionSet)")
             }
-            element.exitTransitionFactoryName?.let {
+            element.exitTransitionFactoryName?.also {
                 builder.addStatement("Object exitTransitionSet = new $it().create()")
                 builder.addStatement("if (exitTransitionSet != null) fragment.setSharedElementReturnTransition(exitTransitionSet)")
             }
-            builder.endControlFlow()
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
-            element.transitionNames?.map {
+            element.transitionNames?.forEach {
                 val variableName = it.normalize()
                 val staticVariableName = it.toUpperCase()
                 builder.addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName($variableName, $staticVariableName)")
