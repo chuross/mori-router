@@ -30,20 +30,20 @@ class SecondScreenFragment : Fragment() {
         SecondScreenBinder.bind(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(context).inflate(R.layout.fragment_second, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view?.findViewById<TextView>(R.id.text)?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
+        view.findViewById<TextView>(R.id.text)?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
 
-        view?.findViewById<Button>(R.id.screen_button)?.setOnClickListener {
+        view.findViewById<Button>(R.id.screen_button)?.setOnClickListener {
             (activity as? MainActivity)?.router?.thirdOuie()?.iconImage(view.findViewById(R.id.app_icon_image))?.launch()
         }
 
-        view?.findViewById<Button>(R.id.pop_button)?.setOnClickListener {
+        view.findViewById<Button>(R.id.pop_button)?.setOnClickListener {
             (activity as? MainActivity)?.router?.pop()
         }
     }

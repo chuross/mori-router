@@ -1,9 +1,9 @@
 package com.github.chuross.morirouter
 
-import android.transition.ChangeBounds
-import android.transition.ChangeImageTransform
-import android.transition.ChangeTransform
-import android.transition.TransitionSet
+import android.support.transition.ChangeBounds
+import android.support.transition.ChangeImageTransform
+import android.support.transition.ChangeTransform
+import android.support.transition.TransitionSet
 import com.github.chuross.morirouter.core.TransitionFactory
 
 class ThirdScreenTransitionFactory : TransitionFactory {

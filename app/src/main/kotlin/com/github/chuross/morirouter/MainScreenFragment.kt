@@ -29,14 +29,14 @@ class MainScreenFragment : Fragment() {
         MainScreenBinder.bind(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(context).inflate(R.layout.fragment_main, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view?.findViewById<Button>(R.id.button)?.setOnClickListener {
+        view.findViewById<Button>(R.id.button)?.setOnClickListener {
              (activity as? MainActivity)?.router?.dispatch(Uri.parse("morirouter://second/2/contents/123"))
         }
     }

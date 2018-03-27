@@ -19,13 +19,13 @@ import com.github.chuross.morirouter.annotation.RouterPath
 )
 class ThirdScreenFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(context).inflate(R.layout.fragment_third, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ViewCompat.setTransitionName(view?.findViewById<ImageView>(R.id.app_icon_image), ThirdOuieScreenLauncher.ICON_IMAGE)
+        ViewCompat.setTransitionName(view.findViewById<ImageView>(R.id.app_icon_image), ThirdOuieScreenLauncher.ICON_IMAGE)
     }
 }
