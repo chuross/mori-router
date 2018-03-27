@@ -168,10 +168,7 @@ object ScreenLaunchProcessor {
             }
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
             element.transitionNames?.forEach {
-                val variableName = it.normalize()
-                val staticVariableName = it.toUpperCase()
-                builder.addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName($variableName, $staticVariableName)")
-                builder.addStatement("transaction.addSharedElement($variableName, $staticVariableName)")
+                builder.addStatement("transaction.addSharedElement(${it.normalize()}, ${it.toUpperCase()})")
             }
             builder.addStatement("transaction.replace(containerId, fragment)")
             builder.addStatement("if (fm.findFragmentById(containerId) != null) transaction.addToBackStack(null)")
