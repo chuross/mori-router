@@ -37,6 +37,8 @@ class SecondScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        TransitionNameHelper.setIconImage(view.findViewById(R.id.app_icon_image))
+
         view.findViewById<TextView>(R.id.text)?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
 
         view.findViewById<Button>(R.id.screen_button)?.setOnClickListener {
