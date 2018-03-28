@@ -9,11 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterParam
+import com.github.chuross.morirouter.databinding.FragmentMainBinding
 
 @RouterPath(
         name = "main"
 )
-class MainScreenFragment : Fragment() {
+class MainScreenFragment : BaseFragment<FragmentMainBinding>() {
 
     @RouterParam
     lateinit var param1: String
@@ -24,20 +25,18 @@ class MainScreenFragment : Fragment() {
     @RouterParam(name = "tekitou_list", required = false)
     var param3: ArrayList<String> = arrayListOf()
 
+    override val layoutResourceId: Int = R.layout.fragment_main
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MainScreenBinder.bind(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(context).inflate(R.layout.fragment_main, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.button)?.setOnClickListener {
-             (activity as? MainActivity)?.router?.dispatch(Uri.parse("morirouter://second/2/contents/123"))
+        binding?.button?.setOnClickListener {
+             router?.dispatch(Uri.parse("morirouter://second/2/contents/123"))
         }
     }
 

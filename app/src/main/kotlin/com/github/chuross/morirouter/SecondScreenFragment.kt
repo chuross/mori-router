@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.RouterUriParam
+import com.github.chuross.morirouter.databinding.FragmentSecondBinding
 
 @RouterPath(
         name = "second",
@@ -17,7 +18,7 @@ import com.github.chuross.morirouter.annotation.RouterUriParam
             "https://www.hoge.com/second/{second_id}/contents/{content_id}"
         ]
 )
-class SecondScreenFragment : Fragment() {
+class SecondScreenFragment : BaseFragment<FragmentSecondBinding>() {
 
     @RouterUriParam(name = "second_id")
     var id: String? = null
@@ -25,28 +26,26 @@ class SecondScreenFragment : Fragment() {
     @RouterUriParam
     var contentId: Int? = null
 
+    override val layoutResourceId: Int = R.layout.fragment_second
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         SecondScreenBinder.bind(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(context).inflate(R.layout.fragment_second, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        TransitionNameHelper.setIconImage(view.findViewById(R.id.app_icon_image))
+        TransitionNameHelper.setIconImage(binding?.appIconImage)
 
-        view.findViewById<TextView>(R.id.text)?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
+        binding?.text?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
 
-        view.findViewById<Button>(R.id.screen_button)?.setOnClickListener {
-            (activity as? MainActivity)?.router?.thirdOuie()?.iconImage(view.findViewById(R.id.app_icon_image))?.launch()
+        binding?.screenButton?.setOnClickListener {
+            router?.thirdOuie()?.iconImage(binding?.appIconImage)?.launch()
         }
 
-        view.findViewById<Button>(R.id.pop_button)?.setOnClickListener {
-            (activity as? MainActivity)?.router?.pop()
+        binding?.popButton?.setOnClickListener {
+            router?.pop()
         }
     }
 }

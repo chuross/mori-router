@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/holo_green_dark">
+<layout>
 
-    <ImageView
-        android:id="@+id/app_icon_image"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_above="@+id/text"
-        android:layout_centerHorizontal="true"
-        android:src="@mipmap/ic_launcher" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_green_dark">
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="second screen"
-        android:textColor="@android:color/white"/>
+        <ImageView
+            android:id="@+id/app_icon_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_above="@+id/text"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/ic_launcher" />
 
-    <Button
-        android:id="@+id/screen_button"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/text"
-        android:text="third screen"/>
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="second screen"
+            android:textColor="@android:color/white" />
 
-    <Button
-        android:id="@+id/pop_button"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/screen_button"
-        android:text="pop screen"/>
+        <Button
+            android:id="@+id/screen_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text"
+            android:layout_centerHorizontal="true"
+            android:text="third screen" />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/pop_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/screen_button"
+            android:layout_centerHorizontal="true"
+            android:text="pop screen" />
+
+    </RelativeLayout>
+</layout>

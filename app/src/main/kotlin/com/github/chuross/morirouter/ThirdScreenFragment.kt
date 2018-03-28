@@ -1,11 +1,9 @@
 package com.github.chuross.morirouter
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.github.chuross.morirouter.annotation.RouterPath
+import com.github.chuross.morirouter.databinding.FragmentThirdBinding
 
 @RouterPath(
         name = "third_ouie",
@@ -15,15 +13,13 @@ import com.github.chuross.morirouter.annotation.RouterPath
         enterTransitionFactory = ThirdScreenTransitionFactory::class,
         exitTransitionFactory = ThirdScreenTransitionFactory::class
 )
-class ThirdScreenFragment : Fragment() {
+class ThirdScreenFragment : BaseFragment<FragmentThirdBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(context).inflate(R.layout.fragment_third, container, false)
-    }
+    override val layoutResourceId: Int = R.layout.fragment_third
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        TransitionNameHelper.setIconImage(view.findViewById(R.id.app_icon_image))
+        TransitionNameHelper.setIconImage(binding?.appIconImage)
     }
 }
