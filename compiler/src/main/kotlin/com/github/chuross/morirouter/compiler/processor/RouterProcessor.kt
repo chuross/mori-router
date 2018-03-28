@@ -8,6 +8,7 @@ import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
 import com.github.chuross.morirouter.compiler.extension.routerParamElements
 import com.github.chuross.morirouter.compiler.extension.routerUriParamElements
+import com.github.chuross.morirouter.core.MoriRouterOptions
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -28,7 +29,7 @@ object RouterProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
-                .addField(containerIdField())
+                .addField(optionsField())
                 .addField(dispatcherField())
                 .addMethod(constructorMethod(elements))
                 .addMethods(screenLaunchMethods(context, elements).also {
@@ -50,8 +51,8 @@ object RouterProcessor {
                 .build()
     }
 
-    private fun containerIdField(): FieldSpec {
-        return FieldSpec.builder(Int::class.java, "containerId")
+    private fun optionsField(): FieldSpec {
+        return FieldSpec.builder(MoriRouterOptions::class.java, "options")
                 .addModifiers(Modifier.PRIVATE)
                 .build()
     }
@@ -67,9 +68,9 @@ object RouterProcessor {
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
             builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
-            builder.addParameter(Int::class.java, "containerId")
+            builder.addParameter(MoriRouterOptions::class.java, "options")
             builder.addStatement("this.fm = fm")
-            builder.addStatement("this.containerId = containerId")
+            builder.addStatement("this.options = options")
             if (elements.any { it.routerUriParamElements.isNotEmpty() }) {
                 builder.addStatement("dispatcher = new ${UriDispatcherProcessor.TYPE_NAME}(this)")
             }
@@ -89,7 +90,7 @@ object RouterProcessor {
                 requiredRouterParamElements.forEach {
                     builder.addParameter(TypeName.get(it.asType()), it.paramName.normalize())
                 }
-                val arguments = listOf("fm", "containerId").plus(requiredRouterParamElements.map { it.paramName.normalize() }).joinToString(", ")
+                val arguments = listOf("fm", "options").plus(requiredRouterParamElements.map { it.paramName.normalize() }).joinToString(", ")
                 builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(it)}($arguments)")
                 builder.returns(ClassName.bestGuess(ScreenLaunchProcessor.getGeneratedTypeName(it)))
             }.build()

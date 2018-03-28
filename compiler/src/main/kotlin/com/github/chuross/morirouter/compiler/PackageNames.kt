@@ -8,11 +8,13 @@ object PackageNames {
     const val MATCHER = "java.util.regex.Matcher"
 
     // android
-    const val BUILD: String = "android.os.Build"
     const val BUNDLE: String = "android.os.Bundle"
     const val URI: String = "android.net.Uri"
     const val VIEW: String = "android.view.View"
     const val VIEW_COMPAT: String = "android.support.v4.view.ViewCompat"
     const val SUPPORT_FRAGMENT_MANAGER: String = "android.support.v4.app.FragmentManager"
     const val SUPPORT_FRAGMENT_TRANSACTION: String = "android.support.v4.app.FragmentTransaction"
+
+    // mori router
+    const val MORI_ROUTER_OPTIONS = "com.github.chuross.morirouter.core.MoriRouterOptions"
 }

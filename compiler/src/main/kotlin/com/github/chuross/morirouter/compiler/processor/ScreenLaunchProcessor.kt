@@ -13,6 +13,8 @@ import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.routerParamElements
 import com.github.chuross.morirouter.compiler.extension.routerUriParamElements
 import com.github.chuross.morirouter.compiler.extension.transitionNames
+import com.github.chuross.morirouter.core.DefaultTransitionFactory
+import com.github.chuross.morirouter.core.MoriRouterOptions
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -39,7 +41,7 @@ object ScreenLaunchProcessor {
                 .addJavadoc("This class is auto generated.")
                 .addFields(transitionNameStaticFields(element))
                 .addField(fragmentManagerField())
-                .addField(containerIdField())
+                .addField(optionsField())
                 .addFields(paramFields(element))
                 .addFields(transitionNameFields(element))
                 .addMethod(constructorMethod(element))
@@ -77,8 +79,8 @@ object ScreenLaunchProcessor {
                 .build()
     }
 
-    private fun containerIdField(): FieldSpec {
-        return FieldSpec.builder(TypeName.INT, "containerId")
+    private fun optionsField(): FieldSpec {
+        return FieldSpec.builder(MoriRouterOptions::class.java, "options")
                 .addModifiers(Modifier.PRIVATE)
                 .build()
     }
@@ -104,9 +106,9 @@ object ScreenLaunchProcessor {
 
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
-            builder.addParameter(TypeName.INT, "containerId")
+            builder.addParameter(MoriRouterOptions::class.java, "options")
             builder.addStatement("this.fm = fm")
-            builder.addStatement("this.containerId = containerId")
+            builder.addStatement("this.options = options")
             requiredRouterParamElements.forEach {
                 val name = it.paramName.normalize()
                 builder.addParameter(TypeName.get(it.asType()), name)
@@ -157,6 +159,8 @@ object ScreenLaunchProcessor {
                 builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
+            builder.addStatement("if (options.getEnterTransition() != null) fragment.setEnterTransition(options.getEnterTransition())")
+            builder.addStatement("if (options.getExitTransition() != null) fragment.setExitTransition(options.getExitTransition())")
             builder.addComment("Optional TransitionSet, if use TransitionFactory.")
             element.enterTransitionFactoryName?.also {
                 builder.addStatement("Object enterTransitionSet = new $it().create()")
@@ -170,8 +174,8 @@ object ScreenLaunchProcessor {
             element.transitionNames?.forEach {
                 builder.addStatement("transaction.addSharedElement(${it.normalize()}, ${it.toUpperCase()})")
             }
-            builder.addStatement("transaction.replace(containerId, fragment)")
-            builder.addStatement("if (fm.findFragmentById(containerId) != null) transaction.addToBackStack(null)")
+            builder.addStatement("transaction.replace(options.getContainerId(), fragment)")
+            builder.addStatement("if (fm.findFragmentById(options.getContainerId()) != null) transaction.addToBackStack(null)")
             builder.addStatement("transaction.commit()")
             builder.addStatement("fm.executePendingTransactions()")
         }.build()
