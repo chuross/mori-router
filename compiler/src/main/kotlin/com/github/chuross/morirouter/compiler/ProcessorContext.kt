@@ -10,6 +10,6 @@ class ProcessorContext(
 ) {
 
     fun getPackageName(element: Element): String {
-        return elementUtils.getPackageOf(element).qualifiedName.toString()
+        return elementUtils.getPackageOf(element).qualifiedName.toString().plus(".router")
     }
 }

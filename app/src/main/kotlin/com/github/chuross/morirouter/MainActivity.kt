@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.transition.Fade
 import com.github.chuross.morirouter.core.MoriRouterOptions
+import com.github.chuross.morirouter.router.MoriRouter
 
 class MainActivity : AppCompatActivity() {
 

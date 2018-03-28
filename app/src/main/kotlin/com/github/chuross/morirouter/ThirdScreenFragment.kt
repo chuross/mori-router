@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentThirdBinding
+import com.github.chuross.morirouter.router.TransitionNameHelper
 
 @RouterPath(
         name = "third_ouie",

@@ -142,6 +142,7 @@ object ScreenLaunchProcessor {
         val binderTypeName = BindingProcessor.getGeneratedTypeName(element)
 
         return MethodSpec.methodBuilder("launch").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC)
             builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
             builder.addStatement("${PackageNames.BUNDLE} arguments = new ${PackageNames.BUNDLE}()")
             routerParamElements.plus(routerPathParamElements).forEach {
