@@ -33,14 +33,16 @@ object TransitionNameHelperProcessor {
     }
 
     private fun transitionNamesStaticMethods(elements: Set<Element>): Iterable<MethodSpec> {
-        return elements.map {
-            it.transitionNames?.map {
-                MethodSpec.methodBuilder("set${it.capitalize().normalize()}")
-                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                        .addParameter(ClassName.bestGuess(PackageNames.VIEW), "view")
-                        .addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName(view, \"$it\")")
-                        .build()
-            } ?: emptyList()
-        }.flatten()
+        return elements
+                .mapNotNull { it.transitionNames?.toList() }
+                .flatten()
+                .distinct()
+                .map {
+                    MethodSpec.methodBuilder("set${it.capitalize().normalize()}")
+                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                            .addParameter(ClassName.bestGuess(PackageNames.VIEW), "view")
+                            .addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName(view, \"$it\")")
+                            .build()
+                }
     }
 }
