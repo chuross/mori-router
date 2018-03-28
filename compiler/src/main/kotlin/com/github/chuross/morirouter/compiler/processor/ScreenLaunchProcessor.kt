@@ -39,7 +39,6 @@ object ScreenLaunchProcessor {
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
-                .addFields(transitionNameStaticFields(element))
                 .addField(fragmentManagerField())
                 .addField(optionsField())
                 .addFields(paramFields(element))
@@ -62,15 +61,6 @@ object ScreenLaunchProcessor {
         if (requiredParamElement != null && pathParamElement != null) {
             throw IllegalStateException("RouterParam 'required' can use no RouterUriParam only")
         }
-    }
-
-    private fun transitionNameStaticFields(element: Element): Iterable<FieldSpec> {
-        return element.transitionNames?.map {
-            FieldSpec.builder(String::class.java, it.toUpperCase())
-                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                    .initializer("\"$it\"")
-                    .build()
-        } ?: listOf()
     }
 
     private fun fragmentManagerField(): FieldSpec {
@@ -172,7 +162,7 @@ object ScreenLaunchProcessor {
             }
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
             element.transitionNames?.forEach {
-                builder.addStatement("transaction.addSharedElement(${it.normalize()}, ${it.toUpperCase()})")
+                builder.addStatement("transaction.addSharedElement(${it.normalize()}, \"$it\")")
             }
             builder.addStatement("transaction.replace(options.getContainerId(), fragment)")
             builder.addStatement("if (fm.findFragmentById(options.getContainerId()) != null) transaction.addToBackStack(null)")
