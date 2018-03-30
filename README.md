@@ -38,7 +38,11 @@ class MainScreenFragment : Fragment() {
 2. Execute build command, Then `MoriRouter` class is auto generated.
 
 ```kotlin
-val router = MoriRouter(supportFragmentManager, R.id.container) // MoriRouter is auto generated class.
+val options = MoriRouterOptions.Builder(R.id.container)
+                .setEnterTransition(transition) // `android.support.transition` or `android.transition`
+                .setExitTransition(transition)
+
+val router = MoriRouter(supportFragmentManager, options) // MoriRouter is auto generated class.
 
 router
     .main("required1", 1000) // main(String param1, Integer ieei)
