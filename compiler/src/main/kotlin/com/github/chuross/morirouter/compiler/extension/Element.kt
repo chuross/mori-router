@@ -20,8 +20,6 @@ val Element.enterTransitionFactoryName: String? get() = try { getAnnotation(Rout
 
 val Element.exitTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.exitTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
 
-val Element.transitionNames: Array<String>? get() = getAnnotation(RouterPath::class.java).transitionNames
-
 val Element.paramName: String get() {
     return argumentName ?: uriArgumentName ?: throw IllegalStateException("This element has no Argument and UriArgument")
 }
