@@ -2,7 +2,7 @@ package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
-import com.github.chuross.morirouter.compiler.extension.isRouterUriParam
+import com.github.chuross.morirouter.compiler.extension.isUriArgument
 import com.squareup.javapoet.ArrayTypeName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
@@ -41,7 +41,7 @@ object UriDispatcherProcessor {
 
     private fun constructorMethod(elements: Set<Element>): MethodSpec {
         val uriLauncherNames = elements
-                .filter { it.enclosedElements.any { it.isRouterUriParam } }
+                .filter { it.enclosedElements.any { it.isUriArgument } }
                 .map { UriLauncherProcessor.getGeneratedTypeName(it) }
 
         val initializeStatement = uriLauncherNames.map { "new $it(router)" }.joinToString(", ")

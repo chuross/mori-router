@@ -2,12 +2,12 @@ package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
-import com.github.chuross.morirouter.compiler.extension.isRequiredRouterParam
+import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
-import com.github.chuross.morirouter.compiler.extension.routerParamElements
-import com.github.chuross.morirouter.compiler.extension.routerUriParamElements
+import com.github.chuross.morirouter.compiler.extension.argumentElements
+import com.github.chuross.morirouter.compiler.extension.uriArgumentElements
 import com.github.chuross.morirouter.core.MoriRouterOptions
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
@@ -71,7 +71,7 @@ object RouterProcessor {
             builder.addParameter(MoriRouterOptions::class.java, "options")
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.options = options")
-            if (elements.any { it.routerUriParamElements.isNotEmpty() }) {
+            if (elements.any { it.uriArgumentElements.isNotEmpty() }) {
                 builder.addStatement("dispatcher = new ${UriDispatcherProcessor.TYPE_NAME}(this)")
             }
         }.build()
@@ -83,7 +83,7 @@ object RouterProcessor {
             UriLauncherProcessor.process(context, it)
             BindingProcessor.process(context, it)
 
-            val requiredRouterParamElements = it.routerParamElements.filter { it.isRequiredRouterParam }
+            val requiredRouterParamElements = it.argumentElements.filter { it.isRequiredArgument }
 
             MethodSpec.methodBuilder(it.pathName?.normalize()).also { builder ->
                 builder.addModifiers(Modifier.PUBLIC)

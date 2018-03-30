@@ -3,7 +3,7 @@ package com.github.chuross.morirouter
 import android.os.Bundle
 import android.view.View
 import com.github.chuross.morirouter.annotation.RouterPath
-import com.github.chuross.morirouter.annotation.RouterUriParam
+import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.databinding.FragmentSecondBinding
 import com.github.chuross.morirouter.router.SecondScreenBinder
 import com.github.chuross.morirouter.router.TransitionNameHelper
@@ -17,10 +17,10 @@ import com.github.chuross.morirouter.router.TransitionNameHelper
 )
 class SecondScreenFragment : BaseFragment<FragmentSecondBinding>() {
 
-    @RouterUriParam(name = "second_id")
+    @UriArgument(name = "second_id")
     var id: String? = null
 
-    @RouterUriParam
+    @UriArgument
     var contentId: Int? = null
 
     override val layoutResourceId: Int = R.layout.fragment_second

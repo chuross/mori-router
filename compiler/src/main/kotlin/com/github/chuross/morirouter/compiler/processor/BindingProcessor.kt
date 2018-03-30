@@ -3,7 +3,7 @@ package com.github.chuross.morirouter.compiler.processor
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
-import com.github.chuross.morirouter.compiler.extension.paramElements
+import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.pathName
@@ -27,7 +27,7 @@ object BindingProcessor {
     }
 
     fun process(context: ProcessorContext, element: Element) {
-        if (element.paramElements.isEmpty()) return
+        if (element.allArgumentElements.isEmpty()) return
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -43,7 +43,7 @@ object BindingProcessor {
     }
 
     private fun bundleKeyStaticFields(element: Element): Iterable<FieldSpec> {
-        return element.paramElements.map {
+        return element.allArgumentElements.map {
             FieldSpec.builder(String::class.java, it.argumentKeyName)
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .initializer("\"argument_key_${it.paramName.toLowerCase()}\"")
@@ -65,7 +65,7 @@ object BindingProcessor {
             builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
             builder.addStatement("if (bundle == null) return")
 
-            element.paramElements.forEach {
+            element.allArgumentElements.forEach {
                 val setterMethodName = "set${it.simpleName.toString().capitalize()}"
                 val setterMethod = element.enclosedElements.find {
                     it.kind == ElementKind.METHOD

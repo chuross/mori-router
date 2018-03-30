@@ -5,15 +5,14 @@ import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.enterTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.exitTransitionFactoryName
-import com.github.chuross.morirouter.compiler.extension.isRequiredRouterParam
-import com.github.chuross.morirouter.compiler.extension.paramElements
+import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
+import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
 import com.github.chuross.morirouter.compiler.extension.normalize
-import com.github.chuross.morirouter.compiler.extension.routerParamElements
-import com.github.chuross.morirouter.compiler.extension.routerUriParamElements
+import com.github.chuross.morirouter.compiler.extension.argumentElements
+import com.github.chuross.morirouter.compiler.extension.uriArgumentElements
 import com.github.chuross.morirouter.compiler.extension.transitionNames
-import com.github.chuross.morirouter.core.DefaultTransitionFactory
 import com.github.chuross.morirouter.core.MoriRouterOptions
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
@@ -55,11 +54,11 @@ object ScreenLaunchProcessor {
     }
 
     private fun validate(element: Element) {
-        val requiredParamElement = element.routerParamElements.find { it.isRequiredRouterParam }
-        val pathParamElement = element.routerUriParamElements.firstOrNull()
+        val requiredParamElement = element.argumentElements.find { it.isRequiredArgument }
+        val pathParamElement = element.uriArgumentElements.firstOrNull()
 
         if (requiredParamElement != null && pathParamElement != null) {
-            throw IllegalStateException("RouterParam 'required' can use no RouterUriParam only")
+            throw IllegalStateException("Argument 'required' can use no UriArgument only")
         }
     }
 
@@ -76,7 +75,7 @@ object ScreenLaunchProcessor {
     }
 
     private fun paramFields(element: Element): Iterable<FieldSpec> {
-        return element.paramElements.map {
+        return element.allArgumentElements.map {
             FieldSpec.builder(TypeName.get(it.asType()), it.paramName.normalize())
                     .addModifiers(Modifier.PRIVATE)
                     .build()
@@ -92,7 +91,7 @@ object ScreenLaunchProcessor {
     }
 
     private fun constructorMethod(element: Element): MethodSpec {
-        val requiredRouterParamElements = element.routerParamElements.filter { it.isRequiredRouterParam }
+        val requiredRouterParamElements = element.argumentElements.filter { it.isRequiredArgument }
 
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
@@ -108,8 +107,8 @@ object ScreenLaunchProcessor {
     }
 
     private fun optionalParameterMethods(element: Element): Iterable<MethodSpec> {
-        return element.paramElements
-                .filter { !it.isRequiredRouterParam }
+        return element.allArgumentElements
+                .filter { !it.isRequiredArgument }
                 .map {
                     val name = it.paramName.normalize()
                     MethodSpec.methodBuilder(name)
@@ -137,8 +136,8 @@ object ScreenLaunchProcessor {
 
     private fun launchMethod(element: Element): MethodSpec {
         val fragmentClassName = ClassName.get(element.asType())
-        val routerParamElements = element.routerParamElements
-        val routerPathParamElements = element.routerUriParamElements
+        val routerParamElements = element.argumentElements
+        val routerPathParamElements = element.uriArgumentElements
         val binderTypeName = BindingProcessor.getGeneratedTypeName(element)
 
         return MethodSpec.methodBuilder("launch").also { builder ->

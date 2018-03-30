@@ -1,8 +1,8 @@
 package com.github.chuross.morirouter.compiler
 
-import com.github.chuross.morirouter.annotation.RouterParam
+import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
-import com.github.chuross.morirouter.annotation.RouterUriParam
+import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.compiler.processor.RouterProcessor
 import com.github.chuross.morirouter.compiler.processor.TransitionNameHelperProcessor
 import com.github.chuross.morirouter.compiler.processor.UriLauncherProcessor
@@ -40,8 +40,8 @@ class MoriRouterProcessor : AbstractProcessor() {
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return hashSetOf(
                 RouterPath::class.java.canonicalName,
-                RouterUriParam::class.java.canonicalName,
-                RouterParam::class.java.canonicalName
+                UriArgument::class.java.canonicalName,
+                Argument::class.java.canonicalName
         )
     }
 
