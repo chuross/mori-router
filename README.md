@@ -17,13 +17,13 @@ This library for single activity application.(multi fragments)
 @RouterPath(name = "main")
 class MainScreenFragment : Fragment() {
 
-    @RouterParam
+    @Argument
     lateinit var param1: String
 
-    @RouterParam(name = "ieei")
+    @Argument(name = "ieei")
     lateinit var param2: Int
 
-    @RouterParam(required = false)
+    @Argument(required = false)
     var param3: ArrayList<String> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,14 +59,14 @@ router
 )
 class SecondScreenFragment : Fragment() {
 
-    @RouterUriParam(name = "hoge_id")
+    @UriArgument(name = "hoge_id")
     var hogeId: Int
 
-    @RouterUriParam
+    @UriArgument
     var fuga: String
 
     // If use `@RouterUriParam`, Don't use `required = true`.
-    @RouterParam(required = false)
+    @Argument(required = false)
     var piyo: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
