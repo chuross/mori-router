@@ -4,7 +4,6 @@ import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.compiler.processor.RouterProcessor
-import com.github.chuross.morirouter.compiler.processor.TransitionNameHelperProcessor
 import com.github.chuross.morirouter.compiler.processor.UriLauncherProcessor
 import com.google.auto.service.AutoService
 import java.io.PrintWriter
@@ -54,7 +53,6 @@ class MoriRouterProcessor : AbstractProcessor() {
 
             UriLauncherProcessor.processInterface(context, elements)
             RouterProcessor.process(context, elements)
-            TransitionNameHelperProcessor.process(context, elements)
 
             true
         } catch (e: Throwable) {

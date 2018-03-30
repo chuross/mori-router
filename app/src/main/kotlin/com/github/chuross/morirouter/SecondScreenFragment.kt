@@ -1,12 +1,12 @@
 package com.github.chuross.morirouter
 
 import android.os.Bundle
+import android.support.v4.view.ViewCompat
 import android.view.View
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.databinding.FragmentSecondBinding
 import com.github.chuross.morirouter.router.SecondScreenBinder
-import com.github.chuross.morirouter.router.TransitionNameHelper
 
 @RouterPath(
         name = "second",
@@ -33,12 +33,12 @@ class SecondScreenFragment : BaseFragment<FragmentSecondBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        TransitionNameHelper.setIconImage(binding?.appIconImage)
+        ViewCompat.setTransitionName(binding?.appIconImage, getString(R.string.transition_icon_image))
 
         binding?.text?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
 
         binding?.screenButton?.setOnClickListener {
-            router?.thirdOuie()?.iconImage(binding?.appIconImage)?.launch()
+            router?.thirdOuie()?.addSharedElement(binding?.appIconImage)?.launch()
         }
 
         binding?.popButton?.setOnClickListener {

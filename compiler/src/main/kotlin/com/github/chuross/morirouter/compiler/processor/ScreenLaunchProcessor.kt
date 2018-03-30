@@ -18,6 +18,7 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
@@ -40,11 +41,11 @@ object ScreenLaunchProcessor {
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
                 .addField(optionsField())
+                .addField(transitionNamesField())
                 .addFields(paramFields(element))
-                .addFields(transitionNameFields(element))
                 .addMethod(constructorMethod(element))
                 .addMethods(optionalParameterMethods(element))
-                .addMethods(transitionNameParameterMethod(element))
+                .addMethod(transitionNameParameterMethod(element))
                 .addMethod(launchMethod(element))
                 .build()
 
@@ -74,20 +75,20 @@ object ScreenLaunchProcessor {
                 .build()
     }
 
+    private fun transitionNamesField(): FieldSpec {
+        val listClassName = ClassName.get("java.util", "List")
+        return FieldSpec.builder(ParameterizedTypeName.get(listClassName, ClassName.bestGuess(PackageNames.VIEW)), "sharedElements")
+                .addModifiers(Modifier.PRIVATE)
+                .initializer("new ${PackageNames.ARRAY_LIST}<>()")
+                .build()
+    }
+
     private fun paramFields(element: Element): Iterable<FieldSpec> {
         return element.allArgumentElements.map {
             FieldSpec.builder(TypeName.get(it.asType()), it.paramName.normalize())
                     .addModifiers(Modifier.PRIVATE)
                     .build()
         }
-    }
-
-    private fun transitionNameFields(element: Element): Iterable<FieldSpec> {
-        return element.transitionNames?.map {
-            FieldSpec.builder(ClassName.bestGuess(PackageNames.VIEW), it.normalize())
-                    .addModifiers(Modifier.PRIVATE)
-                    .build()
-        } ?: listOf()
     }
 
     private fun constructorMethod(element: Element): MethodSpec {
@@ -121,17 +122,14 @@ object ScreenLaunchProcessor {
                 }
     }
 
-    private fun transitionNameParameterMethod(element: Element): Iterable<MethodSpec> {
-        return element.transitionNames?.map {
-            val name = it.normalize()
-            MethodSpec.methodBuilder(name)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ClassName.bestGuess(PackageNames.VIEW), name)
-                    .addStatement("this.$name = $name")
-                    .addStatement("return this")
-                    .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
-                    .build()
-        } ?: listOf()
+    private fun transitionNameParameterMethod(element: Element): MethodSpec {
+        return MethodSpec.methodBuilder("addSharedElement")
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(ClassName.bestGuess(PackageNames.VIEW), "view")
+                .addStatement("this.sharedElements.add(view)")
+                .addStatement("return this")
+                .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
+                .build()
     }
 
     private fun launchMethod(element: Element): MethodSpec {
@@ -161,9 +159,9 @@ object ScreenLaunchProcessor {
                 builder.addStatement("if (exitTransitionSet != null) fragment.setSharedElementReturnTransition(exitTransitionSet)")
             }
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
-            element.transitionNames?.forEach {
-                builder.addStatement("transaction.addSharedElement(${it.normalize()}, \"$it\")")
-            }
+            builder.beginControlFlow("for (View view : sharedElements)")
+            builder.addStatement("transaction.addSharedElement(view, ${PackageNames.VIEW_COMPAT}.getTransitionName(view))")
+            builder.endControlFlow()
             builder.addStatement("transaction.replace(options.getContainerId(), fragment)")
             builder.addStatement("if (fm.findFragmentById(options.getContainerId()) != null) transaction.addToBackStack(null)")
             builder.addStatement("transaction.commit()")

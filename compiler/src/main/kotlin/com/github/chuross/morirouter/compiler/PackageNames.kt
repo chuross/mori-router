@@ -6,6 +6,7 @@ object PackageNames {
     const val SERIALIZABLE = "java.io.Serializable"
     const val PATTERN = "java.util.regex.Pattern"
     const val MATCHER = "java.util.regex.Matcher"
+    const val ARRAY_LIST = "java.util.ArrayList"
 
     // android
     const val BUNDLE: String = "android.os.Bundle"
@@ -14,7 +15,4 @@ object PackageNames {
     const val VIEW_COMPAT: String = "android.support.v4.view.ViewCompat"
     const val SUPPORT_FRAGMENT_MANAGER: String = "android.support.v4.app.FragmentManager"
     const val SUPPORT_FRAGMENT_TRANSACTION: String = "android.support.v4.app.FragmentTransaction"
-
-    // mori router
-    const val MORI_ROUTER_OPTIONS = "com.github.chuross.morirouter.core.MoriRouterOptions"
 }
