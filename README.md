@@ -42,6 +42,7 @@ class MainScreenFragment : Fragment() {
 val options = MoriRouterOptions.Builder(R.id.container)
                 .setEnterTransition(transition) // `android.support.transition` or `android.transition`
                 .setExitTransition(transition)
+                .build()
 
 val router = MoriRouter(supportFragmentManager, options) // MoriRouter is auto generated class.
 
