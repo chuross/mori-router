@@ -86,3 +86,39 @@ class SecondScreenFragment : Fragment() {
 router.dispatch(Uri.parse("example://hoge/123/test")) // launch SecondScreenFragment (hogeId = 123, fuga=test)
 router.dispatch(Uri.parse("https://example.com/hoge/123/test")) // launch SecondScreenFragment (hogeId = 123, fuga=test)
 ```
+
+### SharedElement support
+1. set transition name in your XML layout or in your code.
+
+XML
+
+```xml
+<YourLayout
+    ....
+    android:transitionName="your_transition_name" />
+```
+
+Code
+
+```java
+ViewCompat.setTransitionName(yourView, "your_transition_name");
+```
+
+2. add enterTransitionFactory and exitTransitionFactory to `@RouterPath`.
+
+```kotlin
+@RouterPath(
+        name = "third",
+        enterTransitionFactory = ThirdScreenTransitionFactory::class,
+        exitTransitionFactory = ThirdScreenTransitionFactory::class
+)
+class ThirdScreenFragment : Fragment() {
+   ....
+}
+```
+
+3. add SharedElements when before transition `third` screen.
+
+```kotlin
+router.third().addSharedElement(yourView).launch()
+```
