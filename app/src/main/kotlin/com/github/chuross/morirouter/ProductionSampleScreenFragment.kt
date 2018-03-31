@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentProductionSampleBinding
+import com.github.chuross.morirouter.router.ListFragmentBuilder
 
 @RouterPath(
         name = "productionSample"
@@ -15,6 +16,12 @@ class ProductionSampleScreenFragment : BaseFragment<FragmentProductionSampleBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val adapter = FragmentPagerAdapter(childFragmentManager, listOf(
+                Pair("first", { ListFragmentBuilder(android.R.color.holo_blue_dark).build() }),
+                Pair("second", { ListFragmentBuilder(android.R.color.holo_green_dark).build() })
+        ))
 
+        binding.viewPager.adapter = adapter
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
     }
 }

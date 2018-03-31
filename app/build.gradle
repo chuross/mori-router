@@ -44,4 +44,5 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${versions.supportLib}"
     implementation "com.android.support:design:${versions.supportLib}"
     kapt 'com.android.databinding:compiler:2.3.3'
+    implementation 'com.github.chuross.recyclerview-adapters:recyclerview-adapters:2.1.3'
 }

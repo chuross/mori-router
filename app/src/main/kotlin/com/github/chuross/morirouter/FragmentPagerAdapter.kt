@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter
 
 class FragmentPagerAdapter(fragmentManager: FragmentManager, private val contents: List<Pair<String, () -> Fragment>>) : FragmentPagerAdapter(fragmentManager) {
 
+    override fun getPageTitle(position: Int): CharSequence? = contents[position].first
+
     override fun getItem(position: Int): Fragment = contents[position].second.invoke()
 
     override fun getCount(): Int = contents.size
