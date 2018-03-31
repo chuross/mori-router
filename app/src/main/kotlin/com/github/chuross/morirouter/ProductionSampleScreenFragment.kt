@@ -17,8 +17,8 @@ class ProductionSampleScreenFragment : BaseFragment<FragmentProductionSampleBind
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = FragmentPagerAdapter(childFragmentManager, listOf(
-                Pair("first", { ListFragmentBuilder(android.R.color.holo_blue_dark).build() }),
-                Pair("second", { ListFragmentBuilder(android.R.color.holo_green_dark).build() })
+                Pair("first", { ListFragmentBuilder("first").build() }),
+                Pair("second", { ListFragmentBuilder("second").build() })
         ))
 
         binding.viewPager.adapter = adapter

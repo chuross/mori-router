@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="imageUrl"
+            type="String" />
+
+        <variable
+            name="index"
+            type="Integer" />
+    </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/thumbnail_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintVertical_bias="0.5"
+            app:imageUrl="@{imageUrl}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.format(`%dのいらすと`, index)}"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/thumbnail_image" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>
