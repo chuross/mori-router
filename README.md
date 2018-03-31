@@ -50,6 +50,25 @@ router
     .launch() // launch main screen
 ```
 
+### Fragment builder support
+Also can use `@WithArguments` annotation.
+This library generate {class_name}Builder code.
+
+```kotlin
+@WithArguments
+class HogeScreenFragment : Fragment() {
+
+    @Argument
+    lateinit var hogeName: String
+
+    ....
+}
+```
+
+```kotlin
+val fragment: Fragment = HogeScreenFragmentBuilder(hogeName).build() // HogeScreenFragmentBuilder is auto generated class
+```
+
 ### DeepLink support
 1. If use deepLink support, `uri` parameter add to `@RouterPath`, and add definition `@RouterUriParam` parameters in your screen fragment.
 
