@@ -23,6 +23,6 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.backgroundColor = backgroundResourceId
+        backgroundResourceId?.let { binding.root.setBackgroundResource(it) }
     }
 }
