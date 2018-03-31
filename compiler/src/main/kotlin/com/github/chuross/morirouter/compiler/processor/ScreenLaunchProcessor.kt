@@ -2,15 +2,15 @@ package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
+import com.github.chuross.morirouter.compiler.extension.allArgumentElements
+import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.enterTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.exitTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
-import com.github.chuross.morirouter.compiler.extension.allArgumentElements
+import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
-import com.github.chuross.morirouter.compiler.extension.normalize
-import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.uriArgumentElements
 import com.github.chuross.morirouter.core.MoriRouterOptions
 import com.squareup.javapoet.ClassName
