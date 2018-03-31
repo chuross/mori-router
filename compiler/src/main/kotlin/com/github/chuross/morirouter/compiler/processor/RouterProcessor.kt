@@ -31,7 +31,7 @@ object RouterProcessor {
                 .addField(fragmentManagerField())
                 .addField(optionsField())
                 .addField(dispatcherField())
-                .addMethod(constructorMethod(elements))
+                .addMethod(constructorMethod())
                 .addMethods(screenLaunchMethods(context, elements).also {
                     // ScreenLauncherを一通り作った後に作る
                     UriDispatcherProcessor.process(context, elements)
@@ -64,16 +64,14 @@ object RouterProcessor {
 
     }
 
-    private fun constructorMethod(elements: Set<Element>): MethodSpec {
+    private fun constructorMethod(): MethodSpec {
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
             builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
             builder.addParameter(MoriRouterOptions::class.java, "options")
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.options = options")
-            if (elements.any { it.uriArgumentElements.isNotEmpty() }) {
-                builder.addStatement("dispatcher = new ${UriDispatcherProcessor.TYPE_NAME}(this)")
-            }
+            builder.addStatement("dispatcher = new ${UriDispatcherProcessor.TYPE_NAME}(this)")
         }.build()
     }
 

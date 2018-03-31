@@ -18,8 +18,6 @@ object UriDispatcherProcessor {
     const val TYPE_NAME = "UriDispatcher"
 
     fun process(context: ProcessorContext, elements: Set<Element>) {
-        if (elements.isEmpty()) return
-
         val typeSpec = TypeSpec.classBuilder(TYPE_NAME)
                 .addModifiers(Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
