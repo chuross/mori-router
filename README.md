@@ -50,6 +50,10 @@ router
     .main("required1", 1000) // main(String param1, Integer ieei)
     .param3(listOf("fuga")) // optional value
     .launch() // launch main screen
+
+
+// pop screen
+router.pop()
 ```
 
 ### Fragment builder support
