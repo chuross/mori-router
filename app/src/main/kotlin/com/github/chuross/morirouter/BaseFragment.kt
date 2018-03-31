@@ -13,7 +13,7 @@ abstract class BaseFragment<B: ViewDataBinding> : Fragment() {
 
     abstract val layoutResourceId: Int
     val router: MoriRouter? get() = (activity as? MainActivity)?.router
-    var binding: B? = null
+    lateinit var binding: B
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(context).inflate(layoutResourceId, container, false).also {

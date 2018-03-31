@@ -33,15 +33,15 @@ class SecondScreenFragment : BaseFragment<FragmentSecondBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ViewCompat.setTransitionName(binding?.appIconImage, getString(R.string.transition_icon_image))
+        ViewCompat.setTransitionName(binding.appIconImage, getString(R.string.transition_icon_image))
 
-        binding?.text?.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
+        binding.text.text = "format\nmorirouter://second/{second_id}/contents/{content_id}\n\nid=$id, contentId=$contentId"
 
-        binding?.screenButton?.setOnClickListener {
-            router?.thirdOuie()?.addSharedElement(binding?.appIconImage)?.launch()
+        binding.screenButton.setOnClickListener {
+            router?.thirdOuie()?.addSharedElement(binding.appIconImage)?.launch()
         }
 
-        binding?.popButton?.setOnClickListener {
+        binding.popButton.setOnClickListener {
             router?.pop()
         }
     }

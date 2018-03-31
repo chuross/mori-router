@@ -32,7 +32,7 @@ class MainScreenFragment : BaseFragment<FragmentMainBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.button?.setOnClickListener {
+        binding.button?.setOnClickListener {
              router?.dispatch(Uri.parse("morirouter://second/2/contents/123"))
         }
     }

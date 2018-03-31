@@ -13,5 +13,15 @@
             android:layout_centerHorizontal="true"
             android:src="@mipmap/ic_launcher" />
 
+        <Button
+            android:id="@+id/screen_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/app_icon_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="start production sample" />
+
     </RelativeLayout>
 </layout>
