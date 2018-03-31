@@ -6,7 +6,7 @@ import android.view.View
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.databinding.FragmentSecondBinding
-import com.github.chuross.morirouter.router.SecondScreenBinder
+import com.github.chuross.morirouter.router.SecondScreenFragmentBinder
 
 @RouterPath(
         name = "second",
@@ -27,7 +27,7 @@ class SecondScreenFragment : BaseFragment<FragmentSecondBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SecondScreenBinder.bind(this)
+        SecondScreenFragmentBinder.bind(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

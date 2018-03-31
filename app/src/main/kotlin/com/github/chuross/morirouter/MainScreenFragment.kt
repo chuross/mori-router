@@ -6,7 +6,7 @@ import android.view.View
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.databinding.FragmentMainBinding
-import com.github.chuross.morirouter.router.MainScreenBinder
+import com.github.chuross.morirouter.router.MainScreenFragmentBinder
 
 @RouterPath(
         name = "main"
@@ -26,7 +26,7 @@ class MainScreenFragment : BaseFragment<FragmentMainBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MainScreenBinder.bind(this)
+        MainScreenFragmentBinder.bind(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

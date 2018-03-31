@@ -6,7 +6,6 @@ import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.normalize
-import com.github.chuross.morirouter.compiler.extension.pathName
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -20,10 +19,7 @@ import javax.lang.model.element.Modifier
 object BindingProcessor {
 
     fun getGeneratedTypeName(element: Element): String {
-        if (element.pathName.isNullOrBlank()) {
-            throw IllegalStateException("RouterPath name must be not empty")
-        }
-        return "${element.pathName?.normalize()?.capitalize()}ScreenBinder"
+        return "${element.simpleName}Binder"
     }
 
     fun process(context: ProcessorContext, element: Element) {
