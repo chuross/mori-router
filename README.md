@@ -5,6 +5,7 @@ This library for single activity application.(multi fragments)
 
 ## Futures
 - Auto generate routing codes
+- Auto generate Fragment builder codes
 - DeepLink support
 - Shared element support
 
