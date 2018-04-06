@@ -4,8 +4,8 @@ import android.databinding.BindingAdapter
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 
-@BindingAdapter(value = ["imageUrl"])
-fun ImageView.loadImage(imageUrl: String) {
+@BindingAdapter(value = ["ext_imageUrl"])
+fun ImageView.extLoadImage(imageUrl: String) {
     Picasso.with(context)
             .load(imageUrl)
             .fit()

@@ -18,8 +18,6 @@ class ThirdScreenFragment : BaseFragment<FragmentThirdBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ViewCompat.setTransitionName(binding.appIconImage, getString(R.string.transition_icon_image))
-
         binding.screenButton?.setOnClickListener {
             router?.productionSample()?.launch()
         }

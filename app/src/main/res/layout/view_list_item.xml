@@ -24,7 +24,8 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:background="@android:color/black"
-            app:imageUrl="@{imageUrl}"
+            app:ext_imageUrl="@{imageUrl}"
+            app:ext_transitionName="@{@string/transition_icon_image}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -6,7 +6,9 @@ import android.view.View
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.WithArguments
 import com.github.chuross.morirouter.databinding.FragmentListBinding
+import com.github.chuross.morirouter.databinding.ViewListItemBinding
 import com.github.chuross.morirouter.router.ListFragmentBinder
+import com.github.chuross.recyclerviewadapters.databinding.BindingViewHolder
 
 @WithArguments
 class ListFragment : BaseFragment<FragmentListBinding>() {
@@ -31,6 +33,15 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
             it.addAll(listOf(
                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzYOp3yPAai29yvQV91Gf5P4bsnzaiwU7B3mdHg2dVpRHLDZOK"
             ))
+            it.setOnItemClickListener { holder, _, url ->
+                holder.let { it as? BindingViewHolder<*> }
+                        ?.let { it.binding as? ViewListItemBinding}
+                        ?.also {
+                            router?.detail(url)
+                                    ?.addSharedElement(it.thumbnailImage)
+                                    ?.launch()
+                        }
+            }
         }
     }
 }
