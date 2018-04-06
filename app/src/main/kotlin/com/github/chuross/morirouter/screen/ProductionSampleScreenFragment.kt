@@ -1,7 +1,10 @@
-package com.github.chuross.morirouter
+package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
 import android.view.View
+import com.github.chuross.morirouter.BaseFragment
+import com.github.chuross.morirouter.FragmentPagerAdapter
+import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentProductionSampleBinding
 import com.github.chuross.morirouter.router.ListFragmentBuilder

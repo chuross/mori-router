@@ -1,18 +1,22 @@
-package com.github.chuross.morirouter
+package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
-import android.support.v4.view.ViewCompat
 import android.view.View
+import com.github.chuross.morirouter.BaseFragment
+import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentDetailBinding
-import com.github.chuross.morirouter.router.DetailFragmentBinder
+import com.github.chuross.morirouter.screen.router.DetailScreenFragmentBinder
+import com.github.chuross.morirouter.transition.DetailScreenTransitionFactory
 import com.squareup.picasso.Picasso
 
 @RouterPath(
-        name = "detail"
+        name = "detail",
+        enterTransitionFactory = DetailScreenTransitionFactory::class,
+        exitTransitionFactory = DetailScreenTransitionFactory::class
 )
-class DetailFragment : BaseFragment<FragmentDetailBinding>() {
+class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 
     @Argument
     lateinit var imageUrl: String
@@ -21,7 +25,7 @@ class DetailFragment : BaseFragment<FragmentDetailBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DetailFragmentBinder.bind(this)
+        DetailScreenFragmentBinder.bind(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

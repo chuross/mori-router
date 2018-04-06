@@ -1,4 +1,4 @@
-package com.github.chuross.morirouter
+package com.github.chuross.morirouter.transition
 
 import android.support.transition.ChangeBounds
 import android.support.transition.ChangeImageTransform

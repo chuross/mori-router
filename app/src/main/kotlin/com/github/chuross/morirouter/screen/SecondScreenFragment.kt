@@ -1,12 +1,13 @@
-package com.github.chuross.morirouter
+package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
-import android.support.v4.view.ViewCompat
 import android.view.View
+import com.github.chuross.morirouter.BaseFragment
+import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.databinding.FragmentSecondBinding
-import com.github.chuross.morirouter.router.SecondScreenFragmentBinder
+import com.github.chuross.morirouter.screen.router.SecondScreenFragmentBinder
 
 @RouterPath(
         name = "second",
