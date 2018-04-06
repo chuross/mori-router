@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/holo_orange_dark">
@@ -10,18 +11,24 @@
             android:id="@+id/app_icon_image"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:layout_centerHorizontal="true"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.300" />
 
         <Button
             android:id="@+id/screen_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/app_icon_image"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:text="start production sample" />
+            android:layout_marginTop="8dp"
+            android:text="start production sample"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/app_icon_image" />
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 </layout>
