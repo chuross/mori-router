@@ -2,6 +2,9 @@ package com.github.chuross.morirouter.compiler
 
 object PackageNames {
 
+    // morirouter
+    const val MORI_ROUTER = "com.github.chuross.morirouter"
+
     // standard
     const val SERIALIZABLE = "java.io.Serializable"
     const val PATTERN = "java.util.regex.Pattern"

@@ -7,7 +7,6 @@ import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.WithArguments
 import com.github.chuross.morirouter.databinding.FragmentListBinding
 import com.github.chuross.morirouter.databinding.ViewListItemBinding
-import com.github.chuross.morirouter.router.ListFragmentBinder
 import com.github.chuross.recyclerviewadapters.databinding.BindingViewHolder
 
 @WithArguments

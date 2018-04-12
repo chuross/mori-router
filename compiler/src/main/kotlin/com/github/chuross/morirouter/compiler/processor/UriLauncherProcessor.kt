@@ -40,7 +40,7 @@ object UriLauncherProcessor {
                 .addMethod(launchInterfaceMethod())
                 .build()
 
-        JavaFile.builder(context.getPackageName(elements.first()), typeSpec)
+        JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
                 .writeTo(context.filer)
     }
@@ -75,7 +75,7 @@ object UriLauncherProcessor {
                 .addMethod(launchMethod(element))
                 .build()
 
-        JavaFile.builder(context.getPackageName(element), typeSpec)
+        JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
                 .writeTo(context.filer)
     }

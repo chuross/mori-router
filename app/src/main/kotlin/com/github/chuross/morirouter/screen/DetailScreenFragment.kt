@@ -3,11 +3,11 @@ package com.github.chuross.morirouter.screen
 import android.os.Bundle
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
+import com.github.chuross.morirouter.DetailScreenFragmentBinder
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentDetailBinding
-import com.github.chuross.morirouter.screen.router.DetailScreenFragmentBinder
 import com.github.chuross.morirouter.transition.DetailScreenTransitionFactory
 import com.squareup.picasso.Picasso
 

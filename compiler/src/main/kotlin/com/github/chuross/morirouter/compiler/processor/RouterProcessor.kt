@@ -40,7 +40,7 @@ object RouterProcessor {
                 .addMethod(popMethod())
                 .build()
 
-        JavaFile.builder(context.getPackageName(elements.first()), typeSpec)
+        JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
                 .writeTo(context.filer)
     }

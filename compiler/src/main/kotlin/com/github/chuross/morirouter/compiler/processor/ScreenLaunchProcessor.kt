@@ -48,7 +48,7 @@ object ScreenLaunchProcessor {
                 .addMethod(launchMethod(element))
                 .build()
 
-        JavaFile.builder(context.getPackageName(element), typeSpec)
+        JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
                 .writeTo(context.filer)
     }

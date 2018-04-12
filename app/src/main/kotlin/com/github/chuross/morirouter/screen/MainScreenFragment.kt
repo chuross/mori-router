@@ -4,11 +4,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
+import com.github.chuross.morirouter.MainScreenFragmentBinder
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.databinding.FragmentMainBinding
-import com.github.chuross.morirouter.screen.router.MainScreenFragmentBinder
 
 @RouterPath(
         name = "main"
