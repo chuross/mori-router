@@ -17,6 +17,7 @@ import javax.annotation.processing.Messager
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
+import javax.annotation.processing.SupportedAnnotationTypes
 import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
@@ -24,7 +25,6 @@ import javax.lang.model.util.Elements
 import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 class MoriRouterProcessor : AbstractProcessor() {
 
     lateinit var filer: Filer
@@ -39,11 +39,16 @@ class MoriRouterProcessor : AbstractProcessor() {
         elementUtils = processingEnv.elementUtils
     }
 
+    override fun getSupportedSourceVersion(): SourceVersion {
+        return SourceVersion.RELEASE_8
+    }
+
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return hashSetOf(
                 RouterPath::class.java.canonicalName,
                 UriArgument::class.java.canonicalName,
-                Argument::class.java.canonicalName
+                Argument::class.java.canonicalName,
+                WithArguments::class.java.canonicalName
         )
     }
 
