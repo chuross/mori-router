@@ -36,6 +36,8 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 
         ViewCompat.setTransitionName(binding.itemImage, "${context?.getString(R.string.transition_icon_image)}_$name")
 
+        binding.toolbar.setNavigationOnClickListener { router?.pop() }
+
         Picasso.with(context)
                 .load(imageUrl)
                 .fit()
