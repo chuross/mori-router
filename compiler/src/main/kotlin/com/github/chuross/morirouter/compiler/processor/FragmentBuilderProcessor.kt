@@ -24,6 +24,8 @@ object FragmentBuilderProcessor {
     }
 
     fun process(context: ProcessorContext, element: Element) {
+        BindingProcessor.process(context, element)
+
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")

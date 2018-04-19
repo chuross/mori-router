@@ -61,7 +61,6 @@ class MoriRouterProcessor : AbstractProcessor() {
 
             roundEnv.getElementsAnnotatedWith(WithArguments::class.java).forEach {
                 FragmentBuilderProcessor.process(context, it)
-                BindingProcessor.process(context, it)
             }
 
             true
