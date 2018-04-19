@@ -30,13 +30,14 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
         binding.list.layoutManager = LinearLayoutManager(context)
         binding.list.adapter = ListItemAdapter(context, name).also {
             it.addAll(listOf(
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzYOp3yPAai29yvQV91Gf5P4bsnzaiwU7B3mdHg2dVpRHLDZOK"
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzYOp3yPAai29yvQV91Gf5P4bsnzaiwU7B3mdHg2dVpRHLDZOK",
+                    "http://yamura-yasuke.club/yamura/wp-content/uploads/2016/07/himawari20160719.jpg"
             ))
-            it.setOnItemClickListener { holder, _, url ->
+            it.setOnItemClickListener { holder, position, url ->
                 holder.let { it as? BindingViewHolder<*> }
                         ?.let { it.binding as? ViewListItemBinding}
                         ?.also {
-                            router?.detail(url, name)
+                            router?.detail(url, "${name}_$position")
                                     ?.addSharedElement(it.thumbnailImage)
                                     ?.launch()
                         }

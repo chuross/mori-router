@@ -17,7 +17,7 @@ class ListItemAdapter(context: Context, private val name: String) : ItemAdapter<
     }
 
     override fun onBindViewHolder(holder: BindingViewHolder<ViewListItemBinding>, position: Int) {
-        ViewCompat.setTransitionName(holder.binding.thumbnailImage, "${context.getString(R.string.transition_icon_image)}_$name")
+        ViewCompat.setTransitionName(holder.binding.thumbnailImage, "${context.getString(R.string.transition_icon_image)}_${name}_$position")
 
         holder.binding.imageUrl = get(position)
         holder.binding.index = position
