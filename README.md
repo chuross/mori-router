@@ -129,13 +129,13 @@ Code
 ViewCompat.setTransitionName(yourView, "your_transition_name");
 ```
 
-2. add enterTransitionFactory and exitTransitionFactory to `@RouterPath`.
+2. add sharedEnterTransitionFactory and sharedExitTransitionFactory to `@RouterPath`.
 
 ```kotlin
 @RouterPath(
         name = "third",
-        enterTransitionFactory = ThirdScreenTransitionFactory::class,
-        exitTransitionFactory = ThirdScreenTransitionFactory::class
+        sharedEnterTransitionFactory = ThirdScreenTransitionFactory::class,
+        sharedExitTransitionFactory = ThirdScreenTransitionFactory::class
 )
 class ThirdScreenFragment : Fragment() {
    ....
