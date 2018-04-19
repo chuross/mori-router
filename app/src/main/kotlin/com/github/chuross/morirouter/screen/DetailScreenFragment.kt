@@ -14,8 +14,8 @@ import com.squareup.picasso.Picasso
 
 @RouterPath(
         name = "detail",
-        enterTransitionFactory = DetailScreenTransitionFactory::class,
-        exitTransitionFactory = DetailScreenTransitionFactory::class
+        sharedEnterTransitionFactory = DetailScreenTransitionFactory::class,
+        sharedExitTransitionFactory = DetailScreenTransitionFactory::class
 )
 class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 

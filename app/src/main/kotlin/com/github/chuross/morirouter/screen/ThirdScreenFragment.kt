@@ -10,8 +10,8 @@ import com.github.chuross.morirouter.transition.ThirdScreenTransitionFactory
 
 @RouterPath(
         name = "third_ouie",
-        enterTransitionFactory = ThirdScreenTransitionFactory::class,
-        exitTransitionFactory = ThirdScreenTransitionFactory::class
+        sharedEnterTransitionFactory = ThirdScreenTransitionFactory::class,
+        sharedExitTransitionFactory = ThirdScreenTransitionFactory::class
 )
 class ThirdScreenFragment : BaseFragment<FragmentThirdBinding>() {
 

@@ -16,9 +16,13 @@ val Element.pathName: String? get() = getAnnotation(RouterPath::class.java)?.nam
 
 val Element.pathUris: Array<String>? get() = getAnnotation(RouterPath::class.java)?.uris
 
-val Element.enterTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.enterTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
+val Element.sharedEnterTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.sharedEnterTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
 
-val Element.exitTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.exitTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
+val Element.sharedExitTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.sharedExitTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
+
+val Element.overrideEnterTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.overrideEnterTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
+
+val Element.overrideExitTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.overrideExitTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
 
 val Element.paramName: String get() {
     return argumentName ?: uriArgumentName ?: throw IllegalStateException("This element has no Argument and UriArgument")

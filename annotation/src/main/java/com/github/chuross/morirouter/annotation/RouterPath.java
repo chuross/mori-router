@@ -17,7 +17,11 @@ public @interface RouterPath {
 
     String[] uris() default {};
 
-    Class<? extends TransitionFactory> enterTransitionFactory() default DefaultTransitionFactory.class;
+    Class<? extends TransitionFactory> sharedEnterTransitionFactory() default DefaultTransitionFactory.class;
 
-    Class<? extends TransitionFactory> exitTransitionFactory() default DefaultTransitionFactory.class;
+    Class<? extends TransitionFactory> sharedExitTransitionFactory() default DefaultTransitionFactory.class;
+
+    Class<? extends TransitionFactory> overrideEnterTransitionFactory() default DefaultTransitionFactory.class;
+
+    Class<? extends TransitionFactory> overrideExitTransitionFactory() default DefaultTransitionFactory.class;
 }

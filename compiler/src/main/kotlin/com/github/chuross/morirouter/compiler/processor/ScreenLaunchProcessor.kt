@@ -5,12 +5,14 @@ import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
-import com.github.chuross.morirouter.compiler.extension.enterTransitionFactoryName
-import com.github.chuross.morirouter.compiler.extension.exitTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
 import com.github.chuross.morirouter.compiler.extension.normalize
+import com.github.chuross.morirouter.compiler.extension.overrideEnterTransitionFactoryName
+import com.github.chuross.morirouter.compiler.extension.overrideExitTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
+import com.github.chuross.morirouter.compiler.extension.sharedEnterTransitionFactoryName
+import com.github.chuross.morirouter.compiler.extension.sharedExitTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.uriArgumentElements
 import com.github.chuross.morirouter.core.MoriRouterOptions
 import com.squareup.javapoet.ClassName
@@ -149,17 +151,29 @@ object ScreenLaunchProcessor {
                 builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")
             }
             builder.addStatement("fragment.setArguments(arguments)")
-            builder.addStatement("if (options.getEnterTransition() != null) fragment.setEnterTransition(options.getEnterTransition())")
-            builder.addStatement("if (options.getExitTransition() != null) fragment.setExitTransition(options.getExitTransition())")
-            builder.addComment("Optional TransitionSet, if use TransitionFactory.")
-            element.enterTransitionFactoryName?.also {
-                builder.addStatement("Object enterTransitionSet = new $it().create()")
-                builder.addStatement("if (enterTransitionSet != null) fragment.setSharedElementEnterTransition(enterTransitionSet)")
+
+            element.overrideEnterTransitionFactoryName?.also {
+                builder.addStatement("Object overrideEnterTransitionSet = new $it().create()")
+                builder.addStatement("Object enterTransitionSet = overrideEnterTransitionSet != null ? overrideEnterTransitionSet : options.getEnterTransition()")
+                builder.addStatement("if (enterTransitionSet != null) fragment.setEnterTransition(enterTransitionSet)")
+            } ?: builder.addStatement("if (options.getEnterTransition() != null) fragment.setEnterTransition(options.getEnterTransition())")
+
+            element.overrideExitTransitionFactoryName?.also {
+                builder.addStatement("Object overrideExitTransitionSet = new $it().create()")
+                builder.addStatement("Object exitTransitionSet = overrideExitTransitionSet != null ? overrideExitTransitionSet : options.getExitTransition()")
+                builder.addStatement("if (exitTransitionSet != null) fragment.setExitTransition(exitTransitionSet)")
+            } ?: builder.addStatement("if (options.getExitTransition() != null) fragment.setExitTransition(options.getExitTransition())")
+
+            element.sharedEnterTransitionFactoryName?.also {
+                builder.addStatement("Object sharedEnterTransitionSet = new $it().create()")
+                builder.addStatement("if (sharedEnterTransitionSet != null) fragment.setSharedElementEnterTransition(sharedEnterTransitionSet)")
             }
-            element.exitTransitionFactoryName?.also {
-                builder.addStatement("Object exitTransitionSet = new $it().create()")
-                builder.addStatement("if (exitTransitionSet != null) fragment.setSharedElementReturnTransition(exitTransitionSet)")
+
+            element.sharedExitTransitionFactoryName?.also {
+                builder.addStatement("Object sharedExitTransitionSet = new $it().create()")
+                builder.addStatement("if (sharedExitTransitionSet != null) fragment.setSharedElementReturnTransition(sharedExitTransitionSet)")
             }
+
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
             builder.beginControlFlow("for (View view : sharedElements)")
             builder.addStatement("transaction.addSharedElement(view, ${PackageNames.VIEW_COMPAT}.getTransitionName(view))")
