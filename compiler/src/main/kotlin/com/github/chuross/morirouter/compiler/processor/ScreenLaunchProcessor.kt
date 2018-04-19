@@ -22,6 +22,7 @@ import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
+import javax.lang.model.type.TypeKind
 
 object ScreenLaunchProcessor {
 
@@ -54,11 +55,13 @@ object ScreenLaunchProcessor {
     }
 
     private fun validate(element: Element) {
-        val requiredParamElement = element.argumentElements.find { it.isRequiredArgument }
-        val pathParamElement = element.uriArgumentElements.firstOrNull()
+        val argumentElements = element.argumentElements
+        val uriArgumentElements = element.uriArgumentElements
 
-        if (requiredParamElement != null && pathParamElement != null) {
-            throw IllegalStateException("Argument 'required' can use no UriArgument only")
+        val hasRequiredElement = argumentElements.any { it.isRequiredArgument }
+        val hasUriArgumentElement = uriArgumentElements.firstOrNull() != null
+        if (hasRequiredElement && hasUriArgumentElement) {
+            throw IllegalStateException("'required' Argument can use no UriArgument only: ${element.simpleName}")
         }
     }
 

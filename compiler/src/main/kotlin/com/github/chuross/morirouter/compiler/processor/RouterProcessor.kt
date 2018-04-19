@@ -7,7 +7,6 @@ import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.github.chuross.morirouter.compiler.extension.pathName
-import com.github.chuross.morirouter.compiler.extension.uriArgumentElements
 import com.github.chuross.morirouter.core.MoriRouterOptions
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
