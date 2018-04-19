@@ -9,13 +9,16 @@ import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentDetailBinding
+import com.github.chuross.morirouter.transition.DetailScreenSharedTransitionFactory
 import com.github.chuross.morirouter.transition.DetailScreenTransitionFactory
 import com.squareup.picasso.Picasso
 
 @RouterPath(
         name = "detail",
-        sharedEnterTransitionFactory = DetailScreenTransitionFactory::class,
-        sharedExitTransitionFactory = DetailScreenTransitionFactory::class
+        overrideEnterTransitionFactory = DetailScreenTransitionFactory::class,
+        overrideExitTransitionFactory = DetailScreenTransitionFactory::class,
+        sharedEnterTransitionFactory = DetailScreenSharedTransitionFactory::class,
+        sharedExitTransitionFactory = DetailScreenSharedTransitionFactory::class
 )
 class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 

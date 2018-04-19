@@ -6,12 +6,12 @@ import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentThirdBinding
-import com.github.chuross.morirouter.transition.ThirdScreenTransitionFactory
+import com.github.chuross.morirouter.transition.ThirdScreenSharedTransitionFactory
 
 @RouterPath(
         name = "third_ouie",
-        sharedEnterTransitionFactory = ThirdScreenTransitionFactory::class,
-        sharedExitTransitionFactory = ThirdScreenTransitionFactory::class
+        sharedEnterTransitionFactory = ThirdScreenSharedTransitionFactory::class,
+        sharedExitTransitionFactory = ThirdScreenSharedTransitionFactory::class
 )
 class ThirdScreenFragment : BaseFragment<FragmentThirdBinding>() {
 

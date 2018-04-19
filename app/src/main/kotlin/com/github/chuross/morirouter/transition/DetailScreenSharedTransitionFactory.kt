@@ -6,7 +6,7 @@ import android.support.transition.ChangeTransform
 import android.support.transition.TransitionSet
 import com.github.chuross.morirouter.core.TransitionFactory
 
-class ThirdScreenTransitionFactory : TransitionFactory {
+class DetailScreenSharedTransitionFactory : TransitionFactory {
 
     override fun create(): Any = TransitionSet().also {
         it.ordering = TransitionSet.ORDERING_TOGETHER
