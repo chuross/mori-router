@@ -28,7 +28,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
         val context = context ?: return
 
         binding.list.layoutManager = LinearLayoutManager(context)
-        binding.list.adapter = ListItemAdapter(context).also {
+        binding.list.adapter = ListItemAdapter(context, name).also {
             it.addAll(listOf(
                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzYOp3yPAai29yvQV91Gf5P4bsnzaiwU7B3mdHg2dVpRHLDZOK"
             ))
@@ -36,7 +36,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                 holder.let { it as? BindingViewHolder<*> }
                         ?.let { it.binding as? ViewListItemBinding}
                         ?.also {
-                            router?.detail(url)
+                            router?.detail(url, name)
                                     ?.addSharedElement(it.thumbnailImage)
                                     ?.launch()
                         }

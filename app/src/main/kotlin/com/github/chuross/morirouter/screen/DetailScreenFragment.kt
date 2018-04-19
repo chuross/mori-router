@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
+import android.support.v4.view.ViewCompat
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.DetailScreenFragmentBinder
@@ -20,6 +21,8 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 
     @Argument
     lateinit var imageUrl: String
+    @Argument
+    lateinit var name: String
 
     override val layoutResourceId: Int = R.layout.fragment_detail
 
@@ -30,6 +33,8 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setTransitionName(binding.itemImage, "${context?.getString(R.string.transition_icon_image)}_$name")
 
         Picasso.with(context)
                 .load(imageUrl)

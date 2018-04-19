@@ -10,8 +10,7 @@
         <ImageView
             android:id="@+id/item_image"
             android:layout_width="80dp"
-            android:layout_height="80dp"
-            app:ext_transitionName="@{@string/transition_icon_image}"/>
+            android:layout_height="80dp" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>
