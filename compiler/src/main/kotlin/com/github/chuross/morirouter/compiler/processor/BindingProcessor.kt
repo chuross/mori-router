@@ -7,6 +7,7 @@ import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.squareup.javapoet.AnnotationSpec
+import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
@@ -18,19 +19,20 @@ import javax.lang.model.element.Modifier
 
 object BindingProcessor {
 
+    const val SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT: String = "shared_view_%d"
+
     fun getGeneratedTypeName(element: Element): String {
         return "${element.simpleName}Binder"
     }
 
     fun process(context: ProcessorContext, element: Element) {
-        if (element.allArgumentElements.isEmpty()) return
-
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
                 .addFields(bundleKeyStaticFields(element))
                 .addMethod(constructorMethod())
                 .addMethod(bindStaticMethod(element))
+                .addMethod(bindElementStaticMethod(element))
                 .build()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
@@ -58,6 +60,13 @@ object BindingProcessor {
             builder.addAnnotation(AnnotationSpec.builder(SuppressWarnings::class.java).addMember("value", "\"unchecked\"").build())
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
             builder.addParameter(TypeName.get(element.asType()), "fragment")
+
+            if (element.allArgumentElements.isEmpty()) {
+                builder.addAnnotation(ClassName.bestGuess(PackageNames.DEPRECATED))
+                builder.addStatement("throw new ${PackageNames.UNSUPPORTED_OPERATION_EXCEPTION}(\"This Fragment has no arguments\")")
+                return builder.build()
+            }
+
             builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
             builder.addStatement("if (bundle == null) return")
 
@@ -77,6 +86,22 @@ object BindingProcessor {
                     "if ($valueName != null) fragment.$setterMethodName((${it.asType()}) $valueName)"
                 })
             }
+        }.build()
+    }
+
+    private fun bindElementStaticMethod(element: Element): MethodSpec {
+        return MethodSpec.methodBuilder("bindElement").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+            builder.addParameter(TypeName.get(element.asType()), "fragment")
+            builder.addParameter(TypeName.INT, "resourceId")
+
+            builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
+            builder.addStatement("if (bundle == null) return")
+
+            builder.addStatement("String transitionName = bundle.getString(String.format(\"$SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT\", resourceId))")
+            builder.addStatement("${PackageNames.VIEW} targetView = fragment.getView().findViewById(resourceId)")
+            builder.addStatement("if (targetView == null) throw new ${PackageNames.ILLEGAL_ARGUMENT_EXCEPTION}(\"target view not found\")")
+            builder.addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName(targetView, transitionName)")
         }.build()
     }
 

@@ -10,6 +10,9 @@ object PackageNames {
     const val PATTERN = "java.util.regex.Pattern"
     const val MATCHER = "java.util.regex.Matcher"
     const val ARRAY_LIST = "java.util.ArrayList"
+    const val DEPRECATED = "java.lang.Deprecated"
+    const val ILLEGAL_ARGUMENT_EXCEPTION = "java.lang.IllegalArgumentException"
+    const val UNSUPPORTED_OPERATION_EXCEPTION = "java.lang.UnsupportedOperationException"
 
     // android
     const val BUNDLE: String = "android.os.Bundle"
