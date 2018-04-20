@@ -75,6 +75,15 @@ class HogeScreenFragment : Fragment() {
 val fragment: Fragment = HogeScreenFragmentBuilder(hogeName).build() // HogeScreenFragmentBuilder is auto generated class
 ```
 
+### override enter / exit transition
+```
+@RouterPath(
+    name = "main",
+    overrideEnterTransitionFactory = MainScreenTransitionFactory::class,
+    overrideExitTransitionFactory = MainScreenTransitionFactory::class
+)
+```
+
 ### DeepLink support
 1. If use deepLink support, `uri` parameter add to `@RouterPath`, and add definition `@RouterUriParam` parameters in your screen fragment.
 
@@ -136,9 +145,9 @@ ViewCompat.setTransitionName(yourView, "your_transition_name");
 
 ```kotlin
 @RouterPath(
-        name = "third",
-        sharedEnterTransitionFactory = ThirdScreenTransitionFactory::class,
-        sharedExitTransitionFactory = ThirdScreenTransitionFactory::class
+    name = "third",
+    sharedEnterTransitionFactory = ThirdScreenSharedTransitionFactory::class,
+    sharedExitTransitionFactory = ThirdScreenSharedTransitionFactory::class
 )
 class ThirdScreenFragment : Fragment() {
    ....
