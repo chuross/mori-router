@@ -69,7 +69,7 @@ val router = MoriRouter(supportFragmentManager, options) // MoriRouter is auto g
 
 router
     .main("required1", 1000) // main(String param1, Integer ieei)
-    .param3(listOf("fuga")) // optional value
+    .param3(arrayListOf("fuga")) // optional value
     .launch() // launch main screen
 
 
