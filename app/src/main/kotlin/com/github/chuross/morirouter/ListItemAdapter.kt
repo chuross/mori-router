@@ -7,7 +7,7 @@ import com.github.chuross.morirouter.databinding.ViewListItemBinding
 import com.github.chuross.recyclerviewadapters.ItemAdapter
 import com.github.chuross.recyclerviewadapters.databinding.BindingViewHolder
 
-class ListItemAdapter(context: Context, private val name: String) : ItemAdapter<String, BindingViewHolder<ViewListItemBinding>>(context) {
+class ListItemAdapter(context: Context) : ItemAdapter<String, BindingViewHolder<ViewListItemBinding>>(context) {
 
     override fun getAdapterId(): Int = R.layout.view_list_item
 

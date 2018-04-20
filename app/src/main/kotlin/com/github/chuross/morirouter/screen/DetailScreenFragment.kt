@@ -25,8 +25,6 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 
     @Argument
     lateinit var imageUrl: String
-    @Argument
-    lateinit var name: String
 
     override val layoutResourceId: Int = R.layout.fragment_detail
 
