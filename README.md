@@ -120,12 +120,15 @@ XML
 ```xml
 <YourLayout
     ....
+    android:id="@+id/your_id" <!-- must have view id -->
     android:transitionName="your_transition_name" />
 ```
 
 Code
 
 ```java
+// yourView must has view id
+// ex) yourView.setId(R.id.your_id)
 ViewCompat.setTransitionName(yourView, "your_transition_name");
 ```
 
@@ -139,6 +142,14 @@ ViewCompat.setTransitionName(yourView, "your_transition_name");
 )
 class ThirdScreenFragment : Fragment() {
    ....
+
+   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // ThirdScreenFragment must has `R.id.your_id` view
+        // this id is same before screen's shared element id
+        ThirdScreenFragmentBinder.bindElement(this, R.id.your_id) // This class and method are auto generated.
+   }
 }
 ```
 
