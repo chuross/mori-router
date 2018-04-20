@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/chuross/mori-router.svg)](https://jitpack.io/#chuross/mori-router)
+
 # MoriRouter
 Annotation based Android router library.
 
@@ -8,6 +10,25 @@ This library for single activity application.(multi fragments)
 - Auto generate Fragment builder codes
 - DeepLink support
 - Shared element support
+
+## Download
+### Gradle
+1. add JitPack repository to your project root `build.gradle`.
+```groovy
+repositories {
+    maven { url "https://jitpack.io" }
+}
+```
+
+2. add the dependency
+[![](https://jitpack.io/v/chuross/mori-router.svg)](https://jitpack.io/#chuross/mori-router)
+
+```groovy
+dependencies {
+    compile 'com.github.chuross.mori-router:annotation:x.x.x'
+    annotationProcessor 'com.github.chuross.mori-router:compiler:x.x.x' // or kpt
+}
+```
 
 ## Usage
 ### Basic

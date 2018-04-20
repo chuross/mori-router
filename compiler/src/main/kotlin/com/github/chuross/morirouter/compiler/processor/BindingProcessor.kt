@@ -4,12 +4,10 @@ import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
-import com.github.chuross.morirouter.compiler.extension.isArgument
 import com.github.chuross.morirouter.compiler.extension.isRouterPath
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.squareup.javapoet.AnnotationSpec
-import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
@@ -28,12 +26,14 @@ object BindingProcessor {
     }
 
     fun process(context: ProcessorContext, element: Element) {
+        if (element.allArgumentElements.isEmpty() && !element.isRouterPath) return
+
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element)).also {
             it.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             it.addJavadoc("This class is auto generated.")
             it.addFields(bundleKeyStaticFields(element))
             it.addMethod(constructorMethod())
-            it.addMethod(bindStaticMethod(element))
+            if (element.allArgumentElements.isNotEmpty()) it.addMethod(bindStaticMethod(element))
             if (element.isRouterPath) it.addMethod(bindElementStaticMethod(element))
         }.build()
 
@@ -62,12 +62,6 @@ object BindingProcessor {
             builder.addAnnotation(AnnotationSpec.builder(SuppressWarnings::class.java).addMember("value", "\"unchecked\"").build())
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
             builder.addParameter(TypeName.get(element.asType()), "fragment")
-
-            if (element.allArgumentElements.isEmpty()) {
-                builder.addAnnotation(ClassName.bestGuess(PackageNames.DEPRECATED))
-                builder.addStatement("throw new ${PackageNames.UNSUPPORTED_OPERATION_EXCEPTION}(\"This Fragment has no arguments\")")
-                return builder.build()
-            }
 
             builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
             builder.addStatement("if (bundle == null) return")
@@ -102,6 +96,8 @@ object BindingProcessor {
             builder.addStatement("if (fragment.getView() == null) throw new ${PackageNames.ILLEGAL_STATE_EXCEPTION}(\"you must call onViewCreated\")")
 
             builder.addStatement("String transitionName = bundle.getString(String.format(\"$SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT\", resourceId))")
+            builder.addStatement("if (transitionName == null) return")
+
             builder.addStatement("${PackageNames.VIEW} targetView = fragment.getView().findViewById(resourceId)")
             builder.addStatement("if (targetView == null) throw new ${PackageNames.ILLEGAL_ARGUMENT_EXCEPTION}(\"target view not found\")")
             builder.addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName(targetView, transitionName)")
