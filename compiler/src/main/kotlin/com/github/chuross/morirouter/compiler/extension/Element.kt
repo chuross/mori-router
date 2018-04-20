@@ -6,6 +6,8 @@ import com.github.chuross.morirouter.annotation.UriArgument
 import javax.lang.model.element.Element
 import javax.lang.model.type.MirroredTypeException
 
+val Element.isRouterPath: Boolean get() = getAnnotation(RouterPath::class.java) != null
+
 val Element.isArgument: Boolean get() = getAnnotation(Argument::class.java) != null
 
 val Element.isRequiredArgument: Boolean get() = getAnnotation(Argument::class.java)?.required ?: false

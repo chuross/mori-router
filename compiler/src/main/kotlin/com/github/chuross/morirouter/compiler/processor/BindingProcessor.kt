@@ -4,6 +4,8 @@ import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
+import com.github.chuross.morirouter.compiler.extension.isArgument
+import com.github.chuross.morirouter.compiler.extension.isRouterPath
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.squareup.javapoet.AnnotationSpec
@@ -26,14 +28,14 @@ object BindingProcessor {
     }
 
     fun process(context: ProcessorContext, element: Element) {
-        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addJavadoc("This class is auto generated.")
-                .addFields(bundleKeyStaticFields(element))
-                .addMethod(constructorMethod())
-                .addMethod(bindStaticMethod(element))
-                .addMethod(bindElementStaticMethod(element))
-                .build()
+        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element)).also {
+            it.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            it.addJavadoc("This class is auto generated.")
+            it.addFields(bundleKeyStaticFields(element))
+            it.addMethod(constructorMethod())
+            it.addMethod(bindStaticMethod(element))
+            if (element.isRouterPath) it.addMethod(bindElementStaticMethod(element))
+        }.build()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
@@ -97,6 +99,7 @@ object BindingProcessor {
 
             builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
             builder.addStatement("if (bundle == null) return")
+            builder.addStatement("if (fragment.getView() == null) throw new ${PackageNames.ILLEGAL_STATE_EXCEPTION}(\"you must call onViewCreated\")")
 
             builder.addStatement("String transitionName = bundle.getString(String.format(\"$SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT\", resourceId))")
             builder.addStatement("${PackageNames.VIEW} targetView = fragment.getView().findViewById(resourceId)")
