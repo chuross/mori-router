@@ -5,6 +5,7 @@ import android.support.v4.view.ViewCompat
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.DetailScreenFragmentBinder
+import com.github.chuross.morirouter.ProductionSampleScreenFragmentBinder
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
@@ -37,7 +38,7 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ViewCompat.setTransitionName(binding.itemImage, "${context?.getString(R.string.transition_icon_image)}_$name")
+        DetailScreenFragmentBinder.bindElement(this, R.id.thumbnail_image)
 
         binding.toolbar.setNavigationOnClickListener { router?.pop() }
 
@@ -45,6 +46,6 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
                 .load(imageUrl)
                 .fit()
                 .centerInside()
-                .into(binding.itemImage)
+                .into(binding.thumbnailImage)
     }
 }

@@ -17,7 +17,7 @@
             app:navigationIcon="?attr/homeAsUpIndicator" />
 
         <ImageView
-            android:id="@+id/item_image"
+            android:id="@+id/thumbnail_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="32dp"
@@ -37,7 +37,7 @@
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_image" />
+            app:layout_constraintTop_toBottomOf="@+id/thumbnail_image" />
 
         <Button
             android:id="@+id/next_button"

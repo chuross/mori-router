@@ -176,7 +176,12 @@ object ScreenLaunchProcessor {
 
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
             builder.beginControlFlow("for (View view : sharedElements)")
-            builder.addStatement("transaction.addSharedElement(view, ${PackageNames.VIEW_COMPAT}.getTransitionName(view))")
+            builder.addStatement("if (view.getId() < 0) throw new ${PackageNames.ILLEGAL_STATE_EXCEPTION}(\"view must have id!\")")
+            builder.addStatement("String sharedArgumentKey = String.format(\"${BindingProcessor.SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT}\", view.getId())")
+            builder.addStatement("String transitionName = String.format(\"shared_view_%d_%d\", view.hashCode(), view.getId())")
+            builder.addStatement("arguments.putString(sharedArgumentKey, transitionName)")
+            builder.addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName(view, transitionName)")
+            builder.addStatement("transaction.addSharedElement(view, transitionName)")
             builder.endControlFlow()
             builder.addStatement("transaction.replace(options.getContainerId(), fragment)")
             builder.addStatement("if (fm.findFragmentById(options.getContainerId()) != null) transaction.addToBackStack(null)")
