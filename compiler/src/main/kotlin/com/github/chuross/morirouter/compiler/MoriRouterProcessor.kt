@@ -4,7 +4,6 @@ import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.annotation.WithArguments
-import com.github.chuross.morirouter.compiler.processor.BindingProcessor
 import com.github.chuross.morirouter.compiler.processor.FragmentBuilderProcessor
 import com.github.chuross.morirouter.compiler.processor.RouterProcessor
 import com.github.chuross.morirouter.compiler.processor.UriLauncherProcessor
