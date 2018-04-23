@@ -15,8 +15,8 @@ import com.squareup.picasso.Picasso
 @RouterPath(
         name = "detail",
         overrideEnterTransitionFactory = DetailScreenTransitionFactory::class,
-        overrideExitTransitionFactory = DetailScreenTransitionFactory::class,
-        sharedEnterTransitionFactory = DetailScreenSharedTransitionFactory::class
+        sharedEnterTransitionFactory = DetailScreenSharedTransitionFactory::class,
+        sharedExitTransitionFactory = DetailScreenSharedTransitionFactory::class
 )
 class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 
@@ -47,7 +47,9 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
                 .into(binding.thumbnailImage)
 
         binding.nextButton.setOnClickListener {
-            router?.imageViewPager(imageUrls)?.launch()
+            router?.imageViewPager(imageUrls, imageUrl)
+                    ?.addSharedElement(binding.thumbnailImage)
+                    ?.launch()
         }
     }
 }

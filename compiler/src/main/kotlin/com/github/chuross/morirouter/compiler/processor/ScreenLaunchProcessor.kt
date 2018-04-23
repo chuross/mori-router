@@ -5,6 +5,7 @@ import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
+import com.github.chuross.morirouter.compiler.extension.isReorderingAllowed
 import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.overrideEnterTransitionFactoryName
@@ -176,6 +177,7 @@ object ScreenLaunchProcessor {
             }
 
             builder.addStatement("${PackageNames.SUPPORT_FRAGMENT_TRANSACTION} transaction = fm.beginTransaction()")
+            if (element.isReorderingAllowed) builder.addStatement("transaction.setReorderingAllowed(true)")
             builder.beginControlFlow("for (View view : sharedElements)")
             builder.addStatement("if (view.getId() < 0) throw new ${PackageNames.ILLEGAL_STATE_EXCEPTION}(\"view must have id!\")")
             builder.addStatement("String sharedArgumentKey = String.format(\"${BindingProcessor.SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT}\", view.getId())")
