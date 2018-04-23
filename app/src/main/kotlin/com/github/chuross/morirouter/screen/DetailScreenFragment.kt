@@ -54,7 +54,7 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
         binding.toolbar.setNavigationOnClickListener { router?.pop() }
 
         adapter = FragmentPagerAdapter(childFragmentManager, imageUrls.map {
-            Pair("hoge", {
+            Pair("", {
                 ImageFragmentBuilder(it).build()
             })
         })
