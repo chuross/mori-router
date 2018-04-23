@@ -106,6 +106,7 @@ object RouterProcessor {
     private fun popMethod(): MethodSpec {
         return MethodSpec.methodBuilder("pop")
                 .addModifiers(Modifier.PUBLIC)
+                .addStatement("if (fm.isStateSaved()) return")
                 .addStatement("fm.popBackStackImmediate()")
                 .build()
     }

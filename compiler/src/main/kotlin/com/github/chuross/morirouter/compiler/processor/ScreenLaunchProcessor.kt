@@ -144,6 +144,8 @@ object ScreenLaunchProcessor {
 
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
+
+            builder.addStatement("if (fm.isStateSaved()) return")
             builder.addStatement("$fragmentClassName fragment = new $fragmentClassName()")
             builder.addStatement("${PackageNames.BUNDLE} arguments = new ${PackageNames.BUNDLE}()")
             routerParamElements.plus(routerPathParamElements).forEach {
