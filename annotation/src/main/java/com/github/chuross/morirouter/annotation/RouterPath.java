@@ -17,8 +17,6 @@ public @interface RouterPath {
 
     String[] uris() default {};
 
-    boolean isReorderingAllowed() default false;
-
     Class<? extends TransitionFactory> sharedEnterTransitionFactory() default DefaultTransitionFactory.class;
 
     Class<? extends TransitionFactory> sharedExitTransitionFactory() default DefaultTransitionFactory.class;

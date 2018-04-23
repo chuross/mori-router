@@ -32,7 +32,5 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
                 .fit()
                 .centerInside()
                 .into(binding.thumbnailImage)
-
-        parentFragment?.startPostponedEnterTransition()
     }
 }
