@@ -31,15 +31,16 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
 
         binding.list.layoutManager = LinearLayoutManager(context)
         binding.list.adapter = ListItemAdapter(context, hashCode().toString()).also {
-            it.addAll(listOf(
+            val imageUrls = arrayListOf(
                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzYOp3yPAai29yvQV91Gf5P4bsnzaiwU7B3mdHg2dVpRHLDZOK",
                     "http://yamura-yasuke.club/yamura/wp-content/uploads/2016/07/himawari20160719.jpg"
-            ))
+            )
+            it.addAll(imageUrls.toList())
             it.setOnItemClickListener { holder, _, url ->
                 holder.let { it as? BindingViewHolder<*> }
                         ?.let { it.binding as? ViewListItemBinding}
                         ?.also {
-                            router?.detail(url)
+                            router?.detail(url, imageUrls)
                                     ?.addSharedElement(it.thumbnailImage)
                                     ?.launch()
                         }

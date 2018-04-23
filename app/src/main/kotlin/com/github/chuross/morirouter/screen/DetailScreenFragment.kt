@@ -1,11 +1,9 @@
 package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
-import android.support.v4.view.ViewCompat
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.DetailScreenFragmentBinder
-import com.github.chuross.morirouter.ProductionSampleScreenFragmentBinder
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
@@ -18,13 +16,15 @@ import com.squareup.picasso.Picasso
         name = "detail",
         overrideEnterTransitionFactory = DetailScreenTransitionFactory::class,
         overrideExitTransitionFactory = DetailScreenTransitionFactory::class,
-        sharedEnterTransitionFactory = DetailScreenSharedTransitionFactory::class,
-        sharedExitTransitionFactory = DetailScreenSharedTransitionFactory::class
+        sharedEnterTransitionFactory = DetailScreenSharedTransitionFactory::class
 )
 class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 
     @Argument
     lateinit var imageUrl: String
+
+    @Argument
+    lateinit var imageUrls: ArrayList<String>
 
     override val layoutResourceId: Int = R.layout.fragment_detail
 
@@ -45,5 +45,9 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
                 .fit()
                 .centerInside()
                 .into(binding.thumbnailImage)
+
+        binding.nextButton.setOnClickListener {
+            router?.imageViewPager(imageUrls)?.launch()
+        }
     }
 }
