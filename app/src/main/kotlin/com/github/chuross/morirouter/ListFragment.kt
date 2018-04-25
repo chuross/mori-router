@@ -42,7 +42,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                         ?.let { it.binding as? ViewListItemBinding}
                         ?.also {
                             router?.detail(url, imageUrls)
-                                    ?.manualSharedMapping(context, R.id.thumbnail_image)
+                                    ?.manualSharedMapping(context)
                                     ?.launch()
                         }
             }
