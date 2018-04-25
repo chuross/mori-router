@@ -17,6 +17,7 @@ import com.github.chuross.morirouter.transition.DetailScreenSharedTransitionFact
 
 @RouterPath(
         name = "detail",
+        needManualSharedMapping = true,
         sharedEnterTransitionFactory = DetailScreenSharedTransitionFactory::class,
         sharedExitTransitionFactory = DetailScreenSharedTransitionFactory::class
 )

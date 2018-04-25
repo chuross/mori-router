@@ -6,6 +6,7 @@ import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
+import com.github.chuross.morirouter.compiler.extension.needManualSharedMapping
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.overrideEnterTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.overrideExitTransitionFactoryName
@@ -37,18 +38,22 @@ object ScreenLaunchProcessor {
     fun process(context: ProcessorContext, element: Element) {
         validate(element)
 
-        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addJavadoc("This class is auto generated.")
-                .addField(fragmentManagerField())
-                .addField(optionsField())
-                .addField(sharedElementsField())
-                .addFields(paramFields(element))
-                .addMethod(constructorMethod(element))
-                .addMethods(optionalParameterMethods(element))
-                .addMethod(sharedElementAddMethod(element))
-                .addMethod(launchMethod(element))
-                .build()
+        val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element)).also { builder ->
+            builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            builder.addJavadoc("This class is auto generated.")
+            builder.addField(fragmentManagerField())
+            builder.addField(optionsField())
+            builder.addField(sharedElementsField())
+            builder.addFields(paramFields(element))
+            builder.addMethod(constructorMethod(element))
+            builder.addMethods(optionalParameterMethods(element))
+            if (element.needManualSharedMapping) {
+                builder.addMethod(manualSharedMappingEnabledMethod(element))
+            } else {
+                builder.addMethod(sharedElementAddMethod(element))
+            }
+            builder.addMethod(launchMethod(element))
+        }.build()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
@@ -129,6 +134,20 @@ object ScreenLaunchProcessor {
         return MethodSpec.methodBuilder("addSharedElement")
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ClassName.bestGuess(PackageNames.VIEW), "view")
+                .addStatement("this.sharedElements.add(view)")
+                .addStatement("return this")
+                .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
+                .build()
+    }
+
+    private fun manualSharedMappingEnabledMethod(element: Element): MethodSpec {
+        return MethodSpec.methodBuilder("manualSharedMapping")
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(ClassName.bestGuess(PackageNames.CONTEXT), "context")
+                .addParameter(TypeName.INT, "targetResourceId")
+                .addStatement("${PackageNames.VIEW} view = new ${PackageNames.VIEW}(context)")
+                .addStatement("view.setId(targetResourceId)")
+                .addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName(view, \"dummy\")")
                 .addStatement("this.sharedElements.add(view)")
                 .addStatement("return this")
                 .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
