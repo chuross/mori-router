@@ -17,6 +17,7 @@ object PackageNames {
 
     // android
     const val BUNDLE: String = "android.os.Bundle"
+    const val CONTEXT: String = "android.content.Context"
     const val URI: String = "android.net.Uri"
     const val VIEW: String = "android.view.View"
     const val VIEW_COMPAT: String = "android.support.v4.view.ViewCompat"

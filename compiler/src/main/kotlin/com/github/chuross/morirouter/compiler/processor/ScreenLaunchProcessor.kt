@@ -42,11 +42,11 @@ object ScreenLaunchProcessor {
                 .addJavadoc("This class is auto generated.")
                 .addField(fragmentManagerField())
                 .addField(optionsField())
-                .addField(transitionNamesField())
+                .addField(sharedElementsField())
                 .addFields(paramFields(element))
                 .addMethod(constructorMethod(element))
                 .addMethods(optionalParameterMethods(element))
-                .addMethod(transitionNameParameterMethod(element))
+                .addMethod(sharedElementAddMethod(element))
                 .addMethod(launchMethod(element))
                 .build()
 
@@ -78,7 +78,7 @@ object ScreenLaunchProcessor {
                 .build()
     }
 
-    private fun transitionNamesField(): FieldSpec {
+    private fun sharedElementsField(): FieldSpec {
         val listClassName = ClassName.get("java.util", "List")
         return FieldSpec.builder(ParameterizedTypeName.get(listClassName, ClassName.bestGuess(PackageNames.VIEW)), "sharedElements")
                 .addModifiers(Modifier.PRIVATE)
@@ -125,7 +125,7 @@ object ScreenLaunchProcessor {
                 }
     }
 
-    private fun transitionNameParameterMethod(element: Element): MethodSpec {
+    private fun sharedElementAddMethod(element: Element): MethodSpec {
         return MethodSpec.methodBuilder("addSharedElement")
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ClassName.bestGuess(PackageNames.VIEW), "view")
