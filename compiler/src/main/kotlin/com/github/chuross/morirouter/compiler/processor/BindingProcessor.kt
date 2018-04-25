@@ -34,7 +34,10 @@ object BindingProcessor {
             it.addFields(bundleKeyStaticFields(element))
             it.addMethod(constructorMethod())
             if (element.allArgumentElements.isNotEmpty()) it.addMethod(bindStaticMethod(element))
-            if (element.isRouterPath) it.addMethod(bindElementStaticMethod(element))
+            if (element.isRouterPath) {
+                it.addMethod(getSharedTransitionNameMethod(element))
+                it.addMethod(bindElementStaticMethod(element))
+            }
         }.build()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
@@ -55,6 +58,20 @@ object BindingProcessor {
         return MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PRIVATE)
                 .build()
+    }
+
+    private fun getSharedTransitionNameMethod(element: Element): MethodSpec {
+        return MethodSpec.methodBuilder("getSharedTransitionName").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+            builder.returns(String::class.java)
+            builder.addParameter(TypeName.get(element.asType()), "fragment")
+            builder.addParameter(TypeName.INT, "resourceId")
+
+            builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
+            builder.addStatement("if (bundle == null) return null")
+
+            builder.addStatement("return bundle.getString(String.format(\"$SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT\", resourceId))")
+        }.build()
     }
 
     private fun bindStaticMethod(element: Element): MethodSpec {
@@ -91,11 +108,9 @@ object BindingProcessor {
             builder.addParameter(TypeName.get(element.asType()), "fragment")
             builder.addParameter(TypeName.INT, "resourceId")
 
-            builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
-            builder.addStatement("if (bundle == null) return")
             builder.addStatement("if (fragment.getView() == null) throw new ${PackageNames.ILLEGAL_STATE_EXCEPTION}(\"you must call onViewCreated\")")
 
-            builder.addStatement("String transitionName = bundle.getString(String.format(\"$SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT\", resourceId))")
+            builder.addStatement("String transitionName = getSharedTransitionName(fragment, resourceId)")
             builder.addStatement("if (transitionName == null) return")
 
             builder.addStatement("${PackageNames.VIEW} targetView = fragment.getView().findViewById(resourceId)")
