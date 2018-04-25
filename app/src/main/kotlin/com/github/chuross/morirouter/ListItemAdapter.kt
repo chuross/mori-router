@@ -1,14 +1,16 @@
 package com.github.chuross.morirouter
 
 import android.content.Context
-import android.support.v4.view.ViewCompat
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.github.chuross.morirouter.databinding.ViewListItemBinding
 import com.github.chuross.recyclerviewadapters.ItemAdapter
 import com.github.chuross.recyclerviewadapters.databinding.BindingViewHolder
 
-class ListItemAdapter(context: Context, private val identity: String) : ItemAdapter<String, BindingViewHolder<ViewListItemBinding>>(context) {
+class ListItemAdapter(context: Context) : ItemAdapter<String, BindingViewHolder<ViewListItemBinding>>(context) {
+
+    var onBindThumbnailTransitionName: ((Int, ImageView) -> Unit)? = null
 
     override fun getAdapterId(): Int = R.layout.view_list_item
 
@@ -17,9 +19,7 @@ class ListItemAdapter(context: Context, private val identity: String) : ItemAdap
     }
 
     override fun onBindViewHolder(holder: BindingViewHolder<ViewListItemBinding>, position: Int) {
-        holder.binding.thumbnailImage.also {
-            ViewCompat.setTransitionName(it, String.format("shared_view_%s_%d_%d", identity, position, it.id))
-        }
+        onBindThumbnailTransitionName?.invoke(position, holder.binding.thumbnailImage)
 
         holder.binding.imageUrl = get(position)
         holder.binding.index = position
