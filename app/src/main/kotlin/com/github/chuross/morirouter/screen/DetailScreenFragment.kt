@@ -37,7 +37,7 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
             override fun onMapSharedElements(names: MutableList<String>?, sharedElements: MutableMap<String, View>?) {
                 super.onMapSharedElements(names, sharedElements)
 
-                val currentPosition = imageUrls.indexOf(imageUrl)
+                val currentPosition = binding.viewPager.currentItem
                 val currentImageFragment = adapter?.instantiateItem(binding.viewPager, currentPosition) as? ImageFragment ?: return
 
                 val targetName = names?.firstOrNull() ?: return
