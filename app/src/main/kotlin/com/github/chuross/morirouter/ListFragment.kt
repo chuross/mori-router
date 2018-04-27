@@ -1,7 +1,6 @@
 package com.github.chuross.morirouter
 
 import android.os.Bundle
-import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.github.chuross.morirouter.annotation.Argument
@@ -38,13 +37,6 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
             )
             it.addAll(imageUrls.toList())
             it.setOnItemClickListener { holder, _, url ->
-                holder.let { it as? BindingViewHolder<*> }
-                        ?.let { it.binding as? ViewListItemBinding}
-                        ?.also {
-                            router?.detail(url, imageUrls)
-                                    ?.manualSharedMapping(context)
-                                    ?.launch()
-                        }
             }
         }
     }

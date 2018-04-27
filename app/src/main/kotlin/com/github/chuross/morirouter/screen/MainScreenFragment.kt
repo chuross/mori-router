@@ -15,7 +15,7 @@ class MainScreenFragment : BaseFragment<FragmentMainBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.basicSampleButton.setOnClickListener { router?.basic("requiredParam1", "requiredParam2")?.launch() }
-        binding.listToDetailSampleButton.setOnClickListener { router?.productionSample()?.launch() }
+        binding.basicSampleButton.setOnClickListener { router?.basicExample("requiredParam1", "requiredParam2")?.launch() }
+        binding.listToDetailSampleButton.setOnClickListener { router?.listToDetailExample()?.launch() }
     }
 }

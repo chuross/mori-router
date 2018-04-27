@@ -11,7 +11,7 @@ import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.databinding.FragmentBasicExampleBinding
 
 @RouterPath(
-        name = "basic"
+        name = "basicExample"
 )
 class BasicExampleScreenFragment : BaseFragment<FragmentBasicExampleBinding>() {
 
