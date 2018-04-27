@@ -3,4 +3,5 @@
 
     <!-- transition names -->
     <string name="transition_icon_image">transition_icon_image</string>
+    <string name="transition_image">transition_image</string>
 </resources>

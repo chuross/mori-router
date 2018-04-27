@@ -16,6 +16,7 @@ class MainScreenFragment : BaseFragment<FragmentMainBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.basicSampleButton.setOnClickListener { router?.basicExample("requiredParam1", "requiredParam2")?.launch() }
+        binding.transitionAnimationSampleButton.setOnClickListener { router?.transitionOverrideExample()?.launch() }
         binding.listToDetailSampleButton.setOnClickListener { router?.listToDetailExample()?.launch() }
     }
 }
