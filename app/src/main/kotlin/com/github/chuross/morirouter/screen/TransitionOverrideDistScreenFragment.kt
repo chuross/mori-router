@@ -7,15 +7,15 @@ import com.github.chuross.morirouter.MoriBinder
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentTransitionOverrideDistBinding
-import com.github.chuross.morirouter.transition.ImageSharedTransitionFactory
+import com.github.chuross.morirouter.transition.ArcImageSharedTransitionFactory
 import com.github.chuross.morirouter.transition.TransitionOverrideDistTransitionFactory
 
 @RouterPath(
         name = "transitionOverrideDist",
         overrideEnterTransitionFactory = TransitionOverrideDistTransitionFactory::class,
         overrideExitTransitionFactory = TransitionOverrideDistTransitionFactory::class,
-        sharedEnterTransitionFactory = ImageSharedTransitionFactory::class,
-        sharedExitTransitionFactory = ImageSharedTransitionFactory::class
+        sharedEnterTransitionFactory = ArcImageSharedTransitionFactory::class,
+        sharedExitTransitionFactory = ArcImageSharedTransitionFactory::class
 )
 class TransitionOverrideDistScreenFragment : BaseFragment<FragmentTransitionOverrideDistBinding>() {
 
