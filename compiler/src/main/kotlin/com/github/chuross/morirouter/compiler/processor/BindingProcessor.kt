@@ -33,6 +33,7 @@ object BindingProcessor {
         val typeSpec =  TypeSpec.classBuilder(AUTO_BINDER_TYPE_NAME)
                 .addJavadoc("This class is auto generated.")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addMethod(getSharedTransitionNameMethod())
                 .addMethod(autoBindStaticMethod(elements.filter { it.allArgumentElements.isNotEmpty() }.toSet()))
                 .addMethod(autoBindElementStaticMethod(elements.filter { it.isRouterPath }.toSet()))
                 .build()
@@ -40,6 +41,20 @@ object BindingProcessor {
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
                 .writeTo(context.filer)
+    }
+
+    private fun getSharedTransitionNameMethod(): MethodSpec {
+        return MethodSpec.methodBuilder("getSharedTransitionName").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+            builder.returns(String::class.java)
+            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment")
+            builder.addParameter(TypeName.INT, "resourceId")
+
+            builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
+            builder.addStatement("if (bundle == null) return null")
+
+            builder.addStatement("return bundle.getString(String.format(\"$SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT\", resourceId))")
+        }.build()
     }
 
     private fun autoBindStaticMethod(elements: Set<Element>): MethodSpec {
@@ -83,7 +98,6 @@ object BindingProcessor {
             it.addMethod(constructorMethod())
             if (element.allArgumentElements.isNotEmpty()) it.addMethod(bindStaticMethod(element))
             if (element.isRouterPath) {
-                it.addMethod(getSharedTransitionNameMethod(element))
                 it.addMethod(bindElementStaticMethod(element))
             }
         }.build()
@@ -106,20 +120,6 @@ object BindingProcessor {
         return MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PRIVATE)
                 .build()
-    }
-
-    private fun getSharedTransitionNameMethod(element: Element): MethodSpec {
-        return MethodSpec.methodBuilder("getSharedTransitionName").also { builder ->
-            builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-            builder.returns(String::class.java)
-            builder.addParameter(TypeName.get(element.asType()), "fragment")
-            builder.addParameter(TypeName.INT, "resourceId")
-
-            builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
-            builder.addStatement("if (bundle == null) return null")
-
-            builder.addStatement("return bundle.getString(String.format(\"$SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT\", resourceId))")
-        }.build()
     }
 
     private fun bindStaticMethod(element: Element): MethodSpec {
@@ -158,7 +158,10 @@ object BindingProcessor {
 
             builder.addStatement("if (fragment.getView() == null) throw new ${PackageNames.ILLEGAL_STATE_EXCEPTION}(\"you must call onViewCreated\")")
 
-            builder.addStatement("String transitionName = getSharedTransitionName(fragment, resourceId)")
+            builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
+            builder.addStatement("if (bundle == null) return")
+
+            builder.addStatement("String transitionName = bundle.getString(String.format(\"$SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT\", resourceId))")
             builder.addStatement("if (transitionName == null) return")
 
             builder.addStatement("${PackageNames.VIEW} targetView = fragment.getView().findViewById(resourceId)")
