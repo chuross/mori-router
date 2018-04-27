@@ -23,8 +23,5 @@ class ThirdScreenFragment : BaseFragment<FragmentThirdBinding>() {
 
         MoriBinder.bindElement(this, R.id.app_icon_image)
 
-        binding.screenButton?.setOnClickListener {
-            router?.productionSample()?.launch()
-        }
     }
 }

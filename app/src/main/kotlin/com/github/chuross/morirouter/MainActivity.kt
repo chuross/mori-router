@@ -13,11 +13,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        router = MoriRouter(supportFragmentManager, MoriRouterOptions.Builder(R.id.container)
+        val options = MoriRouterOptions.Builder(R.id.container)
                 .setEnterTransition(Fade())
                 .setExitTransition(Fade())
-                .build())
-        router.basic("requiredValue1", "requiredValue2").launch()
+                .build()
+
+        router = MoriRouter(supportFragmentManager, options)
+        router.main().launch()
     }
 
 }
