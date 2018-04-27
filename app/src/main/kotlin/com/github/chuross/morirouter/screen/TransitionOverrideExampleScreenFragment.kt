@@ -3,14 +3,15 @@ package com.github.chuross.morirouter.screen
 import android.os.Bundle
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
-import com.github.chuross.morirouter.GlideApp
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentTransitionOverrideBinding
-import com.github.chuross.morirouter.util.Data
+import com.github.chuross.morirouter.transition.TransitionOverrideExampleTransitionFactory
 
 @RouterPath(
-        name = "transitionOverrideExample"
+        name = "transitionOverrideExample",
+        overrideEnterTransitionFactory = TransitionOverrideExampleTransitionFactory::class,
+        overrideExitTransitionFactory = TransitionOverrideExampleTransitionFactory::class
 )
 class TransitionOverrideExampleScreenFragment : BaseFragment<FragmentTransitionOverrideBinding>(){
 
@@ -18,12 +19,6 @@ class TransitionOverrideExampleScreenFragment : BaseFragment<FragmentTransitionO
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        GlideApp.with(this)
-                .load(Data.LIST_DATA.first())
-                .fitCenter()
-                .centerInside()
-                .into(binding.image)
 
         binding.animationStartButton.setOnClickListener {
             router?.transitionOverrideDist()
