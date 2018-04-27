@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter
 
 import android.os.Bundle
+import android.support.v4.view.ViewCompat
 import android.view.View
 import android.widget.ImageView
 import com.github.chuross.morirouter.annotation.Argument
@@ -12,10 +13,10 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
 
     @Argument
     lateinit var imageUrl: String
+    @Argument(required = false)
+    var transitionName: String? = null
 
     override val layoutResourceId: Int = R.layout.fragment_image
-
-    val imageView: ImageView get() = binding.thumbnailImage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,5 +27,13 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        transitionName?.let { ViewCompat.setTransitionName(binding.thumbnailImage, it) }
+
+        GlideApp.with(this)
+                .load(imageUrl)
+                .dontAnimate()
+                .fitCenter()
+                .centerInside()
+                .into(binding.thumbnailImage)
     }
 }

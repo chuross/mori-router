@@ -18,5 +18,6 @@ class MainScreenFragment : BaseFragment<FragmentMainBinding>() {
         binding.basicSampleButton.setOnClickListener { router?.basicExample("requiredParam1", "requiredParam2")?.launch() }
         binding.transitionAnimationSampleButton.setOnClickListener { router?.transitionOverrideExample()?.launch() }
         binding.listToDetailSampleButton.setOnClickListener { router?.listToDetailExample()?.launch() }
+        binding.listToViewpagerSampleButton.setOnClickListener { router?.listToViewPagerExample()?.launch() }
     }
 }

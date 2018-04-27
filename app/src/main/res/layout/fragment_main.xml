@@ -40,7 +40,15 @@
                 android:id="@+id/list_to_detail_sample_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="List to detail sahred element sample"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/list_to_viewpager_sample_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="List to ViewPager sahred element sample"
                 android:textAllCaps="false" />
 
         </LinearLayout>
