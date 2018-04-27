@@ -2,13 +2,13 @@ package com.github.chuross.morirouter.extension
 
 import android.databinding.BindingAdapter
 import android.widget.ImageView
-import com.squareup.picasso.Picasso
+import com.github.chuross.morirouter.GlideApp
 
 @BindingAdapter(value = ["ext_imageUrl"])
 fun ImageView.extLoadImage(imageUrl: String) {
-    Picasso.with(context)
+    GlideApp.with(this)
             .load(imageUrl)
-            .fit()
+            .fitCenter()
             .centerInside()
             .into(this)
 }

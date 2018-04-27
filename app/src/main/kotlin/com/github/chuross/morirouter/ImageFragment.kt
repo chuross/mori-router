@@ -6,7 +6,6 @@ import android.widget.ImageView
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.WithArguments
 import com.github.chuross.morirouter.databinding.FragmentImageBinding
-import com.squareup.picasso.Picasso
 
 @WithArguments
 class ImageFragment : BaseFragment<FragmentImageBinding>() {
@@ -27,10 +26,5 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Picasso.with(context)
-                .load(imageUrl)
-                .fit()
-                .centerInside()
-                .into(binding.thumbnailImage)
     }
 }
