@@ -4,7 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
-import com.github.chuross.morirouter.BasicExampleScreenFragmentBinder
+import com.github.chuross.morirouter.MoriBinder
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.Argument
@@ -28,7 +28,7 @@ class BasicExampleScreenFragment : BaseFragment<FragmentBasicExampleBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        BasicExampleScreenFragmentBinder.bind(this)
+        MoriBinder.bind(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

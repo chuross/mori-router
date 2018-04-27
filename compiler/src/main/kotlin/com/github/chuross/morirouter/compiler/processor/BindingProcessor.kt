@@ -8,6 +8,7 @@ import com.github.chuross.morirouter.compiler.extension.isRouterPath
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
 import com.squareup.javapoet.AnnotationSpec
+import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
@@ -19,17 +20,64 @@ import javax.lang.model.element.Modifier
 
 object BindingProcessor {
 
+    const val AUTO_BINDER_TYPE_NAME: String = "MoriBinder"
     const val SHARED_ELEMENT_ARGUMENT_KEY_NAME_FORMAT: String = "shared_view_%d"
 
     fun getGeneratedTypeName(element: Element): String {
         return "${element.simpleName}Binder"
     }
 
+    fun processAutoBinder(context: ProcessorContext, elements: Set<Element>) {
+        if (elements.all { it.allArgumentElements.isEmpty() && !it.isRouterPath }) return
+
+        val typeSpec =  TypeSpec.classBuilder(AUTO_BINDER_TYPE_NAME)
+                .addJavadoc("This class is auto generated.")
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addMethod(autoBindStaticMethod(elements.filter { it.allArgumentElements.isNotEmpty() }.toSet()))
+                .addMethod(autoBindElementStaticMethod(elements.filter { it.isRouterPath }.toSet()))
+                .build()
+
+        JavaFile.builder(context.getPackageName(), typeSpec)
+                .build()
+                .writeTo(context.filer)
+    }
+
+    private fun autoBindStaticMethod(elements: Set<Element>): MethodSpec {
+        return MethodSpec.methodBuilder("bind").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment")
+
+            builder.addStatement("if (fragment == null) throw new ${PackageNames.ILLEGAL_ARGUMENT_EXCEPTION}(\"fragment must be not null\")")
+
+            elements.forEach {
+                builder.beginControlFlow("if (${it.asType()}.class.equals(fragment.getClass()))")
+                builder.addStatement("${getGeneratedTypeName(it)}.bind((${it.asType()}) fragment)")
+                builder.endControlFlow()
+            }
+        }.build()
+    }
+
+    private fun autoBindElementStaticMethod(elements: Set<Element>): MethodSpec {
+        return MethodSpec.methodBuilder("bindElement").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment")
+            builder.addParameter(TypeName.INT, "resourceId")
+
+            builder.addStatement("if (fragment == null) throw new ${PackageNames.ILLEGAL_ARGUMENT_EXCEPTION}(\"fragment must be not null\")")
+
+            elements.forEach {
+                builder.beginControlFlow("if (${it.asType()}.class.equals(fragment.getClass()))")
+                builder.addStatement("${getGeneratedTypeName(it)}.bindElement((${it.asType()}) fragment, resourceId)")
+                builder.endControlFlow()
+            }
+        }.build()
+    }
+
     fun process(context: ProcessorContext, element: Element) {
         if (element.allArgumentElements.isEmpty() && !element.isRouterPath) return
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element)).also {
-            it.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            it.addModifiers(Modifier.FINAL)
             it.addJavadoc("This class is auto generated.")
             it.addFields(bundleKeyStaticFields(element))
             it.addMethod(constructorMethod())
@@ -48,7 +96,7 @@ object BindingProcessor {
     private fun bundleKeyStaticFields(element: Element): Iterable<FieldSpec> {
         return element.allArgumentElements.map {
             FieldSpec.builder(String::class.java, it.argumentKeyName)
-                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                    .addModifiers(Modifier.STATIC, Modifier.FINAL)
                     .initializer("\"argument_key_${it.paramName.toLowerCase()}\"")
                     .build()
         }

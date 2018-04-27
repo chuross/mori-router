@@ -1,11 +1,10 @@
 package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
-import android.support.v4.view.ViewCompat
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
+import com.github.chuross.morirouter.MoriBinder
 import com.github.chuross.morirouter.R
-import com.github.chuross.morirouter.SecondScreenFragmentBinder
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.databinding.FragmentSecondBinding
@@ -29,7 +28,7 @@ class SecondScreenFragment : BaseFragment<FragmentSecondBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SecondScreenFragmentBinder.bind(this)
+        MoriBinder.bind(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

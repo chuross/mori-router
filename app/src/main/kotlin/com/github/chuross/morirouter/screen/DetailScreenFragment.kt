@@ -5,10 +5,10 @@ import android.support.v4.app.SharedElementCallback
 import android.support.v4.view.ViewCompat
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
-import com.github.chuross.morirouter.DetailScreenFragmentBinder
 import com.github.chuross.morirouter.FragmentPagerAdapter
 import com.github.chuross.morirouter.ImageFragment
 import com.github.chuross.morirouter.ImageFragmentBuilder
+import com.github.chuross.morirouter.MoriBinder
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
@@ -32,7 +32,7 @@ class DetailScreenFragment : BaseFragment<FragmentDetailBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DetailScreenFragmentBinder.bind(this)
+        MoriBinder.bind(this)
 
         setEnterSharedElementCallback(object : SharedElementCallback() {
             override fun onMapSharedElements(names: MutableList<String>?, sharedElements: MutableMap<String, View>?) {

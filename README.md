@@ -50,7 +50,7 @@ class MainScreenFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MainScreenBinder.bind(this) // MainScreenBinder is auto generated class.
+        MoriBinder.bind(this) // MoriBinder is auto generated class.
     }
 
     ....
@@ -130,7 +130,7 @@ class SecondScreenFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SecondScreenBinder.bind(this) // SecondScreenBinder is auto generated class.
+        MoriBinder.bind(this)
     }
 }
 ```
@@ -178,7 +178,7 @@ class ThirdScreenFragment : Fragment() {
 
         // ThirdScreenFragment must has `R.id.your_id` view
         // this id is same before screen's shared element id
-        ThirdScreenFragmentBinder.bindElement(this, R.id.your_id) // This class and method are auto generated.
+        MoriBinder.bindElement(this, R.id.your_id)
    }
 }
 ```

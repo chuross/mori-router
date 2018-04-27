@@ -4,6 +4,7 @@ import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.annotation.WithArguments
+import com.github.chuross.morirouter.compiler.processor.BindingProcessor
 import com.github.chuross.morirouter.compiler.processor.FragmentBuilderProcessor
 import com.github.chuross.morirouter.compiler.processor.RouterProcessor
 import com.github.chuross.morirouter.compiler.processor.UriLauncherProcessor
@@ -53,14 +54,19 @@ class MoriRouterProcessor : AbstractProcessor() {
         return try {
             val context = ProcessorContext(filer, elementUtils)
 
-            roundEnv.getElementsAnnotatedWith(RouterPath::class.java).also {
+            val routerPaths = roundEnv.getElementsAnnotatedWith(RouterPath::class.java)
+            val fragmentBuilders = roundEnv.getElementsAnnotatedWith(WithArguments::class.java)
+
+            routerPaths.also {
                 UriLauncherProcessor.processInterface(context, it)
                 RouterProcessor.process(context, it)
             }
 
-            roundEnv.getElementsAnnotatedWith(WithArguments::class.java).forEach {
+            fragmentBuilders.forEach {
                 FragmentBuilderProcessor.process(context, it)
             }
+
+            BindingProcessor.processAutoBinder(context, routerPaths.plus(fragmentBuilders))
 
             true
         } catch (e: Throwable) {
