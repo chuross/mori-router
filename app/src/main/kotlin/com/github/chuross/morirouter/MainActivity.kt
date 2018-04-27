@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
                 .setEnterTransition(Fade())
                 .setExitTransition(Fade())
                 .build())
-        router.main("requiredValue1", "requiredValue2").launch()
+        router.basic("requiredValue1", "requiredValue2").launch()
     }
 
 }

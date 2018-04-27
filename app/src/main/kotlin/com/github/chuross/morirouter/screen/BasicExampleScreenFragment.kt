@@ -4,16 +4,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
-import com.github.chuross.morirouter.MainScreenFragmentBinder
+import com.github.chuross.morirouter.BasicExampleScreenFragmentBinder
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.Argument
-import com.github.chuross.morirouter.databinding.FragmentMainBinding
+import com.github.chuross.morirouter.databinding.FragmentBasicExampleBinding
 
 @RouterPath(
-        name = "main"
+        name = "basic"
 )
-class MainScreenFragment : BaseFragment<FragmentMainBinding>() {
+class BasicExampleScreenFragment : BaseFragment<FragmentBasicExampleBinding>() {
 
     @Argument
     lateinit var param1: String
@@ -24,11 +24,11 @@ class MainScreenFragment : BaseFragment<FragmentMainBinding>() {
     @Argument(name = "tekitou_list", required = false)
     var param3: ArrayList<String> = arrayListOf()
 
-    override val layoutResourceId: Int = R.layout.fragment_main
+    override val layoutResourceId: Int = R.layout.fragment_basic_example
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MainScreenFragmentBinder.bind(this)
+        BasicExampleScreenFragmentBinder.bind(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
