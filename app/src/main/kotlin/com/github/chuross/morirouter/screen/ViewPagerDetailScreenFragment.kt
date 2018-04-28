@@ -1,7 +1,6 @@
 package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
-import android.support.v4.app.SharedElementCallback
 import android.support.v4.view.ViewPager
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment

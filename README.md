@@ -143,6 +143,7 @@ router.dispatch(Uri.parse("https://example.com/hoge/123/test")) // launch Second
 ```
 
 ### SharedElement support
+#### Basic
 1. set transition name in your XML layout or in your code.
 
 XML
@@ -162,7 +163,7 @@ Code
 ViewCompat.setTransitionName(yourView, "your_transition_name");
 ```
 
-2. add sharedEnterTransitionFactory and sharedExitTransitionFactory to `@RouterPath`.
+2. add `sharedEnterTransitionFactory` and `sharedExitTransitionFactory` to `@RouterPath`.
 
 ```kotlin
 @RouterPath(
@@ -188,6 +189,72 @@ class ThirdScreenFragment : Fragment() {
 ```kotlin
 router.third().addSharedElement(yourView).launch()
 ```
+
+### Manual SharedElement Mapping
+if you need manual sharedElement mapping for ViewPager, you should use this option.
+
+1. set transition name in your code.
+```kotlin
+ViewCompat.setTransitionName(yourView, "your_transition_name");
+```
+
+2. add `manualSharedViewNames` to `@RouterPath`
+
+```kotlin
+@RouterPath(
+    name = "third",
+    manualSharedViewNames = ["shared_view_image"],
+    sharedEnterTransitionFactory = ThirdScreenSharedTransitionFactory::class,
+    sharedExitTransitionFactory = ThirdScreenSharedTransitionFactory::class
+)
+class ThirdScreenFragment : Fragment() {
+   ....
+
+   override fun onCreate(savedInstanceState: Bundle?) {
+       super.onCreate(savedInstanceState)
+
+       val sharedElementCallback = ThirdSharedElementCallBack() // auto generated class
+                                      .sharedViewImage({
+                                          val currentFragment = // do something from ViewPager
+                                          currentFragment?.binding?.yourSharedView
+                                      })
+
+       setEnterSharedElementCallback(sharedElementCallback)
+   }
+}
+```
+
+3. `setExitSharedElementCallback` when before transition `third` screen.
+```kotlin
+@RouterPath(
+    name = "second"
+)
+class SecondScreenFragment : Fragment() {
+   ....
+
+   override fun onCreate(savedInstanceState: Bundle?) {
+       super.onCreate(savedInstanceState)
+
+       val sharedElementCallback = ThirdSharedElementCallBack() // auto generated class
+                                      .sharedViewImage({
+                                          val yourSharedView = // do something from your layout
+                                          yourSharedView
+                                      })
+
+       setExitSharedElementCallback(sharedElementCallback)
+   }
+
+   ....
+
+   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ....
+
+        // call manualSharedMapping
+        router.third().manualSharedMapping(context).launch()
+   }
+}
+```
+
 
 ## License
 ```
