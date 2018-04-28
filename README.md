@@ -5,6 +5,8 @@ Annotation based Android router library.
 
 This library for single activity application.(multi fragments)
 
+<img src="https://user-images.githubusercontent.com/1422031/39396026-9db3e810-4b21-11e8-8102-8945ab9fb3f1.gif" width="200">
+
 ## Futures
 - Auto generate routing codes
 - Auto generate Fragment builder codes
