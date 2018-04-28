@@ -2,6 +2,7 @@ package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
 import android.support.v4.app.SharedElementCallback
+import android.support.v4.view.ViewPager
 import android.view.View
 import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.FragmentPagerAdapter
@@ -14,9 +15,11 @@ import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentViewpagerDetailBinding
 import com.github.chuross.morirouter.transition.ImageSharedTransitionFactory
 import java.util.ArrayList
+import java.util.concurrent.atomic.AtomicInteger
 
 @RouterPath(
         name = "viewPagerDetail",
+        needManualSharedMapping = true,
         sharedEnterTransitionFactory = ImageSharedTransitionFactory::class,
         sharedExitTransitionFactory = ImageSharedTransitionFactory::class
 )
@@ -30,6 +33,8 @@ class ViewPagerDetailScreenFragment : BaseFragment<FragmentViewpagerDetailBindin
     lateinit var imageUrls: ArrayList<String>
     @Argument
     lateinit var transitionNamePrefix: String
+    @Argument(required = false)
+    var relayedPosition: AtomicInteger? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +47,9 @@ class ViewPagerDetailScreenFragment : BaseFragment<FragmentViewpagerDetailBindin
                 super.onMapSharedElements(names, sharedElements)
 
                 val currentFragment = adapter?.instantiateItem(binding.viewpager, binding.viewpager.currentItem) as? ImageFragment ?: return
-                val transitionName = MoriBinder.getSharedTransitionName(this@ViewPagerDetailScreenFragment, R.id.thumbnail_image) ?: return
+                sharedElements?.clear()
 
-                sharedElements?.put(transitionName, currentFragment.binding.thumbnailImage)
+                sharedElements?.put("dummy", currentFragment.binding.thumbnailImage)
             }
         })
     }
@@ -58,5 +63,12 @@ class ViewPagerDetailScreenFragment : BaseFragment<FragmentViewpagerDetailBindin
 
         binding.viewpager.adapter = adapter
         binding.viewpager.setCurrentItem(startIndex, false)
+        binding.viewpager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                relayedPosition?.set(position)
+            }
+        })
     }
 }
