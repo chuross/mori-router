@@ -73,8 +73,7 @@ val options = MoriRouterOptions.Builder(R.id.container)
 
 val router = MoriRouter(supportFragmentManager, options) // MoriRouter is auto generated class.
 
-router
-    .main("required1", 1000) // main(String param1, Integer ieei)
+router.main("required1", 1000) // main(String param1, Integer ieei)
     .param3(arrayListOf("fuga")) // optional value
     .launch() // launch main screen
 
@@ -89,7 +88,7 @@ This library generate {class_name}Builder code.
 
 ```kotlin
 @WithArguments
-class HogeScreenFragment : Fragment() {
+class HogeFragment : Fragment() {
 
     @Argument
     lateinit var hogeName: String
@@ -99,7 +98,7 @@ class HogeScreenFragment : Fragment() {
 ```
 
 ```kotlin
-val fragment: Fragment = HogeScreenFragmentBuilder(hogeName).build() // HogeScreenFragmentBuilder is auto generated class
+val fragment: Fragment = HogeFragmentBuilder(hogeName).build() // HogeScreenFragmentBuilder is auto generated class
 ```
 
 ### override enter / exit transition
