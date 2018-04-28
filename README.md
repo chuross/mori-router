@@ -191,6 +191,7 @@ class ThirdScreenFragment : Fragment() {
 3. add SharedElements when before transition `third` screen.
 
 ```kotlin
+// yourView has `R.id.your_id`
 router.third().addSharedElement(yourView).launch()
 ```
 
