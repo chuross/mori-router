@@ -53,8 +53,12 @@ class ViewPagerDetailScreenFragment : BaseFragment<FragmentViewpagerDetailBindin
         super.onViewCreated(view, savedInstanceState)
 
         adapter = FragmentPagerAdapter(childFragmentManager, imageUrls.mapIndexed { index, url ->
-            Pair("", { ImageFragmentBuilder(url).transitionName("${transitionNamePrefix}_$index").build() })
+            Pair("$index image", { ImageFragmentBuilder(url).transitionName("${transitionNamePrefix}_$index").build() })
         })
+
+        binding.toolbar.setNavigationOnClickListener { router?.pop() }
+
+        binding.tabLayout.setupWithViewPager(binding.viewpager)
 
         binding.viewpager.adapter = adapter
         binding.viewpager.setCurrentItem(startIndex, false)
