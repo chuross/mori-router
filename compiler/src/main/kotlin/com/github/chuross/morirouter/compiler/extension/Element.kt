@@ -18,7 +18,7 @@ val Element.pathName: String? get() = getAnnotation(RouterPath::class.java)?.nam
 
 val Element.pathUris: Array<String>? get() = getAnnotation(RouterPath::class.java)?.uris
 
-val Element.needManualSharedMapping: Boolean get() = getAnnotation(RouterPath::class.java)?.needManualSharedMapping ?: false
+val Element.manualSharedViewNames: Array<String>? get() = getAnnotation(RouterPath::class.java)?.manualSharedViewNames
 
 val Element.sharedEnterTransitionFactoryName: String? get() = try { getAnnotation(RouterPath::class.java)?.sharedEnterTransitionFactory?.qualifiedName } catch (e: MirroredTypeException) { e.typeMirror?.toString() }
 

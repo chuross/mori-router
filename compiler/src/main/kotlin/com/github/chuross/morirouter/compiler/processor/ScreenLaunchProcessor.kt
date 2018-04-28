@@ -6,7 +6,7 @@ import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
-import com.github.chuross.morirouter.compiler.extension.needManualSharedMapping
+import com.github.chuross.morirouter.compiler.extension.manualSharedViewNames
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.overrideEnterTransitionFactoryName
 import com.github.chuross.morirouter.compiler.extension.overrideExitTransitionFactoryName
@@ -47,7 +47,7 @@ object ScreenLaunchProcessor {
             builder.addFields(paramFields(element))
             builder.addMethod(constructorMethod(element))
             builder.addMethods(optionalParameterMethods(element))
-            if (element.needManualSharedMapping) {
+            if (element.manualSharedViewNames?.isNotEmpty() ?: false) {
                 builder.addMethod(manualSharedMappingEnabledMethod(element))
             } else {
                 builder.addMethod(sharedElementAddMethod(element))
@@ -134,23 +134,27 @@ object ScreenLaunchProcessor {
         return MethodSpec.methodBuilder("addSharedElement")
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ClassName.bestGuess(PackageNames.VIEW), "view")
+                .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
                 .addStatement("this.sharedElements.add(view)")
                 .addStatement("return this")
-                .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
                 .build()
     }
 
     private fun manualSharedMappingEnabledMethod(element: Element): MethodSpec {
-        return MethodSpec.methodBuilder("manualSharedMapping")
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ClassName.bestGuess(PackageNames.CONTEXT), "context")
-                .addStatement("${PackageNames.VIEW} view = new ${PackageNames.VIEW}(context)")
-                .addStatement("view.setId(0)")
-                .addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName(view, \"dummy\")")
-                .addStatement("this.sharedElements.add(view)")
-                .addStatement("return this")
-                .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
-                .build()
+        return MethodSpec.methodBuilder("manualSharedMapping").also { builder ->
+            builder.addModifiers(Modifier.PUBLIC)
+            builder.addParameter(ClassName.bestGuess(PackageNames.CONTEXT), "context")
+            builder.returns(ClassName.bestGuess(getGeneratedTypeName(element)))
+
+            element.manualSharedViewNames?.forEach {
+                builder.addStatement("${PackageNames.VIEW} view = new ${PackageNames.VIEW}(context)")
+                builder.addStatement("view.setId(0)")
+                builder.addStatement("${PackageNames.VIEW_COMPAT}.setTransitionName(view, \"$it\")")
+                builder.addStatement("this.sharedElements.add(view)")
+            }
+
+            builder.addStatement("return this")
+        }.build()
     }
 
     private fun launchMethod(element: Element): MethodSpec {
@@ -175,13 +179,15 @@ object ScreenLaunchProcessor {
                 builder.addStatement("Object overrideEnterTransitionSet = new $it().create()")
                 builder.addStatement("Object enterTransitionSet = overrideEnterTransitionSet != null ? overrideEnterTransitionSet : options.getEnterTransition()")
                 builder.addStatement("if (enterTransitionSet != null) fragment.setEnterTransition(enterTransitionSet)")
-            } ?: builder.addStatement("if (options.getEnterTransition() != null) fragment.setEnterTransition(options.getEnterTransition())")
+            }
+                    ?: builder.addStatement("if (options.getEnterTransition() != null) fragment.setEnterTransition(options.getEnterTransition())")
 
             element.overrideExitTransitionFactoryName?.also {
                 builder.addStatement("Object overrideExitTransitionSet = new $it().create()")
                 builder.addStatement("Object exitTransitionSet = overrideExitTransitionSet != null ? overrideExitTransitionSet : options.getExitTransition()")
                 builder.addStatement("if (exitTransitionSet != null) fragment.setExitTransition(exitTransitionSet)")
-            } ?: builder.addStatement("if (options.getExitTransition() != null) fragment.setExitTransition(options.getExitTransition())")
+            }
+                    ?: builder.addStatement("if (options.getExitTransition() != null) fragment.setExitTransition(options.getExitTransition())")
 
             element.sharedEnterTransitionFactoryName?.also {
                 builder.addStatement("Object sharedEnterTransitionSet = new $it().create()")

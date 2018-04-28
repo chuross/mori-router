@@ -79,6 +79,7 @@ object RouterProcessor {
             ScreenLaunchProcessor.process(context, it)
             UriLauncherProcessor.process(context, it)
             BindingProcessor.process(context, it)
+            SharedElementCallbackProcessor.process(context, it)
 
             val requiredRouterParamElements = it.argumentElements.filter { it.isRequiredArgument }
 

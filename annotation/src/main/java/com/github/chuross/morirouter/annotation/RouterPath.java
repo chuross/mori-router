@@ -17,7 +17,7 @@ public @interface RouterPath {
 
     String[] uris() default {};
 
-    boolean needManualSharedMapping() default false;
+    String[] manualSharedViewNames() default {};
 
     Class<? extends TransitionFactory> sharedEnterTransitionFactory() default DefaultTransitionFactory.class;
 

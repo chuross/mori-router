@@ -10,6 +10,7 @@ import com.github.chuross.morirouter.ImageFragment
 import com.github.chuross.morirouter.ImageFragmentBuilder
 import com.github.chuross.morirouter.MoriBinder
 import com.github.chuross.morirouter.R
+import com.github.chuross.morirouter.ViewPagerDetailScreenFragmentSharedElementCallBack
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentViewpagerDetailBinding
@@ -19,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @RouterPath(
         name = "viewPagerDetail",
-        needManualSharedMapping = true,
+        manualSharedViewNames = ["shared_view_image"],
         sharedEnterTransitionFactory = ImageSharedTransitionFactory::class,
         sharedExitTransitionFactory = ImageSharedTransitionFactory::class
 )
@@ -41,17 +42,11 @@ class ViewPagerDetailScreenFragment : BaseFragment<FragmentViewpagerDetailBindin
 
         MoriBinder.bind(this)
 
-        setEnterSharedElementCallback(object : SharedElementCallback() {
-
-            override fun onMapSharedElements(names: MutableList<String>?, sharedElements: MutableMap<String, View>?) {
-                super.onMapSharedElements(names, sharedElements)
-
-                val currentFragment = adapter?.instantiateItem(binding.viewpager, binding.viewpager.currentItem) as? ImageFragment ?: return
-                sharedElements?.clear()
-
-                sharedElements?.put("dummy", currentFragment.binding.thumbnailImage)
-            }
-        })
+        setEnterSharedElementCallback(ViewPagerDetailScreenFragmentSharedElementCallBack()
+                .sharedViewImage({
+                    val currentFragment = adapter?.instantiateItem(binding.viewpager, binding.viewpager.currentItem) as? ImageFragment
+                    currentFragment?.binding?.thumbnailImage
+                }))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
