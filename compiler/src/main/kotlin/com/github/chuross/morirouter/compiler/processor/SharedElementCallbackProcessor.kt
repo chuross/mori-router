@@ -2,8 +2,10 @@ package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
 import com.github.chuross.morirouter.compiler.ProcessorContext
+import com.github.chuross.morirouter.compiler.extension.isRouterPath
 import com.github.chuross.morirouter.compiler.extension.manualSharedViewNames
 import com.github.chuross.morirouter.compiler.extension.normalize
+import com.github.chuross.morirouter.compiler.extension.pathName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
@@ -16,10 +18,11 @@ import javax.lang.model.element.Modifier
 object SharedElementCallbackProcessor {
 
     fun getGeneratedTypeName(element: Element): String {
-        return "${element.simpleName}SharedElementCallBack"
+        return "${element.pathName?.capitalize()}SharedElementCallBack"
     }
 
     fun process(context: ProcessorContext, element: Element) {
+        if (!element.isRouterPath) return
         if (element.manualSharedViewNames?.isEmpty() ?: true) return
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
@@ -71,10 +74,12 @@ object SharedElementCallbackProcessor {
                 .addStatement("sharedElements.clear()")
                 .beginControlFlow("try")
                 .beginControlFlow("for (${PackageNames.MAP}.Entry<${String::class.java.name}, ${PackageNames.CALLABLE}<${PackageNames.VIEW}>> entry : sharedMapping.entrySet())")
-                .addStatement("sharedElements.put(entry.getKey(), entry.getValue().call())")
+                .addStatement("${PackageNames.VIEW} view = entry.getValue().call()")
+                .addStatement("if (view == null) continue")
+                .addStatement("sharedElements.put(entry.getKey(), view)")
                 .endControlFlow()
                 .nextControlFlow("catch (${PackageNames.EXCEPTION} e)")
-                .addComment("do nothing")
+                .addStatement("throw new ${PackageNames.ILLEGAL_STATE_EXCEPTION}(\"shared element mapping failed\", e)")
                 .endControlFlow()
                 .build()
     }

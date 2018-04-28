@@ -10,7 +10,7 @@ import com.github.chuross.morirouter.ImageFragment
 import com.github.chuross.morirouter.ImageFragmentBuilder
 import com.github.chuross.morirouter.MoriBinder
 import com.github.chuross.morirouter.R
-import com.github.chuross.morirouter.ViewPagerDetailScreenFragmentSharedElementCallBack
+import com.github.chuross.morirouter.ViewPagerDetailSharedElementCallBack
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentViewpagerDetailBinding
@@ -42,7 +42,7 @@ class ViewPagerDetailScreenFragment : BaseFragment<FragmentViewpagerDetailBindin
 
         MoriBinder.bind(this)
 
-        setEnterSharedElementCallback(ViewPagerDetailScreenFragmentSharedElementCallBack()
+        setEnterSharedElementCallback(ViewPagerDetailSharedElementCallBack()
                 .sharedViewImage({
                     val currentFragment = adapter?.instantiateItem(binding.viewpager, binding.viewpager.currentItem) as? ImageFragment
                     currentFragment?.binding?.thumbnailImage

@@ -7,7 +7,7 @@ import android.view.View
 import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.ListItemAdapter
 import com.github.chuross.morirouter.R
-import com.github.chuross.morirouter.ViewPagerDetailScreenFragmentSharedElementCallBack
+import com.github.chuross.morirouter.ViewPagerDetailSharedElementCallBack
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentListToDetailExampleBinding
 import com.github.chuross.morirouter.databinding.ViewListItemBinding
@@ -27,7 +27,7 @@ class ListToViewPagerExampleScreenFragment : BaseFragment<FragmentListToDetailEx
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setExitSharedElementCallback(ViewPagerDetailScreenFragmentSharedElementCallBack()
+        setExitSharedElementCallback(ViewPagerDetailSharedElementCallBack()
                 .sharedViewImage({
                     val position = selectedPosition.get()
                     val viewHolder = binding.list.findViewHolderForAdapterPosition(position) as? BindingViewHolder<ViewListItemBinding>
