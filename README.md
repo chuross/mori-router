@@ -192,7 +192,7 @@ class ThirdScreenFragment : Fragment() {
 router.third().addSharedElement(yourView).launch()
 ```
 
-### Manual SharedElement Mapping
+#### Manual SharedElement Mapping
 if you need manual sharedElement mapping for ViewPager, you should use this option.
 
 <img src="https://user-images.githubusercontent.com/1422031/39395084-2ad655f0-4b15-11e8-879d-87535e05108d.gif" width="200">
