@@ -64,9 +64,11 @@ class MainScreenFragment : Fragment() {
 2. Execute build command, Then `MoriRouter` class is auto generated.
 
 ```kotlin
+val transitionFactory = DefaultTransitionFactory { /* return `android.support.transition` or `android.transition` */ }
+
 val options = MoriRouterOptions.Builder(R.id.container)
-                .setEnterTransition(transition) // `android.support.transition` or `android.transition`
-                .setExitTransition(transition)
+                .setEnterTransitionFactory(transitionFactory)
+                .setExitTransitionFactory(transitionFactory)
                 .build()
 
 val router = MoriRouter(supportFragmentManager, options) // MoriRouter is auto generated class.
@@ -110,7 +112,7 @@ val fragment: Fragment = HogeScreenFragmentBuilder(hogeName).build() // HogeScre
 ```
 
 ### DeepLink support
-1. If use deepLink support, `uri` parameter add to `@RouterPath`, and add definition `@RouterUriParam` parameters in your screen fragment.
+1. If use deepLink support, `uri` parameter add to `@RouterPath`, and add `@UriArgument` parameters in your screen fragment.
 
 ```kotlin
 @RouterPath(

@@ -177,14 +177,14 @@ object ScreenLaunchProcessor {
 
             element.overrideEnterTransitionFactoryName?.also {
                 builder.addStatement("Object overrideEnterTransitionSet = new $it().create()")
-                builder.addStatement("Object enterTransitionSet = overrideEnterTransitionSet != null ? overrideEnterTransitionSet : options.getEnterTransition()")
+                builder.addStatement("Object enterTransitionSet = overrideEnterTransitionSet != null ? overrideEnterTransitionSet : options.getEnterTransitionFactory().create()")
                 builder.addStatement("if (enterTransitionSet != null) fragment.setEnterTransition(enterTransitionSet)")
             }
                     ?: builder.addStatement("if (options.getEnterTransition() != null) fragment.setEnterTransition(options.getEnterTransition())")
 
             element.overrideExitTransitionFactoryName?.also {
                 builder.addStatement("Object overrideExitTransitionSet = new $it().create()")
-                builder.addStatement("Object exitTransitionSet = overrideExitTransitionSet != null ? overrideExitTransitionSet : options.getExitTransition()")
+                builder.addStatement("Object exitTransitionSet = overrideExitTransitionSet != null ? overrideExitTransitionSet : options.getExitTransitionFactory().create()")
                 builder.addStatement("if (exitTransitionSet != null) fragment.setExitTransition(exitTransitionSet)")
             }
                     ?: builder.addStatement("if (options.getExitTransition() != null) fragment.setExitTransition(options.getExitTransition())")
