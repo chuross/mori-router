@@ -20,6 +20,7 @@ import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
+import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
@@ -28,6 +29,7 @@ class MoriRouterProcessor : AbstractProcessor() {
     lateinit var filer: Filer
     lateinit var messager: Messager
     lateinit var elementUtils: Elements
+    lateinit var typeUtils: Types
 
     @Synchronized
     override fun init(processingEnv: ProcessingEnvironment) {
@@ -35,6 +37,7 @@ class MoriRouterProcessor : AbstractProcessor() {
         filer = processingEnv.filer
         messager = processingEnv.messager
         elementUtils = processingEnv.elementUtils
+        typeUtils = processingEnv.typeUtils
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {
@@ -52,21 +55,21 @@ class MoriRouterProcessor : AbstractProcessor() {
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment): Boolean {
         return try {
-            val context = ProcessorContext(filer, elementUtils)
+            ProcessorContext.setup(filer, elementUtils, typeUtils)
 
             val routerPaths = roundEnv.getElementsAnnotatedWith(RouterPath::class.java)
             val fragmentBuilders = roundEnv.getElementsAnnotatedWith(WithArguments::class.java)
 
             routerPaths.also {
-                UriLauncherProcessor.processInterface(context, it)
-                RouterProcessor.process(context, it)
+                UriLauncherProcessor.processInterface(it)
+                RouterProcessor.process(it)
             }
 
             fragmentBuilders.forEach {
-                FragmentBuilderProcessor.process(context, it)
+                FragmentBuilderProcessor.process(it)
             }
 
-            BindingProcessor.processAutoBinder(context, routerPaths.plus(fragmentBuilders))
+            BindingProcessor.processAutoBinder(routerPaths.plus(fragmentBuilders))
 
             true
         } catch (e: Throwable) {

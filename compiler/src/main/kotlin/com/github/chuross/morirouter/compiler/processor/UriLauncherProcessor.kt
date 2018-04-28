@@ -31,7 +31,7 @@ object UriLauncherProcessor {
         return "${element.pathName?.normalize()?.capitalize()}UriLauncher"
     }
 
-    fun processInterface(context: ProcessorContext, elements: Set<Element>) {
+    fun processInterface(elements: Set<Element>) {
         if (elements.isEmpty()) return
 
         val typeSpec = TypeSpec.interfaceBuilder(INTERFACE_CLASS_NAME)
@@ -39,6 +39,8 @@ object UriLauncherProcessor {
                 .addMethod(isAvailableInterfaceMethod())
                 .addMethod(launchInterfaceMethod())
                 .build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
@@ -61,7 +63,7 @@ object UriLauncherProcessor {
     }
 
 
-    fun process(context: ProcessorContext, element: Element) {
+    fun process(element: Element) {
         if (element.getAnnotation(RouterPath::class.java).uris.isEmpty()) return
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
@@ -74,6 +76,8 @@ object UriLauncherProcessor {
                 .addMethod(isAvailableMethod())
                 .addMethod(launchMethod(element))
                 .build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()

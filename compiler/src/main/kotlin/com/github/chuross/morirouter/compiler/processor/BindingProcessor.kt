@@ -27,7 +27,7 @@ object BindingProcessor {
         return "${element.simpleName}Binder"
     }
 
-    fun processAutoBinder(context: ProcessorContext, elements: Set<Element>) {
+    fun processAutoBinder(elements: Set<Element>) {
         if (elements.all { it.allArgumentElements.isEmpty() && !it.isRouterPath }) return
 
         val typeSpec =  TypeSpec.classBuilder(AUTO_BINDER_TYPE_NAME)
@@ -37,6 +37,8 @@ object BindingProcessor {
                 .addMethod(autoBindStaticMethod(elements.filter { it.allArgumentElements.isNotEmpty() }.toSet()))
                 .addMethod(autoBindElementStaticMethod(elements.filter { it.isRouterPath }.toSet()))
                 .build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
@@ -88,7 +90,7 @@ object BindingProcessor {
         }.build()
     }
 
-    fun process(context: ProcessorContext, element: Element) {
+    fun process(element: Element) {
         if (element.allArgumentElements.isEmpty() && !element.isRouterPath) return
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element)).also {
@@ -101,6 +103,8 @@ object BindingProcessor {
                 it.addMethod(bindElementStaticMethod(element))
             }
         }.build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()

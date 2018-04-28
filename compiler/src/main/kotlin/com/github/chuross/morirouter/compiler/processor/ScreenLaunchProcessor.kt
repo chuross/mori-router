@@ -35,7 +35,7 @@ object ScreenLaunchProcessor {
         return "${element.pathName?.normalize()?.capitalize()}ScreenLauncher"
     }
 
-    fun process(context: ProcessorContext, element: Element) {
+    fun process(element: Element) {
         validate(element)
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element)).also { builder ->
@@ -54,6 +54,8 @@ object ScreenLaunchProcessor {
             }
             builder.addMethod(launchMethod(element))
         }.build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()

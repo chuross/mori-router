@@ -21,7 +21,7 @@ object RouterProcessor {
 
     const val TYPE_NAME: String = "MoriRouter"
 
-    fun process(context: ProcessorContext, elements: Set<Element>) {
+    fun process(elements: Set<Element>) {
         if (elements.isEmpty()) return
 
         val typeSpec = TypeSpec.classBuilder(TYPE_NAME)
@@ -31,13 +31,15 @@ object RouterProcessor {
                 .addField(optionsField())
                 .addField(dispatcherField())
                 .addMethod(constructorMethod())
-                .addMethods(screenLaunchMethods(context, elements).also {
+                .addMethods(screenLaunchMethods(elements).also {
                     // ScreenLauncherを一通り作った後に作る
-                    UriDispatcherProcessor.process(context, elements)
+                    UriDispatcherProcessor.process(elements)
                 })
                 .addMethod(dispatchMethod())
                 .addMethod(popMethod())
                 .build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
@@ -74,12 +76,12 @@ object RouterProcessor {
         }.build()
     }
 
-    private fun screenLaunchMethods(context: ProcessorContext, elements: Set<Element>): Iterable<MethodSpec> {
+    private fun screenLaunchMethods(elements: Set<Element>): Iterable<MethodSpec> {
         return elements.map {
-            ScreenLaunchProcessor.process(context, it)
-            UriLauncherProcessor.process(context, it)
-            BindingProcessor.process(context, it)
-            SharedElementCallbackProcessor.process(context, it)
+            ScreenLaunchProcessor.process(it)
+            UriLauncherProcessor.process(it)
+            BindingProcessor.process(it)
+            SharedElementCallbackProcessor.process(it)
 
             val requiredRouterParamElements = it.argumentElements.filter { it.isRequiredArgument }
 

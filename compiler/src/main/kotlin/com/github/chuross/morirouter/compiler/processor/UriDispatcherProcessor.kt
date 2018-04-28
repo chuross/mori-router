@@ -17,7 +17,7 @@ object UriDispatcherProcessor {
 
     const val TYPE_NAME = "UriDispatcher"
 
-    fun process(context: ProcessorContext, elements: Set<Element>) {
+    fun process(elements: Set<Element>) {
         val typeSpec = TypeSpec.classBuilder(TYPE_NAME)
                 .addModifiers(Modifier.FINAL)
                 .addJavadoc("This class is auto generated.")
@@ -25,6 +25,8 @@ object UriDispatcherProcessor {
                 .addMethod(constructorMethod(elements))
                 .addMethod(dispatchMethod())
                 .build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()

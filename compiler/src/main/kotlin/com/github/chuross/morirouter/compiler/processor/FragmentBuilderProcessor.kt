@@ -23,8 +23,8 @@ object FragmentBuilderProcessor {
         return "${element.simpleName}Builder"
     }
 
-    fun process(context: ProcessorContext, element: Element) {
-        BindingProcessor.process(context, element)
+    fun process(element: Element) {
+        BindingProcessor.process(element)
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -34,6 +34,8 @@ object FragmentBuilderProcessor {
                 .addMethods(optionalParameterMethods(element))
                 .addMethod(buildMethod(element))
                 .build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()

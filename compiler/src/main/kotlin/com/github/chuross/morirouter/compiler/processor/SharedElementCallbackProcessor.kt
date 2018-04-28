@@ -21,7 +21,7 @@ object SharedElementCallbackProcessor {
         return "${element.pathName?.capitalize()}SharedElementCallBack"
     }
 
-    fun process(context: ProcessorContext, element: Element) {
+    fun process(element: Element) {
         if (!element.isRouterPath) return
         if (element.manualSharedViewNames?.isEmpty() ?: true) return
 
@@ -33,6 +33,8 @@ object SharedElementCallbackProcessor {
                 .addField(sharedMappingField())
                 .addMethod(onMapSharedElementsMethod())
                 .build()
+
+        val context = ProcessorContext.getInstance()
 
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
