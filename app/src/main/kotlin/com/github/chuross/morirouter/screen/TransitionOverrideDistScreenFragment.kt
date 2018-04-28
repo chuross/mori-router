@@ -26,6 +26,12 @@ class TransitionOverrideDistScreenFragment : BaseFragment<FragmentTransitionOver
 
         MoriBinder.bindElement(this, R.id.image)
 
+        binding.nextScreenButton.setOnClickListener {
+            router?.transitionOverrideDist2()
+                    ?.addSharedElement(binding.image)
+                    ?.addSharedElement(binding.titleText)
+                    ?.launch()
+        }
     }
 
 }
