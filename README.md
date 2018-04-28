@@ -129,7 +129,7 @@ class SecondScreenFragment : Fragment() {
     @UriArgument
     var fuga: String
 
-    // If use `@RouterUriParam`, Don't use `required = true`.
+    // If use `@UriArgument`, Don't use `required = true`.
     @Argument(required = false)
     var piyo: String? = null
 
