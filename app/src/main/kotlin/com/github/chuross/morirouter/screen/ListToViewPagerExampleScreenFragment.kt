@@ -29,8 +29,8 @@ class ListToViewPagerExampleScreenFragment : BaseFragment<FragmentListToDetailEx
         setExitSharedElementCallback(ViewPagerDetailSharedElementCallBack()
                 .sharedViewImage({
                     val position = selectedPosition.get()
-                    val viewHolder = binding.list.findViewHolderForAdapterPosition(position) as? BindingViewHolder<ViewListItemBinding>
-                    viewHolder?.binding?.thumbnailImage
+                    val viewHolder = binding.list.findViewHolderForAdapterPosition(position) as? BindingViewHolder<*>
+                    (viewHolder?.binding as? ViewListItemBinding)?.thumbnailImage
                 }))
     }
 

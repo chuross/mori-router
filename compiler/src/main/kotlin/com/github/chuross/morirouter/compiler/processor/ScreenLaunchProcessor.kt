@@ -24,7 +24,10 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
+import javax.lang.model.element.ElementKind
 import javax.lang.model.element.Modifier
+import javax.lang.model.element.TypeElement
+import javax.lang.model.type.DeclaredType
 
 object ScreenLaunchProcessor {
 
@@ -70,6 +73,18 @@ object ScreenLaunchProcessor {
         val hasUriArgumentElement = uriArgumentElements.firstOrNull() != null
         if (hasRequiredElement && hasUriArgumentElement) {
             throw IllegalStateException("'required' Argument can use no UriArgument only: ${element.simpleName}")
+        }
+
+        val context = ProcessorContext.getInstance()
+
+        val serializableType = context.elementUtils.getTypeElement(PackageNames.SERIALIZABLE).asType()
+        element.allArgumentElements.forEach {
+            when {
+                it.asType().kind.isPrimitive -> Unit
+                (it.asType() as? DeclaredType)?.typeArguments?.all { context.typeUtils.isSubtype(it, serializableType) } == true -> Unit
+                it.asType() !is DeclaredType && context.typeUtils.isSubtype(it.asType(), serializableType) -> Unit
+                else -> throw IllegalStateException("not supported type, must be primitive or Serializable: ${element.simpleName}#${it.simpleName}: ${it.asType()}")
+            }
         }
     }
 

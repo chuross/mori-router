@@ -55,7 +55,7 @@ class MoriRouterProcessor : AbstractProcessor() {
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment): Boolean {
         return try {
-            ProcessorContext.setup(filer, elementUtils, typeUtils)
+            ProcessorContext.setup(filer, messager, elementUtils, typeUtils)
 
             val routerPaths = roundEnv.getElementsAnnotatedWith(RouterPath::class.java)
             val fragmentBuilders = roundEnv.getElementsAnnotatedWith(WithArguments::class.java)
