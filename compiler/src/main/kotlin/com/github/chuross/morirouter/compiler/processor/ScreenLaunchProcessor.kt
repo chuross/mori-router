@@ -6,6 +6,7 @@ import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
 import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
+import com.github.chuross.morirouter.compiler.extension.isRouterPath
 import com.github.chuross.morirouter.compiler.extension.manualSharedViewNames
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.overrideEnterTransitionFactoryName
@@ -24,21 +25,18 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
-import javax.lang.model.element.ElementKind
 import javax.lang.model.element.Modifier
-import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 
 object ScreenLaunchProcessor {
 
     fun getGeneratedTypeName(element: Element): String {
-        if (element.pathName.isNullOrBlank()) {
-            throw IllegalStateException("RouterPath name must be not empty")
-        }
         return "${element.pathName?.normalize()?.capitalize()}ScreenLauncher"
     }
 
     fun process(element: Element) {
+        if (!element.isRouterPath) return
+
         validate(element)
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element)).also { builder ->
@@ -66,15 +64,30 @@ object ScreenLaunchProcessor {
     }
 
     private fun validate(element: Element) {
+        validateFragmentType(element)
+        validateArgumentRequirements(element)
+        validateArgumentTypes(element)
+    }
+
+    private fun validateFragmentType(element: Element) {
+        val context = ProcessorContext.getInstance()
+        if (!context.typeUtils.isSubtype(element.asType(), context.elementUtils.getTypeElement(PackageNames.SUPPORT_FRAGMENT).asType())) {
+            throw IllegalStateException("@RouterPath only support ${PackageNames.SUPPORT_FRAGMENT}: ${element.simpleName}")
+        }
+    }
+
+    private fun validateArgumentRequirements(element: Element) {
         val argumentElements = element.argumentElements
         val uriArgumentElements = element.uriArgumentElements
 
         val hasRequiredElement = argumentElements.any { it.isRequiredArgument }
         val hasUriArgumentElement = uriArgumentElements.firstOrNull() != null
         if (hasRequiredElement && hasUriArgumentElement) {
-            throw IllegalStateException("'required' Argument can use no UriArgument only: ${element.simpleName}")
+            throw IllegalStateException("can't use both 'required' @Argument and @UriArgument: ${element.simpleName}")
         }
+    }
 
+    private fun validateArgumentTypes(element: Element) {
         val context = ProcessorContext.getInstance()
 
         val serializableType = context.elementUtils.getTypeElement(PackageNames.SERIALIZABLE).asType()
