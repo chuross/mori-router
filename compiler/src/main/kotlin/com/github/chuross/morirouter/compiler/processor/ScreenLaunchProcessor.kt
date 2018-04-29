@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
+import com.github.chuross.morirouter.compiler.Parameters
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentElements
@@ -48,7 +49,7 @@ object ScreenLaunchProcessor {
             builder.addFields(paramFields(element))
             builder.addMethod(constructorMethod(element))
             builder.addMethods(optionalParameterMethods(element))
-            if (element.manualSharedViewNames?.isNotEmpty() ?: false) {
+            if (element.manualSharedViewNames?.isNotEmpty() == true) {
                 builder.addMethod(manualSharedMappingEnabledMethod(element))
             } else {
                 builder.addMethod(sharedElementAddMethod(element))
@@ -133,13 +134,13 @@ object ScreenLaunchProcessor {
         val requiredRouterParamElements = element.argumentElements.filter { it.isRequiredArgument }
 
         return MethodSpec.constructorBuilder().also { builder ->
-            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
-            builder.addParameter(MoriRouterOptions::class.java, "options")
+            builder.addParameter(Parameters.nonNull(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm"))
+            builder.addParameter(Parameters.nonNull(ClassName.get(MoriRouterOptions::class.java), "options"))
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.options = options")
             requiredRouterParamElements.forEach {
                 val name = it.paramName.normalize()
-                builder.addParameter(TypeName.get(it.asType()), name)
+                builder.addParameter(Parameters.nonNull(TypeName.get(it.asType()), name))
                 builder.addStatement("this.$name = $name")
             }
         }.build()
@@ -152,7 +153,7 @@ object ScreenLaunchProcessor {
                     val name = it.paramName.normalize()
                     MethodSpec.methodBuilder(name)
                             .addModifiers(Modifier.PUBLIC)
-                            .addParameter(TypeName.get(it.asType()), name)
+                            .addParameter(Parameters.nullable(TypeName.get(it.asType()), name))
                             .addStatement("this.$name = $name")
                             .addStatement("return this")
                             .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
@@ -163,7 +164,7 @@ object ScreenLaunchProcessor {
     private fun sharedElementAddMethod(element: Element): MethodSpec {
         return MethodSpec.methodBuilder("addSharedElement")
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(ClassName.bestGuess(PackageNames.VIEW), "view")
+                .addParameter(Parameters.nonNull(ClassName.bestGuess(PackageNames.VIEW), "view"))
                 .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
                 .addStatement("this.sharedElements.add(view)")
                 .addStatement("return this")
@@ -173,7 +174,7 @@ object ScreenLaunchProcessor {
     private fun manualSharedMappingEnabledMethod(element: Element): MethodSpec {
         return MethodSpec.methodBuilder("manualSharedMapping").also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
-            builder.addParameter(ClassName.bestGuess(PackageNames.CONTEXT), "context")
+            builder.addParameter(Parameters.nonNull(ClassName.bestGuess(PackageNames.CONTEXT), "context"))
             builder.returns(ClassName.bestGuess(getGeneratedTypeName(element)))
 
             element.manualSharedViewNames?.forEach {

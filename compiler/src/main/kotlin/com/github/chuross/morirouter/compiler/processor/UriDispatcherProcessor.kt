@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
+import com.github.chuross.morirouter.compiler.Parameters
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.isUriArgument
 import com.squareup.javapoet.ArrayTypeName
@@ -47,14 +48,14 @@ object UriDispatcherProcessor {
         val initializeStatement = uriLauncherNames.map { "new $it(router)" }.joinToString(", ")
 
         return MethodSpec.constructorBuilder()
-                .addParameter(ClassName.bestGuess(RouterProcessor.TYPE_NAME), "router")
+                .addParameter(Parameters.nonNull(ClassName.bestGuess(RouterProcessor.TYPE_NAME), "router"))
                 .addStatement("this.launchers = new ${UriLauncherProcessor.INTERFACE_CLASS_NAME}[] { $initializeStatement }")
                 .build()
     }
 
     private fun dispatchMethod(): MethodSpec {
         return MethodSpec.methodBuilder("dispatch")
-                .addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
+                .addParameter(Parameters.nullable(ClassName.bestGuess(PackageNames.URI), "uri"))
                 .returns(TypeName.BOOLEAN)
                 .beginControlFlow("for (${UriLauncherProcessor.INTERFACE_CLASS_NAME} launcher : launchers)")
                 .addStatement("if (!launcher.isAvailable(uri)) continue")

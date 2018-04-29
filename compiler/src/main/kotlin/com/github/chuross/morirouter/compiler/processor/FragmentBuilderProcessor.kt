@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
+import com.github.chuross.morirouter.compiler.Parameters
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentElements
@@ -57,7 +58,7 @@ object FragmentBuilderProcessor {
             builder.addModifiers(Modifier.PUBLIC)
             requiredRouterParamElements.forEach {
                 val name = it.paramName.normalize()
-                builder.addParameter(TypeName.get(it.asType()), name)
+                builder.addParameter(Parameters.nonNull(TypeName.get(it.asType()), name))
                 builder.addStatement("this.$name = $name")
             }
         }.build()
@@ -70,7 +71,7 @@ object FragmentBuilderProcessor {
                     val name = it.paramName.normalize()
                     MethodSpec.methodBuilder(name)
                             .addModifiers(Modifier.PUBLIC)
-                            .addParameter(TypeName.get(it.asType()), name)
+                            .addParameter(Parameters.nullable(TypeName.get(it.asType()), name))
                             .addStatement("this.$name = $name")
                             .addStatement("return this")
                             .returns(ClassName.bestGuess(getGeneratedTypeName(element)))

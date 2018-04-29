@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
+import com.github.chuross.morirouter.compiler.Parameters
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.isRouterPath
 import com.github.chuross.morirouter.compiler.extension.manualSharedViewNames
@@ -57,7 +58,7 @@ object SharedElementCallbackProcessor {
             MethodSpec.methodBuilder(it.normalize())
                     .addModifiers(Modifier.PUBLIC)
                     .returns(ClassName.bestGuess(getGeneratedTypeName(element)))
-                    .addParameter(callableClassType, "callable")
+                    .addParameter(Parameters.nonNull(callableClassType, "callable"))
                     .addStatement("sharedMapping.put(\"$it\", callable)")
                     .addStatement("return this")
                     .build()

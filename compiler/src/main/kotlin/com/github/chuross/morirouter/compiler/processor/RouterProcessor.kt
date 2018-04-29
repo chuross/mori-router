@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
+import com.github.chuross.morirouter.compiler.Parameters
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
@@ -68,8 +69,8 @@ object RouterProcessor {
     private fun constructorMethod(): MethodSpec {
         return MethodSpec.constructorBuilder().also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
-            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm")
-            builder.addParameter(MoriRouterOptions::class.java, "options")
+            builder.addParameter(Parameters.nonNull(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT_MANAGER), "fm"))
+            builder.addParameter(Parameters.nonNull(ClassName.get(MoriRouterOptions::class.java), "options"))
             builder.addStatement("this.fm = fm")
             builder.addStatement("this.options = options")
             builder.addStatement("dispatcher = new ${UriDispatcherProcessor.TYPE_NAME}(this)")
@@ -88,7 +89,7 @@ object RouterProcessor {
             MethodSpec.methodBuilder(it.pathName?.normalize()).also { builder ->
                 builder.addModifiers(Modifier.PUBLIC)
                 requiredRouterParamElements.forEach {
-                    builder.addParameter(TypeName.get(it.asType()), it.paramName.normalize())
+                    builder.addParameter(Parameters.nonNull(TypeName.get(it.asType()), it.paramName.normalize()))
                 }
                 val arguments = listOf("fm", "options").plus(requiredRouterParamElements.map { it.paramName.normalize() }).joinToString(", ")
                 builder.addStatement("return new ${ScreenLaunchProcessor.getGeneratedTypeName(it)}($arguments)")
@@ -101,7 +102,7 @@ object RouterProcessor {
         return MethodSpec.methodBuilder("dispatch")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeName.BOOLEAN)
-                .addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
+                .addParameter(Parameters.nullable(ClassName.bestGuess(PackageNames.URI), "uri"))
                 .addStatement("return dispatcher.dispatch(uri)")
                 .build()
     }

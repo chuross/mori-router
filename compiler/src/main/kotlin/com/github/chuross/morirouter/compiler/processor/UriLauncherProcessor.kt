@@ -3,6 +3,7 @@ package com.github.chuross.morirouter.compiler.processor
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.annotation.UriArgument
 import com.github.chuross.morirouter.compiler.PackageNames
+import com.github.chuross.morirouter.compiler.Parameters
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.pathName
@@ -118,7 +119,8 @@ object UriLauncherProcessor {
         return MethodSpec.methodBuilder("isAvailable")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override::class.java)
-                .addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
+                .addParameter(Parameters.nullable(ClassName.bestGuess(PackageNames.URI), "uri"))
+                .addStatement("if (uri == null) return false")
                 .beginControlFlow("for (${PackageNames.PATTERN} pattern : $URI_REGEX_FIELD_NAME)")
                 .beginControlFlow("if (pattern.matcher(uri.toString()).matches())")
                 .addStatement("return true")
@@ -144,7 +146,8 @@ object UriLauncherProcessor {
         return MethodSpec.methodBuilder("launch").also { builder ->
             builder.addModifiers(Modifier.PUBLIC)
             builder.addAnnotation(Override::class.java)
-            builder.addParameter(ClassName.bestGuess(PackageNames.URI), "uri")
+            builder.addParameter(Parameters.nullable(ClassName.bestGuess(PackageNames.URI), "uri"))
+            builder.addStatement("if (uri == null) return")
             uriParamNames?.mapIndexed { index, uriParamNames ->
                 val matcherVariableName = "matcher$index"
 
