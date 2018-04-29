@@ -65,7 +65,9 @@ object UriLauncherProcessor {
 
 
     fun process(element: Element) {
-        if (element.getAnnotation(RouterPath::class.java).uris.isEmpty()) return
+        if (element.pathUris?.isEmpty() ?: true) return
+
+        validate(element)
 
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addSuperinterface(ClassName.bestGuess(INTERFACE_CLASS_NAME))
@@ -83,6 +85,14 @@ object UriLauncherProcessor {
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
                 .writeTo(context.filer)
+    }
+
+    private fun validate(element: Element) {
+        element.pathUris?.forEach {
+            if (it.isBlank()) {
+                throw IllegalStateException("path uri is null: ${element.simpleName}")
+            }
+        }
     }
 
     private fun uriRegexStaticField(element: Element): FieldSpec {

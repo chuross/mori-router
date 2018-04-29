@@ -26,6 +26,8 @@ object SharedElementCallbackProcessor {
         if (!element.isRouterPath) return
         if (element.manualSharedViewNames?.isEmpty() ?: true) return
 
+        validate(element)
+
         val typeSpec = TypeSpec.classBuilder(getGeneratedTypeName(element))
                 .addModifiers(Modifier.PUBLIC)
                 .superclass(ClassName.bestGuess(PackageNames.SHARED_ELEMENT_CALLBACK))
@@ -40,6 +42,14 @@ object SharedElementCallbackProcessor {
         JavaFile.builder(context.getPackageName(), typeSpec)
                 .build()
                 .writeTo(context.filer)
+    }
+
+    private fun validate(element: Element) {
+        element.manualSharedViewNames?.forEach {
+            if (it.isBlank()) {
+                throw IllegalStateException("manualSharedViewName is null: ${element.simpleName}")
+            }
+        }
     }
 
     private fun sharedMappingField(): FieldSpec {

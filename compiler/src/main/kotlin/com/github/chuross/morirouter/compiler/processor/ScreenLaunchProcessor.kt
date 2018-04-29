@@ -65,9 +65,16 @@ object ScreenLaunchProcessor {
     }
 
     private fun validate(element: Element) {
+        validatePathName(element)
         validateFragmentType(element)
         validateArgumentRequirements(element)
         validateArgumentTypes(element)
+    }
+
+    private fun validatePathName(element: Element) {
+        if (!element.isRouterPath || element.pathName.isNullOrBlank()) {
+            throw IllegalStateException("@RouterPath must have name: ${element.simpleName}")
+        }
     }
 
     private fun validateFragmentType(element: Element) {
