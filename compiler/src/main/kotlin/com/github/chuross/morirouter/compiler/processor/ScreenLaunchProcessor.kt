@@ -6,8 +6,10 @@ import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
+import com.github.chuross.morirouter.compiler.extension.isParcelableType
 import com.github.chuross.morirouter.compiler.extension.isRequiredArgument
 import com.github.chuross.morirouter.compiler.extension.isRouterPath
+import com.github.chuross.morirouter.compiler.extension.isSerializable
 import com.github.chuross.morirouter.compiler.extension.manualSharedViewNames
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.overrideEnterTransitionFactoryName
@@ -28,6 +30,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
 import javax.lang.model.type.DeclaredType
+import javax.lang.model.type.TypeMirror
 
 object ScreenLaunchProcessor {
 
@@ -96,16 +99,21 @@ object ScreenLaunchProcessor {
     }
 
     private fun validateArgumentTypes(element: Element) {
-        val context = ProcessorContext.getInstance()
-
-        val serializableType = context.elementUtils.getTypeElement(PackageNames.SERIALIZABLE).asType()
         element.allArgumentElements.forEach {
             when {
                 it.asType().kind.isPrimitive -> Unit
-                (it.asType() as? DeclaredType)?.typeArguments?.all { context.typeUtils.isSubtype(it, serializableType) } == true -> Unit
-                it.asType() !is DeclaredType && context.typeUtils.isSubtype(it.asType(), serializableType) -> Unit
-                else -> throw IllegalStateException("not supported type, must be primitive or Serializable: ${element.simpleName}#${it.simpleName}: ${it.asType()}")
+                (it.asType() as? DeclaredType)?.typeArguments?.all { isValidType(it) } == true -> Unit
+                it.asType() !is DeclaredType && (isValidType(it.asType())) -> Unit
+                else -> throw IllegalStateException("not supported type, must be primitive or Serializable or Parcelable: ${element.simpleName}#${it.simpleName}: ${it.asType()}")
             }
+        }
+    }
+
+    private fun isValidType(typeMirror: TypeMirror): Boolean {
+        return when {
+            typeMirror.isSerializable() -> true
+            typeMirror.isParcelableType() -> true
+            else -> false
         }
     }
 
@@ -209,7 +217,11 @@ object ScreenLaunchProcessor {
             builder.addStatement("${PackageNames.BUNDLE} arguments = new ${PackageNames.BUNDLE}()")
             routerParamElements.plus(routerPathParamElements).forEach {
                 val name = it.paramName.normalize()
-                builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")
+                if (it.asType().isParcelableType()) {
+                    builder.addStatement("arguments.putParcelable($binderTypeName.${it.argumentKeyName}, $name)")
+                } else {
+                    builder.addStatement("arguments.putSerializable($binderTypeName.${it.argumentKeyName}, $name)")
+                }
             }
             builder.addStatement("fragment.setArguments(arguments)")
 

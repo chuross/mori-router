@@ -5,6 +5,7 @@ import com.github.chuross.morirouter.compiler.Parameters
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
+import com.github.chuross.morirouter.compiler.extension.isParcelableType
 import com.github.chuross.morirouter.compiler.extension.isRouterPath
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.paramName
@@ -144,7 +145,11 @@ object BindingProcessor {
                 }
 
                 val valueName = "${it.paramName.normalize()}Value"
-                builder.addStatement("${PackageNames.SERIALIZABLE} $valueName = bundle.getSerializable(${it.argumentKeyName})")
+                if (it.asType().isParcelableType()) {
+                    builder.addStatement("${PackageNames.PARCELABLE} $valueName = bundle.getParcelable(${it.argumentKeyName})")
+                } else {
+                    builder.addStatement("${PackageNames.SERIALIZABLE} $valueName = bundle.getSerializable(${it.argumentKeyName})")
+                }
 
                 builder.addStatement(if (setterMethod == null) {
                     "if ($valueName != null) fragment.${it.simpleName} = (${it.asType()}) $valueName"

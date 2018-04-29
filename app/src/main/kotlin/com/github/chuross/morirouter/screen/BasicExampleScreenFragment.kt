@@ -3,6 +3,7 @@ package com.github.chuross.morirouter.screen
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.MoriBinder
 import com.github.chuross.morirouter.R
@@ -23,6 +24,9 @@ class BasicExampleScreenFragment : BaseFragment<FragmentBasicExampleBinding>() {
 
     @Argument(name = "tekitou_list", required = false)
     var param3: ArrayList<String> = arrayListOf()
+
+    @Argument(name = "parcelable_field", required = false)
+    var parcelableField: TextView.SavedState? = null
 
     override val layoutResourceId: Int = R.layout.fragment_basic_example
 
