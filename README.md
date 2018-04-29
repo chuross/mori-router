@@ -222,10 +222,7 @@ class ThirdScreenFragment : Fragment() {
        super.onCreate(savedInstanceState)
 
        val callback = ThirdSharedElementCallBack() // auto generated class
-                                      .sharedViewImage({
-                                          val currentFragment = // do something from ViewPager
-                                          currentFragment?.binding?.yourSharedView
-                                      })
+                        .sharedViewImage({ /* get shared element from ViewPager */ })
 
        setEnterSharedElementCallback(callback)
    }
@@ -243,13 +240,10 @@ class SecondScreenFragment : Fragment() {
    override fun onCreate(savedInstanceState: Bundle?) {
        super.onCreate(savedInstanceState)
 
-       val sharedElementCallback = ThirdSharedElementCallBack() // auto generated class
-                                      .sharedViewImage({
-                                          val yourSharedView = // do something from your layout
-                                          yourSharedView
-                                      })
+       val callback = ThirdSharedElementCallBack() // auto generated class
+                        .sharedViewImage({ /* get shared element from RecyclerView */ })
 
-       setExitSharedElementCallback(sharedElementCallback)
+       setExitSharedElementCallback(callback)
    }
 
    ....
