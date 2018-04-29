@@ -1,6 +1,7 @@
 package com.github.chuross.morirouter.compiler.processor
 
 import com.github.chuross.morirouter.compiler.PackageNames
+import com.github.chuross.morirouter.compiler.Parameters
 import com.github.chuross.morirouter.compiler.ProcessorContext
 import com.github.chuross.morirouter.compiler.extension.allArgumentElements
 import com.github.chuross.morirouter.compiler.extension.argumentKeyName
@@ -49,8 +50,8 @@ object BindingProcessor {
         return MethodSpec.methodBuilder("getSharedTransitionName").also { builder ->
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
             builder.returns(String::class.java)
-            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment")
-            builder.addParameter(TypeName.INT, "resourceId")
+            builder.addParameter(Parameters.nonNull(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment"))
+            builder.addParameter(Parameters.resId(TypeName.INT, "resourceId"))
 
             builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
             builder.addStatement("if (bundle == null) return null")
@@ -62,7 +63,7 @@ object BindingProcessor {
     private fun autoBindStaticMethod(elements: Set<Element>): MethodSpec {
         return MethodSpec.methodBuilder("bind").also { builder ->
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment")
+            builder.addParameter(Parameters.nonNull(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment"))
 
             builder.addStatement("if (fragment == null) throw new ${PackageNames.ILLEGAL_ARGUMENT_EXCEPTION}(\"fragment must be not null\")")
 
@@ -77,8 +78,8 @@ object BindingProcessor {
     private fun autoBindElementStaticMethod(elements: Set<Element>): MethodSpec {
         return MethodSpec.methodBuilder("bindElement").also { builder ->
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-            builder.addParameter(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment")
-            builder.addParameter(TypeName.INT, "resourceId")
+            builder.addParameter(Parameters.nonNull(ClassName.bestGuess(PackageNames.SUPPORT_FRAGMENT), "fragment"))
+            builder.addParameter(Parameters.resId(TypeName.INT, "resourceId"))
 
             builder.addStatement("if (fragment == null) throw new ${PackageNames.ILLEGAL_ARGUMENT_EXCEPTION}(\"fragment must be not null\")")
 
@@ -130,7 +131,7 @@ object BindingProcessor {
         return MethodSpec.methodBuilder("bind").also { builder ->
             builder.addAnnotation(AnnotationSpec.builder(SuppressWarnings::class.java).addMember("value", "\"unchecked\"").build())
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-            builder.addParameter(TypeName.get(element.asType()), "fragment")
+            builder.addParameter(Parameters.nonNull(TypeName.get(element.asType()), "fragment"))
 
             builder.addStatement("${PackageNames.BUNDLE} bundle = fragment.getArguments()")
             builder.addStatement("if (bundle == null) return")
@@ -157,8 +158,8 @@ object BindingProcessor {
     private fun bindElementStaticMethod(element: Element): MethodSpec {
         return MethodSpec.methodBuilder("bindElement").also { builder ->
             builder.addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-            builder.addParameter(TypeName.get(element.asType()), "fragment")
-            builder.addParameter(TypeName.INT, "resourceId")
+            builder.addParameter(Parameters.nonNull(TypeName.get(element.asType()), "fragment"))
+            builder.addParameter(Parameters.resId(TypeName.INT, "resourceId"))
 
             builder.addStatement("if (fragment.getView() == null) throw new ${PackageNames.ILLEGAL_STATE_EXCEPTION}(\"you must call onViewCreated\")")
 
