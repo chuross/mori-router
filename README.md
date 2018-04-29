@@ -29,7 +29,7 @@ repositories {
 
 ```groovy
 dependencies {
-    compile 'com.github.chuross.mori-router:annotation:x.x.x'
+    implementation 'com.github.chuross.mori-router:annotation:x.x.x'
     annotationProcessor 'com.github.chuross.mori-router:compiler:x.x.x' // or kpt
 }
 ```
@@ -222,7 +222,7 @@ class ThirdScreenFragment : Fragment() {
        super.onCreate(savedInstanceState)
 
        val callback = ThirdSharedElementCallBack() // auto generated class
-                        .sharedViewImage({ /* get shared element from ViewPager */ })
+                        .sharedViewImage({ /* get shared element view from ViewPager */ })
 
        setEnterSharedElementCallback(callback)
    }
@@ -241,7 +241,7 @@ class SecondScreenFragment : Fragment() {
        super.onCreate(savedInstanceState)
 
        val callback = ThirdSharedElementCallBack() // auto generated class
-                        .sharedViewImage({ /* get shared element from RecyclerView */ })
+                        .sharedViewImage({ /* get shared element view from RecyclerView */ })
 
        setExitSharedElementCallback(callback)
    }
