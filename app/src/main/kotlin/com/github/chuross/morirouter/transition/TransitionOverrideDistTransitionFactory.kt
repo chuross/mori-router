@@ -1,9 +1,9 @@
 package com.github.chuross.morirouter.transition
 
-import android.support.transition.Explode
-import android.support.transition.Fade
-import android.support.transition.Slide
-import android.support.transition.TransitionSet
+import androidx.transition.Explode
+import androidx.transition.Fade
+import androidx.transition.Slide
+import androidx.transition.TransitionSet
 import com.github.chuross.morirouter.R
 import com.github.chuross.morirouter.core.TransitionFactory
 

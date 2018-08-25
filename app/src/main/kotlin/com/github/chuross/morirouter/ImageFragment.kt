@@ -1,9 +1,8 @@
 package com.github.chuross.morirouter
 
 import android.os.Bundle
-import android.support.v4.view.ViewCompat
 import android.view.View
-import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.WithArguments
 import com.github.chuross.morirouter.databinding.FragmentImageBinding

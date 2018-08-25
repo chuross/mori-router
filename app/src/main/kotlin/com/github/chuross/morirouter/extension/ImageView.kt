@@ -1,7 +1,7 @@
 package com.github.chuross.morirouter.extension
 
-import android.databinding.BindingAdapter
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.github.chuross.morirouter.GlideApp
 
 @BindingAdapter(value = ["ext_imageUrl"])
