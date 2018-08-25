@@ -1,7 +1,7 @@
 package com.github.chuross.morirouter.transition
 
-import android.support.transition.Slide
-import android.support.transition.TransitionSet
+import androidx.transition.Slide
+import androidx.transition.TransitionSet
 import com.github.chuross.morirouter.core.TransitionFactory
 
 class TransitionOverrideExampleTransitionFactory : TransitionFactory {

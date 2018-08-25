@@ -1,20 +1,14 @@
 package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
-import android.support.v4.view.ViewPager
 import android.view.View
-import com.github.chuross.morirouter.BaseFragment
-import com.github.chuross.morirouter.FragmentPagerAdapter
-import com.github.chuross.morirouter.ImageFragment
-import com.github.chuross.morirouter.ImageFragmentBuilder
-import com.github.chuross.morirouter.MoriBinder
-import com.github.chuross.morirouter.R
-import com.github.chuross.morirouter.ViewPagerDetailSharedElementCallBack
+import androidx.viewpager.widget.ViewPager
+import com.github.chuross.morirouter.*
 import com.github.chuross.morirouter.annotation.Argument
 import com.github.chuross.morirouter.annotation.RouterPath
 import com.github.chuross.morirouter.databinding.FragmentViewpagerDetailBinding
 import com.github.chuross.morirouter.transition.ImageSharedTransitionFactory
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 @RouterPath(

@@ -1,8 +1,8 @@
 package com.github.chuross.morirouter
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.transition.Fade
+import androidx.appcompat.app.AppCompatActivity
+import androidx.transition.Fade
 import com.github.chuross.morirouter.core.DefaultTransitionFactory
 import com.github.chuross.morirouter.core.MoriRouterOptions
 

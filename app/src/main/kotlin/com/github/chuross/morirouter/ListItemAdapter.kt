@@ -1,9 +1,9 @@
 package com.github.chuross.morirouter
 
 import android.content.Context
-import android.support.v4.view.ViewCompat
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import com.github.chuross.morirouter.databinding.ViewListItemBinding
 import com.github.chuross.recyclerviewadapters.ItemAdapter
 import com.github.chuross.recyclerviewadapters.databinding.BindingViewHolder

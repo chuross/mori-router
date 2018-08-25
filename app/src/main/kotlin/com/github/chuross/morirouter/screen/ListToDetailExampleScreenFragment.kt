@@ -1,8 +1,8 @@
 package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.ListItemAdapter
 import com.github.chuross.morirouter.R

@@ -1,8 +1,8 @@
 package com.github.chuross.morirouter.screen
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.chuross.morirouter.BaseFragment
 import com.github.chuross.morirouter.ListItemAdapter
 import com.github.chuross.morirouter.R
@@ -12,7 +12,7 @@ import com.github.chuross.morirouter.databinding.FragmentListToDetailExampleBind
 import com.github.chuross.morirouter.databinding.ViewListItemBinding
 import com.github.chuross.morirouter.util.Data
 import com.github.chuross.recyclerviewadapters.databinding.BindingViewHolder
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 @RouterPath(
