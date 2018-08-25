@@ -7,19 +7,14 @@ import com.github.chuross.morirouter.compiler.extension.isRouterPath
 import com.github.chuross.morirouter.compiler.extension.manualSharedViewNames
 import com.github.chuross.morirouter.compiler.extension.normalize
 import com.github.chuross.morirouter.compiler.extension.pathName
-import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.FieldSpec
-import com.squareup.javapoet.JavaFile
-import com.squareup.javapoet.MethodSpec
-import com.squareup.javapoet.ParameterizedTypeName
-import com.squareup.javapoet.TypeSpec
+import com.squareup.javapoet.*
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
 
 object SharedElementCallbackProcessor {
 
     fun getGeneratedTypeName(element: Element): String {
-        return "${element.pathName?.capitalize()}SharedElementCallBack"
+        return "${element.pathName?.normalize()?.capitalize()}SharedElementCallBack"
     }
 
     fun process(element: Element) {
